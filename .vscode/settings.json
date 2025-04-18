@@ -1,0 +1,39 @@
+{
+	// フォーマッタ系
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll.stylelint": "always"
+	},
+
+	// TypeScript/React (web 用)
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+
+	// Go (backend 用)
+	"[go]": {
+		"editor.defaultFormatter": "golang.go"
+	},
+
+	// Go の Language Server 設定（必要に応じて）
+	"gopls": {
+		"ui.completion.usePlaceholders": true,
+		"staticcheck": true,
+		"analyses": {
+			"unusedparams": true,
+			"shadow": true
+		}
+	},
+
+	// Lint 実行を Go 拡張でサポート（golangci-lint を使うなら）
+	"go.lintTool": "golangci-lint",
+	"go.lintFlags": ["--fast"],
+	"go.formatTool": "gofmt",
+
+	// ESLint 設定 (必要なら fallback で有効化)
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+}

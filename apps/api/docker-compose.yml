@@ -1,0 +1,23 @@
+services:
+  go:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - .:/app
+    container_name: go_api_docker_sample
+
+  mysql:
+    image: mysql:8.0.30
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./docker/data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - '3306:3306'
+    container_name: mysql_go_api_docker_sample
