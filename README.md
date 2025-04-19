@@ -8,8 +8,3 @@
 cd apps/api
 make init
 ```
-
-```
-go mod tidy
-go run main.go
-```
