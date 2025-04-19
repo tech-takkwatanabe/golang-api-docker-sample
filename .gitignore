@@ -33,9 +33,6 @@ pkg/
 .env.*
 !.env.example
 
-# Air live-reloading config
-.air.toml
-
 # Docker
 apps/api/docker/data/*
 !apps/api/docker/data/.gitkeep

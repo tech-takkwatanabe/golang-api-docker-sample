@@ -1,3 +1,4 @@
+name: golang-api-docker-sample
 services:
   go:
     build: .
@@ -5,19 +6,17 @@ services:
       - '8080:8080'
     volumes:
       - .:/app
-    container_name: go_api_docker_sample
 
   mysql:
     image: mysql:8.0.30
     platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
     volumes:
       - ./docker/data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
       - '3306:3306'
-    container_name: mysql_go_api_docker_sample

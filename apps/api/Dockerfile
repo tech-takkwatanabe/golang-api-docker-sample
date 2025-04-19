@@ -14,8 +14,8 @@ RUN go mod tidy
 # ソースコードをコピー
 COPY . .
 
-# air をインストール（バージョン固定）
-RUN go install github.com/air-verse/air@v1.61.7
+# air をインストール
+RUN go install github.com/air-verse/air@latest
 
 # CMD を air に
 CMD ["air"]
