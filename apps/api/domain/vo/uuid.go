@@ -1,6 +1,7 @@
 package vo
 
 import (
+	"database/sql/driver"
 	"errors"
 
 	"github.com/google/uuid"
@@ -25,4 +26,29 @@ func NewUUIDv7() *UUID {
 
 func (u *UUID) String() string {
 	return u.value
+}
+
+// Value implements the driver.Valuer interface
+func (u *UUID) Value() (driver.Value, error) {
+	if u == nil {
+		return nil, nil
+	}
+	return u.value, nil
+}
+
+// Scan implements the sql.Scanner interface
+func (u *UUID) Scan(value interface{}) error {
+	if value == nil {
+		u.value = ""
+		return nil
+	}
+	if v, ok := value.(string); ok {
+		u.value = v
+		return nil
+	}
+	if v, ok := value.([]byte); ok {
+		u.value = string(v)
+		return nil
+	}
+	return errors.New("invalid UUID type")
 }

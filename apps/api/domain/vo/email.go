@@ -1,6 +1,7 @@
 package vo
 
 import (
+	"database/sql/driver"
 	"errors"
 	"net/mail"
 	"strings"
@@ -26,4 +27,29 @@ func NewEmail(v string) (*Email, error) {
 
 func (e *Email) String() string {
 	return e.value
+}
+
+// Value implements the driver.Valuer interface
+func (e *Email) Value() (driver.Value, error) {
+	if e == nil {
+		return nil, nil
+	}
+	return e.value, nil
+}
+
+// Scan implements the sql.Scanner interface
+func (e *Email) Scan(value interface{}) error {
+	if value == nil {
+		e.value = ""
+		return nil
+	}
+	if v, ok := value.(string); ok {
+		e.value = v
+		return nil
+	}
+	if v, ok := value.([]byte); ok {
+		e.value = string(v)
+		return nil
+	}
+	return errors.New("invalid Email type")
 }

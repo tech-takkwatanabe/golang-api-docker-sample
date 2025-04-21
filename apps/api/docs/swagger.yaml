@@ -22,39 +22,41 @@ definitions:
     - name
     - password
     type: object
-  models.ErrorResponse:
+  dto.ErrorResponse:
     properties:
       error:
         type: string
     type: object
-  models.TokenResponse:
+  dto.TokenResponse:
     properties:
       token:
         type: string
     type: object
-  models.User:
+  dto.UserDTO:
     properties:
       created_at:
-        type: string
-      deleted_at:
-        type: string
+        $ref: '#/definitions/vo.DateTime'
       email:
-        type: string
+        $ref: '#/definitions/vo.Email'
       id:
         type: integer
       name:
-        type: string
-      password:
-        type: string
+        $ref: '#/definitions/vo.Name'
       updated_at:
-        type: string
+        $ref: '#/definitions/vo.DateTime'
       uuid:
         type: string
     type: object
-  models.UserResponse:
+  dto.UserDTOResponse:
     properties:
       data:
-        $ref: '#/definitions/models.User'
+        $ref: '#/definitions/dto.UserDTO'
+    type: object
+  vo.DateTime:
+    type: object
+  vo.Email:
+    type: object
+  vo.Name:
     type: object
 info:
   contact: {}
@@ -71,13 +73,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.UserResponse'
+            $ref: '#/definitions/dto.UserDTOResponse'
         "401":
           description: 認証エラー
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
-      - BearerAuth: []
       - BearerAuth: []
       summary: 現在のユーザー情報
       tags:
@@ -100,15 +101,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.TokenResponse'
+            $ref: '#/definitions/dto.TokenResponse'
         "400":
           description: バリデーションエラー
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/dto.UserDTOResponse'
         "401":
           description: 認証エラー
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: ログイン
       tags:
       - auth
@@ -130,11 +131,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.UserResponse'
+            $ref: '#/definitions/dto.UserDTOResponse'
         "400":
           description: バリデーションエラー
           schema:
-            $ref: '#/definitions/models.ErrorResponse'
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: 新規ユーザー登録
       tags:
       - auth

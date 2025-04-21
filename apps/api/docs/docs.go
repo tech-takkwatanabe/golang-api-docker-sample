@@ -20,9 +20,6 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
-                    },
-                    {
-                        "BearerAuth": []
                     }
                 ],
                 "description": "トークンを元にログイン中のユーザー情報を返す",
@@ -37,13 +34,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
+                            "$ref": "#/definitions/dto.UserDTOResponse"
                         }
                     },
                     "401": {
                         "description": "認証エラー",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -77,19 +74,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TokenResponse"
+                            "$ref": "#/definitions/dto.TokenResponse"
                         }
                     },
                     "400": {
                         "description": "バリデーションエラー",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/dto.UserDTOResponse"
                         }
                     },
                     "401": {
                         "description": "認証エラー",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -123,13 +120,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserResponse"
+                            "$ref": "#/definitions/dto.UserDTOResponse"
                         }
                     },
                     "400": {
                         "description": "バリデーションエラー",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -171,7 +168,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrorResponse": {
+        "dto.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -179,7 +176,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.TokenResponse": {
+        "dto.TokenResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -187,42 +184,45 @@ const docTemplate = `{
                 }
             }
         },
-        "models.User": {
+        "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
+                    "$ref": "#/definitions/vo.DateTime"
                 },
                 "email": {
-                    "type": "string"
+                    "$ref": "#/definitions/vo.Email"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
+                    "$ref": "#/definitions/vo.Name"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "$ref": "#/definitions/vo.DateTime"
                 },
                 "uuid": {
                     "type": "string"
                 }
             }
         },
-        "models.UserResponse": {
+        "dto.UserDTOResponse": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/models.User"
+                    "$ref": "#/definitions/dto.UserDTO"
                 }
             }
+        },
+        "vo.DateTime": {
+            "type": "object"
+        },
+        "vo.Email": {
+            "type": "object"
+        },
+        "vo.Name": {
+            "type": "object"
         }
     },
     "securityDefinitions": {
