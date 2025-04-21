@@ -27,11 +27,6 @@ definitions:
       error:
         type: string
     type: object
-  dto.TokenResponse:
-    properties:
-      token:
-        type: string
-    type: object
   dto.UserDTO:
     properties:
       created_at:
@@ -101,11 +96,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.TokenResponse'
+            $ref: '#/definitions/dto.UserDTOResponse'
         "400":
           description: バリデーションエラー
           schema:
-            $ref: '#/definitions/dto.UserDTOResponse'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: 認証エラー
           schema:
@@ -129,7 +124,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: 登録成功時のレスポンス
           schema:
             $ref: '#/definitions/dto.UserDTOResponse'
         "400":

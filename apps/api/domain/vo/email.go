@@ -2,6 +2,7 @@ package vo
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"errors"
 	"net/mail"
 	"strings"
@@ -9,6 +10,9 @@ import (
 
 const maxEmailLength = 320
 
+// Email represents an email address
+// @swagger:model
+// @property {string} value - メールアドレス（1-320文字）
 type Email struct {
 	value string
 }
@@ -52,4 +56,9 @@ func (e *Email) Scan(value interface{}) error {
 		return nil
 	}
 	return errors.New("invalid Email type")
+}
+
+// MarshalJSON implements the json.Marshaler interface
+func (e *Email) MarshalJSON() ([]byte, error) {
+	return json.Marshal(e.value)
 }

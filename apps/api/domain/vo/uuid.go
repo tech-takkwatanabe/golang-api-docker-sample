@@ -2,6 +2,7 @@ package vo
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"errors"
 
 	"github.com/google/uuid"
@@ -51,4 +52,9 @@ func (u *UUID) Scan(value interface{}) error {
 		return nil
 	}
 	return errors.New("invalid UUID type")
+}
+
+// MarshalJSON implements the json.Marshaler interface
+func (u *UUID) MarshalJSON() ([]byte, error) {
+	return json.Marshal(u.value)
 }

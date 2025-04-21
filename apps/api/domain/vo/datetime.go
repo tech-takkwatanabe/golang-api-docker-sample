@@ -2,10 +2,14 @@ package vo
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"errors"
 	"time"
 )
 
+// DateTime represents a date and time value
+// @swagger:model
+// @property {string} value - RFC3339形式の日時文字列
 type DateTime struct {
 	value time.Time
 }
@@ -41,4 +45,9 @@ func (d *DateTime) Scan(value interface{}) error {
 		return nil
 	}
 	return errors.New("invalid DateTime type")
+}
+
+// MarshalJSON implements the json.Marshaler interface
+func (d *DateTime) MarshalJSON() ([]byte, error) {
+	return json.Marshal(d.value.Format(time.RFC3339Nano))
 }

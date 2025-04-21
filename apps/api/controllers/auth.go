@@ -22,8 +22,8 @@ type RegisterInput struct {
 // @Accept       json
 // @Produce      json
 // @Param        input  body      RegisterInput       true  "登録情報"
-// @Success      200    {object}  dto.UserDTOResponse
-// @Failure      400    {object}   dto.ErrorResponse  "バリデーションエラー"
+// @Success      200    {object}  dto.UserDTOResponse  "登録成功時のレスポンス"
+// @Failure      400    {object}  dto.ErrorResponse   "バリデーションエラー"
 // @Router       /register [post]
 func Register(c *gin.Context) {
 	var input RegisterInput
@@ -58,8 +58,8 @@ type LoginInput struct {
 // @Accept       json
 // @Produce      json
 // @Param        input  body      LoginInput           true  "ログイン情報"
-// @Success      200    {object}  dto.TokenResponse
-// @Failure      400    {object}   dto.UserDTOResponse  "バリデーションエラー"
+// @Success      200    {object}  dto.UserDTOResponse
+// @Failure      400    {object}   dto.ErrorResponse  "バリデーションエラー"
 // @Failure      401    {object}   dto.ErrorResponse  "認証エラー"
 // @Router       /login [post]
 func Login(c *gin.Context) {

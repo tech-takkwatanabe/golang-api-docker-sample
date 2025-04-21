@@ -74,13 +74,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.TokenResponse"
+                            "$ref": "#/definitions/dto.UserDTOResponse"
                         }
                     },
                     "400": {
                         "description": "バリデーションエラー",
                         "schema": {
-                            "$ref": "#/definitions/dto.UserDTOResponse"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
@@ -118,7 +118,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "登録成功時のレスポンス",
                         "schema": {
                             "$ref": "#/definitions/dto.UserDTOResponse"
                         }
@@ -172,14 +172,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.TokenResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
                     "type": "string"
                 }
             }
