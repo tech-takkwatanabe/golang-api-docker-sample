@@ -3,5 +3,11 @@ init:
 	docker compose build
 	docker compose up -d
 
-go_mod_tidy:
+up:
+	docker compose up -d
+
+tidy:
 	docker compose exec go go mod tidy
+
+swag:
+	docker compose exec go swag init
