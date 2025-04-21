@@ -1,0 +1,147 @@
+definitions:
+  controllers.LoginInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  controllers.RegisterInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
+  models.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/models.User'
+    type: object
+info:
+  contact: {}
+  description: Gin + JWT 認証API
+  title: Go Auth API
+  version: "1.0"
+paths:
+  /loggedin/user:
+    get:
+      description: トークンを元にログイン中のユーザー情報を返す
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "401":
+          description: 認証エラー
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      - BearerAuth: []
+      summary: 現在のユーザー情報
+      tags:
+      - auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: メールアドレスとパスワードでログインし、JWT トークンを返します
+      parameters:
+      - description: ログイン情報
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TokenResponse'
+        "400":
+          description: バリデーションエラー
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: 認証エラー
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: ログイン
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: 新しいユーザーを登録します
+      parameters:
+      - description: 登録情報
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: バリデーションエラー
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: 新規ユーザー登録
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    description: JWTトークンをAuthorizationヘッダーに含めてください
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

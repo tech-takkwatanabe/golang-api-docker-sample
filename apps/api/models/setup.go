@@ -37,8 +37,8 @@ func ConnectDataBase() {
 	type User struct {
 		ID        uint           `gorm:"primaryKey"`
 		UUID      string         `gorm:"type:char(36);not null;uniqueIndex"` // UUIDv7
-		Name      string         `gorm:"not null"`
-		Email     string         `gorm:"unique;not null"`
+		Name      string         `gorm:"type:varchar(100);not null"`
+		Email     string         `gorm:"type:varchar(320);unique;not null"`
 		Password  string         `gorm:"not null"`
 		CreatedAt time.Time      `gorm:"not null"`
 		UpdatedAt time.Time      `gorm:"not null"`

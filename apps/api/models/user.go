@@ -1,6 +1,7 @@
 package models
 
 import (
+	"go-auth/domain/entity"
 	"go-auth/utils/token"
 	"strings"
 	"time"
@@ -11,14 +12,26 @@ import (
 )
 
 type User struct {
-	ID        uint           `json:"id"`
-	UUID      string         `json:"uuid"`
-	Name      string         `json:"name"`
-	Email     string         `json:"email"`
-	Password  string         `json:"password,omitempty"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty"`
+	ID        uint       `json:"id"`
+	UUID      string     `json:"uuid"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+	Password  string     `json:"password,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+}
+
+type UserResponse struct {
+	Data User `json:"data"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
+type TokenResponse struct {
+	Token string `json:"token"`
 }
 
 func (u *User) Save() (*User, error) {
@@ -76,4 +89,37 @@ func AuthenticateUser(email string, password string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func FindUserByID(id uint) (*entity.User, error) {
+	var user entity.User
+	if err := DB.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func CreateUser(user *entity.User) (*entity.User, error) {
+	if err := DB.Create(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func UpdateUser(user *entity.User) (*entity.User, error) {
+	if err := DB.Save(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func DeleteUser(id uint) error {
+	var user entity.User
+	if err := DB.First(&user, id).Error; err != nil {
+		return err
+	}
+	if err := DB.Delete(&user).Error; err != nil {
+		return err
+	}
+	return nil
 }
