@@ -12,9 +12,6 @@ const maxEmailLength = 320
 
 var ErrInvalidEmail = errors.New("invalid email")
 
-// Email represents an email address
-// @swagger:model
-// @property {string} value - メールアドレス（320文字以内）
 type Email struct {
 	value string
 }

@@ -7,9 +7,6 @@ import (
 	"time"
 )
 
-// DateTime represents a date and time value
-// @swagger:model
-// @property {string} value - RFC3339形式の日時文字列
 type DateTime struct {
 	value time.Time
 }

@@ -12,9 +12,6 @@ const minNameLength = 2
 
 var ErrInvalidName = errors.New("invalid name")
 
-// Name represents a user's name
-// @swagger:model
-// @property {string} value - ユーザー名（2-100文字）
 type Name struct {
 	value string
 }
