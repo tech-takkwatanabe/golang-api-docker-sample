@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-// 注: 以下は、Orvalで生成されたAPI関数をインポートする例です
-// import { useGetCurrentUser } from '../api/auth/auth';
+import { useGetLoggedinUser } from '../api/auth/auth';
 
 type User = {
 	id: number;
@@ -16,43 +15,25 @@ const DashboardPage = () => {
 	const [error, setError] = useState('');
 
 	// Orvalで生成されたhooksを使用します
-	// const { data, isLoading, isError } = useGetCurrentUser();
+	const { data, isLoading, isError } = useGetLoggedinUser();
 
-	useEffect(
-		() => {
-			// 注: Orvalを実行してAPIが生成されるまでは、以下のモックコードを使用できます
-			const fetchUser = async () => {
-				try {
-					// モックユーザーデータ
-					const mockUser = {
-						id: 1,
-						name: '山田太郎',
-						email: 'yamada@example.com',
-					};
-
-					setUser(mockUser);
-					setLoading(false);
-				} catch (err) {
-					setError('ユーザー情報の取得に失敗しました');
-					setLoading(false);
-				}
-			};
-
-			fetchUser();
-
-			// Orval生成後は以下のように書き換えます
-			// if (data) {
-			//   setUser(data.data);
-			// }
-			// setLoading(isLoading);
-			// if (isError) {
-			//   setError('ユーザー情報の取得に失敗しました');
-			// }
-		},
-		[
-			/* data, isLoading, isError */
-		]
-	);
+	useEffect(() => {
+		if (data) {
+			setUser(
+				data.data
+					? {
+							id: data.data.id ?? 0,
+							name: (data.data.name as unknown as string) ?? '',
+							email: (data.data.email as unknown as string) ?? '',
+					  }
+					: null
+			);
+		}
+		setLoading(isLoading);
+		if (isError) {
+			setError('ユーザー情報の取得に失敗しました');
+		}
+	}, [data, isLoading, isError]);
 
 	const handleLogout = () => {
 		logout();
@@ -83,7 +64,7 @@ const DashboardPage = () => {
 							<h1 className="text-xl font-bold text-gray-800">ダッシュボード</h1>
 						</div>
 						<div className="flex items-center">
-							<button onClick={handleLogout} className="ml-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+							<button type="button" onClick={handleLogout} className="ml-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
 								ログアウト
 							</button>
 						</div>

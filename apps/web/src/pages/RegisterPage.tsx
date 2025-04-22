@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// 注: 以下は、Orvalで生成されたAPI関数をインポートする例です
-// import { useRegister } from '../api/auth/auth';
+import { usePostRegister } from '../api/auth/auth';
+import type { DtoErrorResponse } from '../api/models'; // Adjust the import path as needed
 
 const RegisterPage = () => {
 	const [name, setName] = useState('');
@@ -10,15 +10,16 @@ const RegisterPage = () => {
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
 
-	// Orvalで生成されたhooksを使用します
-	// const { mutate: registerMutation, isLoading } = useRegister({
-	//   onSuccess: () => {
-	//     navigate('/login', { state: { message: '登録が完了しました。ログインしてください。' } });
-	//   },
-	//   onError: (error: any) => {
-	//     setError(error.response?.data?.error || '登録に失敗しました');
-	//   },
-	// });
+	const { mutate: registerMutation, isLoading } = usePostRegister();
+
+	const handleSuccess = () => {
+		navigate('/login', { state: { message: '登録が完了しました。ログインしてください。' } });
+	};
+
+	const handleError = (error: DtoErrorResponse) => {
+		const errorMessage = (error as DtoErrorResponse)?.response?.data?.error || '登録に失敗しました';
+		setError(errorMessage);
+	};
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -34,14 +35,17 @@ const RegisterPage = () => {
 			return;
 		}
 
-		// 登録リクエストを送信
-		// registerMutation({ name, email, password });
-
 		// 注: Orvalを実行してAPIが生成されるまでは、以下のモックコードを使用できます
 		try {
-			console.log('Register attempt with:', { name, email, password });
-			// 成功した場合はログインページへ
-			navigate('/login', { state: { message: '登録が完了しました。ログインしてください。' } });
+			registerMutation(
+				{ data: { name, email, password } },
+				{
+					onSuccess: handleSuccess,
+					onError: handleError,
+				}
+			);
+			// 登録リクエストを送信
+			registerMutation({ data: { name, email, password } });
 		} catch (err) {
 			setError('登録に失敗しました');
 		}
@@ -102,12 +106,8 @@ const RegisterPage = () => {
 					</div>
 
 					<div className="mb-6">
-						<button
-							type="submit"
-							className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-							// disabled={isLoading}
-						>
-							{/* {isLoading ? '登録中...' : '登録する'} */}
+						<button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}>
+							{isLoading ? '登録中...' : '登録する'}
 							登録する
 						</button>
 					</div>

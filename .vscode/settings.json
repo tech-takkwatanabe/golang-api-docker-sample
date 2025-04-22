@@ -1,6 +1,7 @@
 {
 	// フォーマッタ系
 	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": "explicit",
 		"source.fixAll.stylelint": "always"
@@ -8,7 +9,16 @@
 
 	// TypeScript/React (web 用)
 	"[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 
 	// Go (backend 用)
@@ -31,6 +41,6 @@
 	"go.lintFlags": ["--fast"],
 	"go.formatTool": "gofmt",
 
-	// ESLint 設定 (必要なら fallback で有効化)
+	// ESLint 設定
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }

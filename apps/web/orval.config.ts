@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 export default defineConfig({
 	goAuth: {
 		input: {
-			target: `${process.env.VITE_API_URL || "http://localhost:8080"}/swagger/doc.json`,
+			target: "../api/docs/swagger.yaml",
 		},
 		output: {
 			mode: "tags-split",
@@ -23,9 +23,7 @@ export default defineConfig({
 			},
 		},
 		hooks: {
-			afterAllFilesWrite: [
-				'npx biome format --write "./src/api/**/*.{ts,tsx}"',
-			],
+			afterAllFilesWrite: ["npx biome format --write ./src/api/auth/auth.ts"],
 		},
 	},
 });
