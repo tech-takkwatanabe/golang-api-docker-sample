@@ -1,16 +1,10 @@
 package user
 
 import (
-	"errors"
-	"go-auth/domain/entity"
-	"go-auth/models"
+	"go-auth/domain/dto"
+	"go-auth/service"
 )
 
-func CurrentUserUseCase(userId uint) (*entity.User, error) {
-	dbUser, err := models.FindUserByID(userId)
-	if err != nil {
-		return nil, errors.New("user not found")
-	}
-
-	return dbUser, nil
+func CurrentUserUseCase(userID uint, svc service.UserService) (*dto.UserDTO, error) {
+	return svc.GetUserByID(userID)
 }

@@ -1,8 +1,8 @@
 package user
 
 import (
-	"errors"
-	"go-auth/models"
+	"go-auth/domain/dto"
+	"go-auth/service"
 )
 
 type LoginInput struct {
@@ -10,18 +10,11 @@ type LoginInput struct {
 	Password string
 }
 
-type LoginOutput struct {
-	Token string
-}
-
-func LoginUseCase(input LoginInput) (*LoginOutput, error) {
-	// Authenticate the user (この部分は必要に応じて repository を使ってリファクタリング)
-	jwtToken, err := models.AuthenticateUser(input.Email, input.Password)
+func LoginUseCase(input LoginInput, svc service.UserService) (*dto.TokenDTO, error) {
+	token, err := svc.LoginUser(input.Email, input.Password)
 	if err != nil {
-		return nil, errors.New("invalid credentials")
+		return nil, err
 	}
 
-	return &LoginOutput{
-		Token: jwtToken,
-	}, nil
+	return &dto.TokenDTO{Token: token}, nil
 }

@@ -2,8 +2,10 @@ package main
 
 import (
 	"go-auth/controllers"
+	"go-auth/domain/repository"
 	"go-auth/middlewares"
 	"go-auth/models"
+	"go-auth/service"
 
 	_ "go-auth/docs"
 
@@ -24,17 +26,19 @@ import (
 func main() {
 	models.ConnectDataBase()
 	router := gin.Default()
+	userRepo := repository.NewUserRepository()
+	userService := service.NewUserService(userRepo)
 
 	public := router.Group("/api")
 
-	public.POST("/register", controllers.Register)
-	public.POST("/login", controllers.Login)
+	public.POST("/register", controllers.Register(userService))
+	public.POST("/login", controllers.Login(userService))
 
 	protected := router.Group("/api/loggedin")
 	// JWT認証ミドルウェアを適用
 	protected.Use(middlewares.JwtAuthMiddleware())
 	// 認証されたユーザー情報を取得するルートを定義
-	protected.GET("/user", controllers.CurrentUser)
+	protected.GET("/user", controllers.CurrentUser(userService))
 	// Swagger UIのエンドポイント
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

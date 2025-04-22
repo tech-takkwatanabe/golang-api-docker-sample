@@ -35,7 +35,7 @@ func (d *DateTime) Value() (driver.Value, error) {
 }
 
 // Scan implements the sql.Scanner interface
-func (d *DateTime) Scan(value interface{}) error {
+func (d *DateTime) Scan(value any) error {
 	if value == nil {
 		d.value = time.Time{}
 		return nil

@@ -27,19 +27,51 @@ definitions:
       error:
         type: string
     type: object
+  dto.TokenDTO:
+    properties:
+      token:
+        type: string
+    type: object
+  dto.TokenResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.TokenDTO'
+    type: object
   dto.UserDTO:
     properties:
       created_at:
-        $ref: '#/definitions/vo.DateTime'
+        allOf:
+        - $ref: '#/definitions/vo.DateTime'
+        description: |-
+          @description 作成日時（RFC3339形式）
+          @example "2024-03-21T12:34:56.789Z"
       email:
-        $ref: '#/definitions/vo.Email'
+        allOf:
+        - $ref: '#/definitions/vo.Email'
+        description: |-
+          @description メールアドレス
+          @example "user@example.com"
       id:
+        description: |-
+          @description ユーザーID
+          @example 1
         type: integer
       name:
-        $ref: '#/definitions/vo.Name'
+        allOf:
+        - $ref: '#/definitions/vo.Name'
+        description: |-
+          @description ユーザー名
+          @example "山田太郎"
       updated_at:
-        $ref: '#/definitions/vo.DateTime'
+        allOf:
+        - $ref: '#/definitions/vo.DateTime'
+        description: |-
+          @description 更新日時（RFC3339形式）
+          @example "2024-03-21T12:34:56.789Z"
       uuid:
+        description: |-
+          @description ユーザーUUID
+          @example "550e8400-e29b-41d4-a716-446655440000"
         type: string
     type: object
   dto.UserDTOResponse:
@@ -96,7 +128,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.UserDTOResponse'
+            $ref: '#/definitions/dto.TokenResponse'
         "400":
           description: バリデーションエラー
           schema:

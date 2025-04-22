@@ -74,7 +74,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.UserDTOResponse"
+                            "$ref": "#/definitions/dto.TokenResponse"
                         }
                     },
                     "400": {
@@ -176,25 +176,63 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TokenDTO": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.TokenDTO"
+                }
+            }
+        },
         "dto.UserDTO": {
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/vo.DateTime"
+                    "description": "@description 作成日時（RFC3339形式）\n@example \"2024-03-21T12:34:56.789Z\"",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/vo.DateTime"
+                        }
+                    ]
                 },
                 "email": {
-                    "$ref": "#/definitions/vo.Email"
+                    "description": "@description メールアドレス\n@example \"user@example.com\"",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/vo.Email"
+                        }
+                    ]
                 },
                 "id": {
+                    "description": "@description ユーザーID\n@example 1",
                     "type": "integer"
                 },
                 "name": {
-                    "$ref": "#/definitions/vo.Name"
+                    "description": "@description ユーザー名\n@example \"山田太郎\"",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/vo.Name"
+                        }
+                    ]
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/vo.DateTime"
+                    "description": "@description 更新日時（RFC3339形式）\n@example \"2024-03-21T12:34:56.789Z\"",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/vo.DateTime"
+                        }
+                    ]
                 },
                 "uuid": {
+                    "description": "@description ユーザーUUID\n@example \"550e8400-e29b-41d4-a716-446655440000\"",
                     "type": "string"
                 }
             }

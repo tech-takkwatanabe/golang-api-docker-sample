@@ -1,7 +1,9 @@
+// apps/api/controllers/auth.go
 package controllers
 
 import (
 	"go-auth/domain/dto"
+	"go-auth/service"
 	"go-auth/usecase/user"
 	"go-auth/utils/token"
 	"net/http"
@@ -9,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RegisterInput represents the input for user registration
+// @swagger:model
+// @swagger:parameters register
 type RegisterInput struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
@@ -25,25 +30,28 @@ type RegisterInput struct {
 // @Success      200    {object}  dto.UserDTOResponse  "登録成功時のレスポンス"
 // @Failure      400    {object}  dto.ErrorResponse   "バリデーションエラー"
 // @Router       /register [post]
-func Register(c *gin.Context) {
-	var input RegisterInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+func Register(userService service.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var input RegisterInput
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
 
-	registerInput := user.RegisterInput{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: input.Password,
-	}
-	userDTO, err := user.RegisterUseCase(registerInput)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+		registerInput := user.RegisterInput{
+			Name:     input.Name,
+			Email:    input.Email,
+			Password: input.Password,
+		}
 
-	c.JSON(http.StatusOK, dto.UserDTOResponse{Data: userDTO.ToDTO()})
+		userDTO, err := user.RegisterUseCase(registerInput, userService)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, dto.UserDTOResponse{Data: userDTO})
+	}
 }
 
 type LoginInput struct {
@@ -58,28 +66,31 @@ type LoginInput struct {
 // @Accept       json
 // @Produce      json
 // @Param        input  body      LoginInput           true  "ログイン情報"
-// @Success      200    {object}  dto.UserDTOResponse
+// @Success      200    {object}  dto.TokenResponse
 // @Failure      400    {object}   dto.ErrorResponse  "バリデーションエラー"
 // @Failure      401    {object}   dto.ErrorResponse  "認証エラー"
 // @Router       /login [post]
-func Login(c *gin.Context) {
-	var input LoginInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+func Login(userService service.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var input LoginInput
+		if err := c.ShouldBindJSON(&input); err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
 
-	loginInput := user.LoginInput{
-		Email:    input.Email,
-		Password: input.Password,
-	}
-	tokenStr, err := user.LoginUseCase(loginInput)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+		loginInput := user.LoginInput{
+			Email:    input.Email,
+			Password: input.Password,
+		}
 
-	c.JSON(http.StatusOK, dto.TokenResponse{Token: tokenStr.Token})
+		tokenDTO, err := user.LoginUseCase(loginInput, userService)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, dto.TokenResponse{Data: tokenDTO})
+	}
 }
 
 // CurrentUser godoc
@@ -91,18 +102,20 @@ func Login(c *gin.Context) {
 // @Success      200  {object}  dto.UserDTOResponse
 // @Failure      401  {object}   dto.ErrorResponse  "認証エラー"
 // @Router       /loggedin/user [get]
-func CurrentUser(c *gin.Context) {
-	userId, err := token.ExtractTokenId(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+func CurrentUser(userService service.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userId, err := token.ExtractTokenId(c)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
 
-	userDto, err := user.CurrentUserUseCase(userId)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
-		return
-	}
+		userDto, err := user.CurrentUserUseCase(userId, userService)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
 
-	c.JSON(http.StatusOK, dto.UserDTOResponse{Data: userDto.ToDTO()})
+		c.JSON(http.StatusOK, dto.UserDTOResponse{Data: userDto})
+	}
 }

@@ -10,9 +10,11 @@ import (
 
 const maxEmailLength = 320
 
+var ErrInvalidEmail = errors.New("invalid email")
+
 // Email represents an email address
 // @swagger:model
-// @property {string} value - メールアドレス（1-320文字）
+// @property {string} value - メールアドレス（320文字以内）
 type Email struct {
 	value string
 }
@@ -42,7 +44,7 @@ func (e *Email) Value() (driver.Value, error) {
 }
 
 // Scan implements the sql.Scanner interface
-func (e *Email) Scan(value interface{}) error {
+func (e *Email) Scan(value any) error {
 	if value == nil {
 		e.value = ""
 		return nil
@@ -61,4 +63,12 @@ func (e *Email) Scan(value interface{}) error {
 // MarshalJSON implements the json.Marshaler interface
 func (e *Email) MarshalJSON() ([]byte, error) {
 	return json.Marshal(e.value)
+}
+
+func (e Email) IsValid() bool {
+	if len(e.value) == 0 || len(e.value) > maxEmailLength {
+		return false
+	}
+	_, err := mail.ParseAddress(e.value)
+	return err == nil
 }
