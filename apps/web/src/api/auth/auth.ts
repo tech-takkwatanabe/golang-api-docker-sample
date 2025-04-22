@@ -6,28 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import type { DataTag, DefinedInitialDataOptions, DefinedUseQueryResult, MutationFunction, QueryClient, QueryFunction, QueryKey, UndefinedInitialDataOptions, UseMutationOptions, UseMutationResult, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
-import type {
-  ControllersLoginInput,
-  ControllersRegisterInput,
-  DtoErrorResponse,
-  DtoTokenResponse,
-  DtoUserDTOResponse,
-} from '.././models';
+import type { ControllersLoginInput, ControllersRegisterInput, DtoErrorResponse, DtoTokenResponse, DtoUserDTOResponse } from '.././models';
 
 import { customInstance } from '.././mutator/custom-instance';
 
@@ -36,139 +17,49 @@ import { customInstance } from '.././mutator/custom-instance';
  * @summary 現在のユーザー情報
  */
 export const getLoggedinUser = (signal?: AbortSignal) => {
-  return customInstance<DtoUserDTOResponse>({
-    url: `/loggedin/user`,
-    method: 'GET',
-    signal,
-  });
+  return customInstance<DtoUserDTOResponse>({ url: `/loggedin/user`, method: 'GET', signal });
 };
 
 export const getGetLoggedinUserQueryKey = () => {
   return [`/loggedin/user`] as const;
 };
 
-export const getGetLoggedinUserQueryOptions = <
-  TData = Awaited<ReturnType<typeof getLoggedinUser>>,
-  TError = DtoErrorResponse,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>
-  >;
-}) => {
+export const getGetLoggedinUserQueryOptions = <TData = Awaited<ReturnType<typeof getLoggedinUser>>, TError = DtoErrorResponse>(options?: { query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>> }) => {
   const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetLoggedinUserQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLoggedinUser>>> = ({
-    signal,
-  }) => getLoggedinUser(signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLoggedinUser>>> = ({ signal }) => getLoggedinUser(signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getLoggedinUser>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetLoggedinUserQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getLoggedinUser>>
->;
+export type GetLoggedinUserQueryResult = NonNullable<Awaited<ReturnType<typeof getLoggedinUser>>>;
 export type GetLoggedinUserQueryError = DtoErrorResponse;
 
-export function useGetLoggedinUser<
-  TData = Awaited<ReturnType<typeof getLoggedinUser>>,
-  TError = DtoErrorResponse,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getLoggedinUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getLoggedinUser>>,
-          TError,
-          Awaited<ReturnType<typeof getLoggedinUser>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetLoggedinUser<
-  TData = Awaited<ReturnType<typeof getLoggedinUser>>,
-  TError = DtoErrorResponse,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getLoggedinUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getLoggedinUser>>,
-          TError,
-          Awaited<ReturnType<typeof getLoggedinUser>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetLoggedinUser<
-  TData = Awaited<ReturnType<typeof getLoggedinUser>>,
-  TError = DtoErrorResponse,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getLoggedinUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+export function useGetLoggedinUser<TData = Awaited<ReturnType<typeof getLoggedinUser>>, TError = DtoErrorResponse>(
+  options: { query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>> & Pick<DefinedInitialDataOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, Awaited<ReturnType<typeof getLoggedinUser>>>, 'initialData'> },
+  queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetLoggedinUser<TData = Awaited<ReturnType<typeof getLoggedinUser>>, TError = DtoErrorResponse>(
+  options?: { query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>> & Pick<UndefinedInitialDataOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, Awaited<ReturnType<typeof getLoggedinUser>>>, 'initialData'> },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetLoggedinUser<TData = Awaited<ReturnType<typeof getLoggedinUser>>, TError = DtoErrorResponse>(
+  options?: { query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>> },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary 現在のユーザー情報
  */
 
-export function useGetLoggedinUser<
-  TData = Awaited<ReturnType<typeof getLoggedinUser>>,
-  TError = DtoErrorResponse,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getLoggedinUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
+export function useGetLoggedinUser<TData = Awaited<ReturnType<typeof getLoggedinUser>>, TError = DtoErrorResponse>(
+  options?: { query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getLoggedinUser>>, TError, TData>> },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetLoggedinUserQueryOptions(options);
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -179,48 +70,17 @@ export function useGetLoggedinUser<
  * メールアドレスとパスワードでログインし、JWT トークンを返します
  * @summary ログイン
  */
-export const postLogin = (
-  controllersLoginInput: ControllersLoginInput,
-  signal?: AbortSignal,
-) => {
-  return customInstance<DtoTokenResponse>({
-    url: `/login`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: controllersLoginInput,
-    signal,
-  });
+export const postLogin = (controllersLoginInput: ControllersLoginInput, signal?: AbortSignal) => {
+  return customInstance<DtoTokenResponse>({ url: `/login`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: controllersLoginInput, signal });
 };
 
-export const getPostLoginMutationOptions = <
-  TError = DtoErrorResponse,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof postLogin>>,
-    TError,
-    { data: ControllersLoginInput },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof postLogin>>,
-  TError,
-  { data: ControllersLoginInput },
-  TContext
-> => {
+export const getPostLoginMutationOptions = <TError = DtoErrorResponse, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError, { data: ControllersLoginInput }, TContext>;
+}): UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError, { data: ControllersLoginInput }, TContext> => {
   const mutationKey = ['postLogin'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+  const { mutation: mutationOptions } = options ? (options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ? options : { ...options, mutation: { ...options.mutation, mutationKey } }) : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof postLogin>>,
-    { data: ControllersLoginInput }
-  > = (props) => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLogin>>, { data: ControllersLoginInput }> = (props) => {
     const { data } = props ?? {};
 
     return postLogin(data);
@@ -229,9 +89,7 @@ export const getPostLoginMutationOptions = <
   return { mutationFn, ...mutationOptions };
 };
 
-export type PostLoginMutationResult = NonNullable<
-  Awaited<ReturnType<typeof postLogin>>
->;
+export type PostLoginMutationResult = NonNullable<Awaited<ReturnType<typeof postLogin>>>;
 export type PostLoginMutationBody = ControllersLoginInput;
 export type PostLoginMutationError = DtoErrorResponse;
 
@@ -239,21 +97,9 @@ export type PostLoginMutationError = DtoErrorResponse;
  * @summary ログイン
  */
 export const usePostLogin = <TError = DtoErrorResponse, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postLogin>>,
-      TError,
-      { data: ControllersLoginInput },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postLogin>>,
-  TError,
-  { data: ControllersLoginInput },
-  TContext
-> => {
+  options?: { mutation?: UseMutationOptions<Awaited<ReturnType<typeof postLogin>>, TError, { data: ControllersLoginInput }, TContext> },
+  queryClient?: QueryClient
+): UseMutationResult<Awaited<ReturnType<typeof postLogin>>, TError, { data: ControllersLoginInput }, TContext> => {
   const mutationOptions = getPostLoginMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
@@ -262,48 +108,17 @@ export const usePostLogin = <TError = DtoErrorResponse, TContext = unknown>(
  * 新しいユーザーを登録します
  * @summary 新規ユーザー登録
  */
-export const postRegister = (
-  controllersRegisterInput: ControllersRegisterInput,
-  signal?: AbortSignal,
-) => {
-  return customInstance<DtoUserDTOResponse>({
-    url: `/register`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: controllersRegisterInput,
-    signal,
-  });
+export const postRegister = (controllersRegisterInput: ControllersRegisterInput, signal?: AbortSignal) => {
+  return customInstance<DtoUserDTOResponse>({ url: `/register`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: controllersRegisterInput, signal });
 };
 
-export const getPostRegisterMutationOptions = <
-  TError = DtoErrorResponse,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof postRegister>>,
-    TError,
-    { data: ControllersRegisterInput },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof postRegister>>,
-  TError,
-  { data: ControllersRegisterInput },
-  TContext
-> => {
+export const getPostRegisterMutationOptions = <TError = DtoErrorResponse, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof postRegister>>, TError, { data: ControllersRegisterInput }, TContext>;
+}): UseMutationOptions<Awaited<ReturnType<typeof postRegister>>, TError, { data: ControllersRegisterInput }, TContext> => {
   const mutationKey = ['postRegister'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+  const { mutation: mutationOptions } = options ? (options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ? options : { ...options, mutation: { ...options.mutation, mutationKey } }) : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof postRegister>>,
-    { data: ControllersRegisterInput }
-  > = (props) => {
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof postRegister>>, { data: ControllersRegisterInput }> = (props) => {
     const { data } = props ?? {};
 
     return postRegister(data);
@@ -312,9 +127,7 @@ export const getPostRegisterMutationOptions = <
   return { mutationFn, ...mutationOptions };
 };
 
-export type PostRegisterMutationResult = NonNullable<
-  Awaited<ReturnType<typeof postRegister>>
->;
+export type PostRegisterMutationResult = NonNullable<Awaited<ReturnType<typeof postRegister>>>;
 export type PostRegisterMutationBody = ControllersRegisterInput;
 export type PostRegisterMutationError = DtoErrorResponse;
 
@@ -322,21 +135,9 @@ export type PostRegisterMutationError = DtoErrorResponse;
  * @summary 新規ユーザー登録
  */
 export const usePostRegister = <TError = DtoErrorResponse, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postRegister>>,
-      TError,
-      { data: ControllersRegisterInput },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof postRegister>>,
-  TError,
-  { data: ControllersRegisterInput },
-  TContext
-> => {
+  options?: { mutation?: UseMutationOptions<Awaited<ReturnType<typeof postRegister>>, TError, { data: ControllersRegisterInput }, TContext> },
+  queryClient?: QueryClient
+): UseMutationResult<Awaited<ReturnType<typeof postRegister>>, TError, { data: ControllersRegisterInput }, TContext> => {
   const mutationOptions = getPostRegisterMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);

@@ -1,10 +1,8 @@
 import axios from 'axios';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
-import { loadEnv } from 'vite';
 
-const env = loadEnv(process.cwd(), '');
 // 環境変数からAPIのベースURLを取得
-const API_URL = env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
 
 export function customInstance<T>(config: AxiosRequestConfig): Promise<T> {
   const source = axios.CancelToken.source();
