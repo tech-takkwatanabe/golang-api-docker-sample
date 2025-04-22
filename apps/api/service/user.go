@@ -6,8 +6,8 @@ import (
 	"go-auth/domain/entity"
 	"go-auth/domain/repository"
 	"go-auth/domain/vo"
+	"go-auth/utils/hash"
 	"go-auth/utils/token"
-	"go-auth/utils/token/hash"
 )
 
 type UserService interface {
