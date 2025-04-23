@@ -4,6 +4,7 @@ import (
 	"go-auth/utils/token"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,4 +21,14 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+// CORSミドルウェアは、CORSを有効にするためのミドルウェアを返します
+func CorsMiddleware(allowOrigins []string) gin.HandlerFunc {
+	config := cors.DefaultConfig()
+	config.AllowOrigins = allowOrigins
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Authorization", "Content-Type"}
+	config.AllowCredentials = true
+	return cors.New(config)
 }

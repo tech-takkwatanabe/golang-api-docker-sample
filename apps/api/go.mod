@@ -6,6 +6,7 @@ toolchain go1.24.2
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.5.0
 	github.com/joho/godotenv v1.5.1

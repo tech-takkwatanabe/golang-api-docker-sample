@@ -6,6 +6,7 @@ import (
 	"go-auth/middlewares"
 	"go-auth/models"
 	"go-auth/service"
+	"os"
 
 	_ "go-auth/docs"
 
@@ -26,6 +27,11 @@ import (
 func main() {
 	models.ConnectDataBase()
 	router := gin.Default()
+
+	frontendURL := os.Getenv("FRONTEND_URL")
+	router.Use(middlewares.CorsMiddleware([]string{frontendURL}))
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
 
