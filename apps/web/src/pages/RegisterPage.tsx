@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostRegister } from '../api/auth/auth';
 import type { DtoErrorResponse } from '../api/models';
 import { nameSchema, emailSchema, registPasswordSchema } from '../schemas/auth';
+import { toast } from 'react-toastify';
 
 const registerSchema = z.object({
   name: nameSchema,
@@ -37,7 +38,7 @@ const RegisterPage = () => {
           }),
         onError: (error: DtoErrorResponse) => {
           const message = (error as DtoErrorResponse)?.error || '登録に失敗しました';
-          alert(message);
+          toast.error(message);
         },
       }
     );

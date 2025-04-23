@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // 保護されたルートコンポーネント
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -45,6 +47,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <AppRoutes />
+        <ToastContainer hideProgressBar={true} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover position="top-center" autoClose={3000} />
       </Router>
     </AuthProvider>
   );

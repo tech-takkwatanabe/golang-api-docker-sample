@@ -7,6 +7,9 @@ import { useAuth } from '../context/AuthContext';
 import type { DtoErrorResponse } from '../api/models';
 import { useState } from 'react';
 import { emailSchema, loginPasswordSchema } from '../schemas/auth';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -16,9 +19,22 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const message = location.state?.message;
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+    if (isClient && message) {
+      toast.success(message);
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+    }
+  }, [isClient]);
 
   const {
     register,
