@@ -29,8 +29,8 @@ func GenerateToken(id uint) (string, error) {
 }
 
 func extractTokenString(c *gin.Context) string {
-	bearToken := c.Request.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
+	bearerToken := c.Request.Header.Get("Authorization")
+	strArr := strings.Split(bearerToken, " ")
 	if len(strArr) == 2 {
 		return strArr[1]
 	}
@@ -39,7 +39,7 @@ func extractTokenString(c *gin.Context) string {
 }
 
 func parseToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("there was an error")
 		}
