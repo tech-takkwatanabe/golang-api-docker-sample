@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 
 // 環境変数からAPIのベースURLを取得
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
 export function customInstance<T>(config: AxiosRequestConfig): Promise<T> {
   const source = axios.CancelToken.source();
@@ -24,7 +24,7 @@ export function customInstance<T>(config: AxiosRequestConfig): Promise<T> {
       if (error.response?.status === 401) {
         // トークンが無効な場合はログアウト処理など
         localStorage.removeItem('token');
-        window.location.href = '/login';
+        // window.location.href = '/login';
       }
       return Promise.reject(error);
     });

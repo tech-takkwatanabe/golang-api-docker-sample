@@ -10,6 +10,7 @@ import { emailSchema, loginPasswordSchema } from '../schemas/auth';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
+import type { AxiosError } from 'axios';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -37,10 +38,12 @@ const LoginPage = () => {
     }
   }, [isClient]);
 
-  const defaultEmail = location.state?.email ?? '';
+  const defaultEmail: string = location.state?.email ?? '';
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -49,27 +52,29 @@ const LoginPage = () => {
     },
   });
 
-  const { mutate: loginMutation, status } = usePostLogin({
-    mutation: {
-      onSuccess: (data) => {
-        if (data?.data?.token) {
-          login(data.data.token);
-          navigate('/dashboard');
-        } else {
-          setErrorMessage('ログインに失敗しました');
-        }
-      },
-      onError: (error: DtoErrorResponse) => {
-        setErrorMessage(error?.error || 'ログインに失敗しました');
-      },
-    },
-  });
+  const { mutate: loginMutation, status } = usePostLogin();
 
   const isLoading = status === 'pending';
 
   const onSubmit = (data: LoginForm) => {
-    setErrorMessage('');
-    loginMutation({ data });
+    // console.log('data:', data);
+    loginMutation(
+      { data },
+      {
+        onSuccess: (data) => {
+          if (data?.data?.token) {
+            login(data.data.token);
+            navigate('/dashboard');
+          }
+        },
+        onError: (error) => {
+          const axiosError = error as AxiosError<DtoErrorResponse>;
+          console.error('axiosError!!!!!!:', axiosError);
+          setValue('email', getValues('email'));
+          setErrorMessage(error?.error || 'ログインに失敗しました');
+        },
+      }
+    );
   };
 
   return (
