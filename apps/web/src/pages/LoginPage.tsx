@@ -25,6 +25,7 @@ const LoginPage = () => {
   const location = useLocation();
   const message = location.state?.message;
   const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
     setIsClient(true);
     if (isClient && message) {
@@ -36,12 +37,16 @@ const LoginPage = () => {
     }
   }, [isClient]);
 
+  const defaultEmail = location.state?.email ?? '';
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: defaultEmail,
+    },
   });
 
   const { mutate: loginMutation, status } = usePostLogin({

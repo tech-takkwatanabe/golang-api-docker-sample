@@ -6,6 +6,7 @@ import { usePostRegister } from '../api/auth/auth';
 import type { DtoErrorResponse } from '../api/models';
 import { nameSchema, emailSchema, registPasswordSchema } from '../schemas/auth';
 import { toast } from 'react-toastify';
+import type { AxiosError } from 'axios';
 
 const registerSchema = z.object({
   name: nameSchema,
@@ -28,16 +29,29 @@ const RegisterPage = () => {
   const { mutate: registerMutation, status } = usePostRegister();
   const isLoading = status === 'pending';
 
+  const translateError = (errorCode: string): string => {
+    switch (errorCode) {
+      case 'email already in use':
+        return 'すでに登録されているメールアドレスです';
+      case 'invalid password':
+        return 'パスワードが無効です';
+      default:
+        return '登録に失敗しました';
+    }
+  };
+
   const onSubmit = (data: RegisterForm) => {
     registerMutation(
       { data },
       {
         onSuccess: () =>
           navigate('/login', {
-            state: { message: '登録が完了しました。ログインしてください。' },
+            state: { message: '登録が完了しました。ログインしてください。', email: data.email },
           }),
-        onError: (error: DtoErrorResponse) => {
-          const message = (error as DtoErrorResponse)?.error || '登録に失敗しました';
+        onError: (error) => {
+          const axiosError = error as AxiosError<DtoErrorResponse>;
+          const errorCode = axiosError.response?.data?.error ?? 'unknown error';
+          const message = translateError(errorCode);
           toast.error(message);
         },
       }
