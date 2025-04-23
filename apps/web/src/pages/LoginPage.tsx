@@ -1,43 +1,54 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostLogin } from '../api/auth/auth';
+import { useAuth } from '../context/AuthContext';
+import type { DtoErrorResponse } from '../api/models';
+import { useState } from 'react';
+import { emailSchema, loginPasswordSchema } from '../schemas/auth';
+
+const loginSchema = z.object({
+  email: emailSchema,
+  password: loginPasswordSchema,
+});
+
+type LoginForm = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const { mutate: loginMutation, status } = usePostLogin({
     mutation: {
       onSuccess: (data) => {
         if (data?.data?.token) {
           login(data.data.token);
+          navigate('/dashboard');
         } else {
-          setError('ログインに失敗しました');
+          setErrorMessage('ログインに失敗しました');
         }
-        navigate('/dashboard');
       },
-      onError: (error: any) => {
-        setError(error.response?.data?.error || 'ログインに失敗しました');
+      onError: (error: DtoErrorResponse) => {
+        setErrorMessage(error?.error || 'ログインに失敗しました');
       },
     },
   });
 
   const isLoading = status === 'pending';
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!email || !password) {
-      setError('すべてのフィールドを入力してください');
-      return;
-    }
-
-    loginMutation({ data: { email, password } });
+  const onSubmit = (data: LoginForm) => {
+    setErrorMessage('');
+    loginMutation({ data });
   };
 
   return (
@@ -45,21 +56,23 @@ const LoginPage = () => {
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">ログイン</h2>
 
-        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
+        {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{errorMessage}</div>}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
               メールアドレス
             </label>
-            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" required />
+            <input id="email" type="email" {...register('email')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
           <div className="mb-6">
             <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
               パスワード
             </label>
-            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="******" required />
+            <input id="password" type="password" {...register('password')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="******" />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
           </div>
 
           <div className="mb-6">
