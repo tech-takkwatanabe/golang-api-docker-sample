@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
-    // "types": ["tailwindcss"]
   },
-  "include": ["src", "tailwind.config.mts", "tailwind.config.d.ts", "postcss.config.mjs", "eslint.config.mjs", "orval.config.ts", ".prettierrc.json"]
+  "include": ["src", "tailwind.config.js", "tailwind.config.d.ts", "postcss.config.js", "eslint.config.mjs", "orval.config.ts", ".prettierrc.json"]
 }

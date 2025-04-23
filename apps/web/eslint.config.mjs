@@ -41,7 +41,7 @@ export default [
       'no-console': ['warn', { allow: ['error', 'warn'] }],
       'unicorn/filename-case': 'off',
     },
-    ignores: ['node_modules/', 'dist/', 'lib/api/client/', 'lib/auth/client/', 'lib/admin-api/client/', 'lib/cs-api/client/', 'public/mockServiceWorker.js', 'public/pdf.worker.min.js', 'package.json', 'tsconfig.json', 'index.html', 'src/api/auth/*', 'src/api/models/*', '*.md'],
+    ignores: ['node_modules/', 'dist/', 'lib/api/client/', 'lib/auth/client/', 'lib/admin-api/client/', 'lib/cs-api/client/', 'public/mockServiceWorker.js', 'public/pdf.worker.min.js', 'package.json', 'tsconfig.json', 'public/index.html', 'src/api/auth/*', 'src/api/models/*', '*.md'],
   },
   {
     name: 'prettier-config',
