@@ -59,11 +59,11 @@ func (s *userService) LoginUser(email string, password string) (string, error) {
 	}
 	user, err := s.repo.FindByEmail(*emailVO)
 	if err != nil {
-		return "", fmt.Errorf("invalid credentials")
+		return "", fmt.Errorf("invalid email")
 	}
 
 	if !hash.CheckPasswordHash(password, user.Password) {
-		return "", fmt.Errorf("invalid credentials")
+		return "", fmt.Errorf("invalid password")
 	}
 
 	tokenStr, err := token.GenerateToken(user.ID)

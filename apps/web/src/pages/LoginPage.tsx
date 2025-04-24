@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostLogin } from '../api/auth/auth';
 import { useAuth } from '../context/AuthContext';
-import type { DtoErrorResponse } from '../api/models';
+import type { DtoTokenResponse, DtoErrorResponse } from '../api/models';
 import { useState } from 'react';
 import { emailSchema, loginPasswordSchema } from '../schemas/auth';
 import { useLocation } from 'react-router-dom';
@@ -56,22 +56,36 @@ const LoginPage = () => {
 
   const isLoading = status === 'pending';
 
+  const translateError = (errorCode: string): string => {
+    switch (errorCode) {
+      case 'invalid email':
+        return '不正なメールアドレスです';
+      case 'invalid password':
+        return 'パスワードが無効です';
+      default:
+        return 'ログインに失敗しました';
+    }
+  };
+
   const onSubmit = (data: LoginForm) => {
-    // console.log('data:', data);
     loginMutation(
       { data },
       {
-        onSuccess: (data) => {
-          if (data?.data?.token) {
-            login(data.data.token);
-            navigate('/dashboard');
-          }
+        onSuccess: (res: DtoTokenResponse) => {
+          console.log('loginResponse:', res);
+          // if (data?.data?.token) {
+          //   login(data.data.token);
+          //   navigate('/dashboard');
+          // }
         },
         onError: (error) => {
           const axiosError = error as AxiosError<DtoErrorResponse>;
-          console.error('axiosError!!!!!!:', axiosError);
+          const { response } = axiosError;
+          const errorCode = response?.data?.error ?? 'unknown error';
+          console.error('errorCode:', errorCode);
+          const message = translateError(errorCode);
+          setErrorMessage(message);
           setValue('email', getValues('email'));
-          setErrorMessage(error?.error || 'ログインに失敗しました');
         },
       }
     );
