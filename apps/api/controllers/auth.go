@@ -6,6 +6,8 @@ import (
 	"go-auth/usecase/user"
 	"go-auth/utils/token"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -87,6 +89,19 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
 		}
+
+		hours, _ := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+		maxAge := hours * 3600
+
+		c.SetCookie(
+			"accessTokenFromGoBackend",
+			tokenDTO.Token,
+			maxAge, // Max-Age
+			"/",    // Path
+			"",     // Domain (指定しない)
+			false,  // Secure
+			false,  // HttpOnly
+		)
 
 		c.JSON(http.StatusOK, dto.TokenResponse{Data: tokenDTO})
 	}
