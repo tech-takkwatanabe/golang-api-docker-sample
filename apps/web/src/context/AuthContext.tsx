@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { readTokenFromCookie } from '../utils/cookie';
+import { readTokenFromCookie } from '@/utils/cookie';
 
 type AuthContextType = {
   token: string | null;

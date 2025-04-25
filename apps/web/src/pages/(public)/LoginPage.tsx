@@ -1,15 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { usePostLogin } from '../../api/auth/auth';
-import { useAuth } from '../../context/AuthContext';
-import type { DtoTokenResponse, DtoErrorResponse } from '../../api/models';
-import { useState } from 'react';
-import { emailSchema, loginPasswordSchema } from '../../schemas/auth';
-import { useLocation } from 'react-router-dom';
+import { usePostLogin } from '@/api/auth/auth';
+import { useAuth } from '@/context/AuthContext';
+import type { DtoTokenResponse, DtoErrorResponse } from '@/api/models';
+import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 import type { AxiosError } from 'axios';
 
 const loginSchema = z.object({

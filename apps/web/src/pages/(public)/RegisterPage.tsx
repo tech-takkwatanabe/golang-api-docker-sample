@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { usePostRegister } from '../../api/auth/auth';
-import type { DtoErrorResponse } from '../../api/models';
-import { nameSchema, emailSchema, registPasswordSchema } from '../../schemas/auth';
+import { usePostRegister } from '@/api/auth/auth';
+import type { DtoErrorResponse } from '@/api/models';
+import { nameSchema, emailSchema, registPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
 

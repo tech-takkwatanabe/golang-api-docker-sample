@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useGetLoggedinUser } from '../../api/auth/auth';
+import { useAuth } from '@/context/AuthContext';
+import { useGetLoggedinUser } from '@/api/auth/auth';
 import { useNavigate } from 'react-router-dom';
 
 type User = {
