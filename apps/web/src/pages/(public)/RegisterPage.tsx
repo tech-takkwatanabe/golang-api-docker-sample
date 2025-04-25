@@ -2,90 +2,57 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { usePostLogin } from '../api/auth/auth';
-import { useAuth } from '../context/AuthContext';
-import type { DtoTokenResponse, DtoErrorResponse } from '../api/models';
-import { useState } from 'react';
-import { emailSchema, loginPasswordSchema } from '../schemas/auth';
-import { useLocation } from 'react-router-dom';
+import { usePostRegister } from '../../api/auth/auth';
+import type { DtoErrorResponse } from '../../api/models';
+import { nameSchema, emailSchema, registPasswordSchema } from '../../schemas/auth';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 import type { AxiosError } from 'axios';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: nameSchema,
   email: emailSchema,
-  password: loginPasswordSchema,
+  password: registPasswordSchema,
 });
 
-type LoginForm = z.infer<typeof loginSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
 
-const LoginPage = () => {
-  const { login } = useAuth();
-  const [errorMessage, setErrorMessage] = useState('');
+const RegisterPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const message = location.state?.message;
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    if (isClient && message) {
-      toast.success(message);
-      navigate(location.pathname, {
-        replace: true,
-        state: {},
-      });
-    }
-  }, [isClient]);
-
-  const defaultEmail: string = location.state?.email ?? '';
   const {
     register,
     handleSubmit,
-    setValue,
-    getValues,
     formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: defaultEmail,
-    },
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const { mutate: loginMutation, status } = usePostLogin();
-
+  const { mutate: registerMutation, status } = usePostRegister();
   const isLoading = status === 'pending';
 
   const translateError = (errorCode: string): string => {
     switch (errorCode) {
-      case 'invalid email':
-        return '不正なメールアドレスです';
+      case 'email already in use':
+        return 'すでに登録されているメールアドレスです';
       case 'invalid password':
         return 'パスワードが無効です';
       default:
-        return 'ログインに失敗しました';
+        return '登録に失敗しました';
     }
   };
 
-  const onSubmit = (data: LoginForm) => {
-    loginMutation(
+  const onSubmit = (data: RegisterForm) => {
+    registerMutation(
       { data },
       {
-        onSuccess: (res: DtoTokenResponse) => {
-          console.log('loginResponse:', res);
-          // if (data?.data?.token) {
-          //   login(data.data.token);
-          //   navigate('/dashboard');
-          // }
-        },
+        onSuccess: () =>
+          navigate('/login', {
+            state: { message: '登録が完了しました。ログインしてください。', email: data.email },
+          }),
         onError: (error) => {
           const axiosError = error as AxiosError<DtoErrorResponse>;
-          const { response } = axiosError;
-          const errorCode = response?.data?.error ?? 'unknown error';
-          console.error('errorCode:', errorCode);
+          const errorCode = axiosError.response?.data?.error ?? 'unknown error';
           const message = translateError(errorCode);
-          setErrorMessage(message);
-          setValue('email', getValues('email'));
+          toast.error(message);
         },
       }
     );
@@ -94,11 +61,17 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">ログイン</h2>
-
-        {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{errorMessage}</div>}
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">アカウント登録</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+              名前
+            </label>
+            <input id="name" {...register('name')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="山田太郎" />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+          </div>
+
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
               メールアドレス
@@ -117,15 +90,15 @@ const LoginPage = () => {
 
           <div className="mb-6">
             <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}>
-              {isLoading ? 'ログイン中...' : 'ログイン'}
+              {isLoading ? '登録中...' : '登録する'}
             </button>
           </div>
 
           <div className="text-center">
             <p>
-              アカウントをお持ちでない方は{' '}
-              <a href="/register" className="text-blue-500 hover:text-blue-600">
-                登録する
+              すでにアカウントをお持ちの方は{' '}
+              <a href="/login" className="text-blue-500 hover:text-blue-600">
+                ログイン
               </a>
             </p>
           </div>
@@ -135,4 +108,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

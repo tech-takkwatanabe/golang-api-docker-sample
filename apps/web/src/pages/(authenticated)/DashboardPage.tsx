@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useGetLoggedinUser } from '../api/auth/auth';
+import { useAuth } from '../../context/AuthContext';
+import { useGetLoggedinUser } from '../../api/auth/auth';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   id: number;
@@ -10,14 +11,21 @@ type User = {
 
 const DashboardPage = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Orvalで生成されたhooksを使用します
   const { data, isLoading, isError } = useGetLoggedinUser();
 
   useEffect(() => {
+    // ログイン状態の確認
+    const token = document.cookie.split(';').some((item) => item.trim().startsWith('accessTokenFromGoBackend='));
+    if (!token) {
+      navigate('/login'); // トークンが無い場合、ログインページへリダイレクト
+      return;
+    }
+
     if (data) {
       setUser(
         data.data
@@ -33,10 +41,11 @@ const DashboardPage = () => {
     if (isError) {
       setError('ユーザー情報の取得に失敗しました');
     }
-  }, [data, isLoading, isError]);
+  }, [data, isLoading, isError, navigate]);
 
   const handleLogout = () => {
     logout();
+    navigate('/login'); // ログアウト後はログインページへリダイレクト
   };
 
   if (loading) {

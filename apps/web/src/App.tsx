@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import NotFoundPage from './pages/NotFoundPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// 保護されたルートコンポーネント
+import { AuthProvider, useAuth } from './context/AuthContext';
+import HomePage from './pages/(public)/HomePage';
+import LoginPage from './pages/(public)/LoginPage';
+import RegisterPage from './pages/(public)/RegisterPage';
+import NotFoundPage from './pages/(public)/NotFoundPage';
+import DashboardPage from './pages/(authenticated)/DashboardPage';
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { token, isLoading } = useAuth();
 
@@ -23,30 +23,27 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const AppRoutes = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  );
-};
-
 export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <AppRoutes />
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+
+          {/* Authenticated Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
         <ToastContainer hideProgressBar={true} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover position="top-center" autoClose={3000} />
       </Router>
     </AuthProvider>
