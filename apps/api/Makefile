@@ -6,6 +6,12 @@ init:
 up:
 	docker compose up -d
 
+down:
+	docker compose down
+
+build:
+	docker compose up -d --build
+
 tidy:
 	docker compose exec go go mod tidy
 
