@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { readTokenFromCookie } from '../utils/cookie';
 
 type AuthContextType = {
   token: string | null;
@@ -22,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = readTokenFromCookie('accessTokenFromGoBackend');
     if (storedToken) {
       setToken(storedToken);
     }
@@ -31,12 +32,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = (token: string) => {
     setToken(token);
-    localStorage.setItem('token', token);
   };
 
   const logout = () => {
     setToken(null);
-    localStorage.removeItem('token');
+    document.cookie = `accessTokenFromGoBackend=; Max-Age=0; path=/;`;
   };
 
   return <AuthContext.Provider value={{ token, login, logout, isLoading }}>{children}</AuthContext.Provider>;
