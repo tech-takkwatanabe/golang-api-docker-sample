@@ -10,21 +10,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	tokenHourLifespan  int
+	httpOnlyCookieName string
+	apiSecret          string
+)
+
+func init() {
+	var err error
+	tokenHourLifespan, err = strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+	if err != nil {
+		tokenHourLifespan = 1
+	}
+	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
+	if httpOnlyCookieName == "" {
+		httpOnlyCookieName = "accessTokenFromGoBackend"
+	}
+	apiSecret = os.Getenv("API_SECRET")
+	if apiSecret == "" {
+		apiSecret = "apiSecret"
+	}
+}
+
 // 指定されたユーザーIDに基づいてJWTトークンを生成する
 func GenerateToken(id uint) (string, error) {
-	tokenLifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
-
-	if err != nil {
-		return "", err
-	}
-
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = id
-	claims["exp"] = time.Now().Add(time.Hour * time.Duration(tokenLifespan)).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * time.Duration(tokenHourLifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
+	return token.SignedString([]byte(apiSecret))
 }
 
 // Authorization headerからトークンを抽出抽出する場合
@@ -38,7 +54,7 @@ func GenerateToken(id uint) (string, error) {
 // }
 
 func extractTokenFromCookie(c *gin.Context) string {
-	cookie, err := c.Cookie("accessTokenFromGoBackend")
+	cookie, err := c.Cookie(httpOnlyCookieName)
 	if err != nil {
 		return ""
 	}
@@ -50,7 +66,7 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("there was an error")
 		}
-		return []byte(os.Getenv("API_SECRET")), nil
+		return []byte(apiSecret), nil
 	})
 
 	if err != nil {
