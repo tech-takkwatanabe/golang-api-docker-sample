@@ -1,29 +1,31 @@
-import { useAuth } from '@/context/AuthContext';
+import { useAtom } from 'jotai';
+import { userAtom, isLoadingAtom, isAuthenticatedAtom } from '@/atoms/authAtom';
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from '@/hooks/useLogout';
 
 const DashboardPage = () => {
-  const { user, isLoading, isAuthenticated, logout } = useAuth();
+  const [user] = useAtom(userAtom);
+  const [isLoading] = useAtom(isLoadingAtom);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const navigate = useNavigate();
+  const logout = useLogout();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
   };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="text-xl">読み込み中...</div>
+        <div className="text-xl">loading...</div>
       </div>
     );
   }
 
   if (!isAuthenticated || !user) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">ユーザー情報の取得に失敗しました</div>
-      </div>
-    );
+    // 認証されていない場合、またはユーザー情報がない場合にリダイレクト
+    navigate('/login');
+    return null;
   }
 
   return (
@@ -51,15 +53,15 @@ const DashboardPage = () => {
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-gray-500">ID</p>
-                <p className="mt-1 text-sm text-gray-900">{user.data?.id}</p>
+                <p className="mt-1 text-sm text-gray-900">{user?.data?.id}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">名前</p>
-                <p className="mt-1 text-sm text-gray-900">{String(user.data?.name || '')}</p>
+                <p className="mt-1 text-sm text-gray-900">{String(user?.data?.name || '')}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">メールアドレス</p>
-                <p className="mt-1 text-sm text-gray-900">{String(user.data?.email || '')}</p>
+                <p className="mt-1 text-sm text-gray-900">{String(user?.data?.email || '')}</p>
               </div>
             </div>
           </div>

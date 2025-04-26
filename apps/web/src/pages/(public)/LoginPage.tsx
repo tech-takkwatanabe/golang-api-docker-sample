@@ -8,6 +8,8 @@ import type { DtoTokenResponse, DtoErrorResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
+import { useAtom } from 'jotai';
+import { isAuthenticatedAtom } from '@/atoms/authAtom';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -22,6 +24,13 @@ const LoginPage = () => {
   const location = useLocation();
   const message = location.state?.message;
   const [isClient, setIsClient] = useState(false);
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     setIsClient(true);
@@ -32,7 +41,7 @@ const LoginPage = () => {
         state: {},
       });
     }
-  }, [isClient]);
+  }, [isClient, message, navigate]);
 
   const defaultEmail: string = location.state?.email ?? '';
   const {
@@ -69,7 +78,8 @@ const LoginPage = () => {
       {
         onSuccess: (res: DtoTokenResponse) => {
           if (res?.data?.token) {
-            navigate('/dashboard');
+            // navigate('/dashboard');
+            window.location.href = '/dashboard';
           }
         },
         onError: (error) => {

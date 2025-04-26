@@ -7,6 +7,9 @@ import type { DtoErrorResponse } from '@/api/models';
 import { nameSchema, emailSchema, registPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { isAuthenticatedAtom } from '@/atoms/authAtom';
 
 const registerSchema = z.object({
   name: nameSchema,
@@ -29,6 +32,8 @@ const RegisterPage = () => {
   const { mutate: registerMutation, status } = usePostRegister();
   const isLoading = status === 'pending';
 
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+
   const translateError = (errorCode: string): string => {
     switch (errorCode) {
       case 'email already in use':
@@ -44,10 +49,12 @@ const RegisterPage = () => {
     registerMutation(
       { data },
       {
-        onSuccess: () =>
+        onSuccess: () => {
+          // `useEffect` 内で遷移を処理する
           navigate('/login', {
             state: { message: '登録が完了しました。ログインしてください。', email: data.email },
-          }),
+          });
+        },
         onError: (error) => {
           const axiosError = error as AxiosError<DtoErrorResponse>;
           const errorCode = axiosError.response?.data?.error ?? 'unknown error';
@@ -57,6 +64,12 @@ const RegisterPage = () => {
       }
     );
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
