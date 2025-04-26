@@ -10,6 +10,7 @@ import type { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom } from '@/atoms/authAtom';
+import getIsAuthenticatedCookie from '@/utile/getIsAuthenticatedCookie';
 
 const registerSchema = z.object({
   name: nameSchema,
@@ -20,6 +21,13 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 const RegisterPage = () => {
+  useEffect(() => {
+    const checkeAuthCookie = getIsAuthenticatedCookie();
+    if (checkeAuthCookie) {
+      navigate('/dashboard');
+    }
+  }, []);
+
   const navigate = useNavigate();
   const {
     register,
@@ -50,7 +58,6 @@ const RegisterPage = () => {
       { data },
       {
         onSuccess: () => {
-          // `useEffect` 内で遷移を処理する
           navigate('/login', {
             state: { message: '登録が完了しました。ログインしてください。', email: data.email },
           });

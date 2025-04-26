@@ -103,6 +103,16 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			true,   // HttpOnly
 		)
 
+		c.SetCookie(
+			"isAuthenticatedByGoBackend",
+			"true",
+			maxAge, // Max-Age
+			"/",    // Path
+			"",     // Domain (指定しない)
+			false,  // Secure
+			false,  // HttpOnly
+		)
+
 		c.JSON(http.StatusOK, dto.TokenResponse{Data: tokenDTO})
 	}
 }
@@ -151,6 +161,16 @@ func Logout() gin.HandlerFunc {
 			"",    // Domain（省略）
 			false, // Secure（必要なら true に）
 			true,  // HttpOnly
+		)
+
+		c.SetCookie(
+			"isAuthenticatedByGoBackend",
+			"",
+			-1,    // Max-Age
+			"/",   // Path
+			"",    // Domain (指定しない)
+			false, // Secure
+			false, // HttpOnly
 		)
 
 		c.JSON(http.StatusOK, dto.MessageResponse{Message: "Logged out successfully"})

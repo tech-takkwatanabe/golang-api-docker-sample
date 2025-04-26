@@ -8,8 +8,7 @@ import type { DtoTokenResponse, DtoErrorResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
-import { useAtom } from 'jotai';
-import { isAuthenticatedAtom } from '@/atoms/authAtom';
+import getIsAuthenticatedCookie from '@/utile/getIsAuthenticatedCookie';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -19,18 +18,18 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
+  useEffect(() => {
+    const checkeAuthCookie = getIsAuthenticatedCookie();
+    if (checkeAuthCookie) {
+      navigate('/dashboard');
+    }
+  }, []);
+
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const message = location.state?.message;
   const [isClient, setIsClient] = useState(false);
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     setIsClient(true);
@@ -78,8 +77,7 @@ const LoginPage = () => {
       {
         onSuccess: (res: DtoTokenResponse) => {
           if (res?.data?.token) {
-            // navigate('/dashboard');
-            window.location.href = '/dashboard';
+            navigate('/dashboard');
           }
         },
         onError: (error) => {
