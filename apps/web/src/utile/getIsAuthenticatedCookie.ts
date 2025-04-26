@@ -11,7 +11,9 @@ const getIsAuthenticatedCookie = (): boolean => {
     return acc;
   }, {});
 
-  return cookies.hasOwnProperty('isAuthenticatedByGoBackend');
+  const cookieName = process.env.REACT_APP_AUTH_CHECK_COOKIE_NAME || 'isAuthenticatedByGoBackend';
+
+  return cookies.hasOwnProperty(cookieName);
 };
 
 export default getIsAuthenticatedCookie;

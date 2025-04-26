@@ -12,6 +12,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	tokenHourLifespan   int
+	httpOnlyCookieName  string
+	authCheckCookieName string
+)
+
+func init() {
+	var err error
+	tokenHourLifespan, err = strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+	if err != nil {
+		tokenHourLifespan = 1
+	}
+	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
+	if httpOnlyCookieName == "" {
+		httpOnlyCookieName = "accessTokenFromGoBackend"
+	}
+	authCheckCookieName = os.Getenv("AUTH_CHECK_COOKIE_NAME")
+	if authCheckCookieName == "" {
+		authCheckCookieName = "isAuthenticatedByGoBackend"
+	}
+}
+
 // RegisterInput represents the input for user registration
 // @swagger:model
 // @swagger:parameters register
@@ -90,11 +112,10 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		hours, _ := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
-		maxAge := hours * 3600
+		maxAge := tokenHourLifespan * 3600
 
 		c.SetCookie(
-			"accessTokenFromGoBackend",
+			httpOnlyCookieName,
 			tokenDTO.Token,
 			maxAge, // Max-Age
 			"/",    // Path
@@ -104,7 +125,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			"isAuthenticatedByGoBackend",
+			authCheckCookieName,
 			"true",
 			maxAge, // Max-Age
 			"/",    // Path
@@ -154,7 +175,7 @@ func CurrentUser(userService service.UserService) gin.HandlerFunc {
 func Logout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie(
-			"accessTokenFromGoBackend",
+			httpOnlyCookieName,
 			"",    // 空にする
 			-1,    // Max-Ageを負数にすると即時削除される
 			"/",   // Path
@@ -164,7 +185,7 @@ func Logout() gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			"isAuthenticatedByGoBackend",
+			authCheckCookieName,
 			"",
 			-1,    // Max-Age
 			"/",   // Path
