@@ -1,47 +1,16 @@
-import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useGetLoggedinUser } from '@/api/auth/auth';
 import { useNavigate } from 'react-router-dom';
 
-type User = {
-  id: number;
-  name: string;
-  email: string;
-};
-
 const DashboardPage = () => {
-  const { logout } = useAuth();
+  const { user, isLoading, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const { data, isLoading, isError } = useGetLoggedinUser();
-
-  useEffect(() => {
-    if (data) {
-      setUser(
-        data.data
-          ? {
-              id: data.data.id ?? 0,
-              name: (data.data.name as unknown as string) ?? '',
-              email: (data.data.email as unknown as string) ?? '',
-            }
-          : null
-      );
-    }
-    setLoading(isLoading);
-    if (isError) {
-      setError('ユーザー情報の取得に失敗しました');
-    }
-  }, [data, isLoading, isError, navigate]);
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // ログアウト後はログインページへリダイレクト
+    navigate('/login');
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-xl">読み込み中...</div>
@@ -49,10 +18,10 @@ const DashboardPage = () => {
     );
   }
 
-  if (error) {
+  if (!isAuthenticated || !user) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">ユーザー情報の取得に失敗しました</div>
       </div>
     );
   }
@@ -79,22 +48,20 @@ const DashboardPage = () => {
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">ユーザー情報</h2>
 
-            {user && (
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">ID</p>
-                  <p className="mt-1 text-sm text-gray-900">{user.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">名前</p>
-                  <p className="mt-1 text-sm text-gray-900">{user.name}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">メールアドレス</p>
-                  <p className="mt-1 text-sm text-gray-900">{user.email}</p>
-                </div>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">ID</p>
+                <p className="mt-1 text-sm text-gray-900">{user.data?.id}</p>
               </div>
-            )}
+              <div>
+                <p className="text-sm font-medium text-gray-500">名前</p>
+                <p className="mt-1 text-sm text-gray-900">{String(user.data?.name || '')}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">メールアドレス</p>
+                <p className="mt-1 text-sm text-gray-900">{String(user.data?.email || '')}</p>
+              </div>
+            </div>
           </div>
         </div>
       </main>
