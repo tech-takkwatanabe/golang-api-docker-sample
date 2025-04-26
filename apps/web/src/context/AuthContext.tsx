@@ -23,17 +23,27 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading, isError } = useGetLoggedinUser();
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useGetLoggedinUser({
+    query: {
+      retry: false,
+    },
+  });
 
   const { mutate: postLogout } = usePostLoggedinLogout();
 
-  const logout = async () => {
-    try {
-      postLogout();
-      queryClient.invalidateQueries({ queryKey: ['/loggedin/user'] });
-    } catch (error) {
-      console.error('Logout failed', error);
-    }
+  const logout = () => {
+    postLogout(undefined, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['/loggedin/user'] });
+      },
+      onError: (error) => {
+        console.error('Logout failed', error);
+      },
+    });
   };
 
   const isAuthenticated = !isLoading && !isError && !!user;
