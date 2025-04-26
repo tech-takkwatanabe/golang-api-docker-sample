@@ -9,6 +9,7 @@
 export * from './controllersLoginInput';
 export * from './controllersRegisterInput';
 export * from './dtoErrorResponse';
+export * from './dtoMessageResponse';
 export * from './dtoTokenDTO';
 export * from './dtoTokenResponse';
 export * from './dtoUserDTO';

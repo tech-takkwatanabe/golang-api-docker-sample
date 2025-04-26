@@ -100,7 +100,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			"/",    // Path
 			"",     // Domain (指定しない)
 			false,  // Secure
-			false,  // HttpOnly
+			true,   // HttpOnly
 		)
 
 		c.JSON(http.StatusOK, dto.TokenResponse{Data: tokenDTO})
@@ -131,5 +131,28 @@ func CurrentUser(userService service.UserService) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, dto.UserDTOResponse{Data: userDto})
+	}
+}
+
+// Logout godoc
+// @Summary      ログアウト
+// @Description  アクセストークンのCookieを削除します
+// @Tags         auth
+// @Produce      json
+// @Success      200  {object}  dto.MessageResponse  "ログアウト成功"
+// @Router       /loggedin/logout [post]
+func Logout() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie(
+			"accessTokenFromGoBackend",
+			"",    // 空にする
+			-1,    // Max-Ageを負数にすると即時削除される
+			"/",   // Path
+			"",    // Domain（省略）
+			false, // Secure（必要なら true に）
+			true,  // HttpOnly
+		)
+
+		c.JSON(http.StatusOK, dto.MessageResponse{Message: "Logged out successfully"})
 	}
 }

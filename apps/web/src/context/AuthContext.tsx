@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { readTokenFromCookie } from '@/utils/cookie';
+import React, { createContext, useContext } from 'react';
+import { useGetLoggedinUser, usePostLoggedinLogout } from '@/api/auth/auth';
+import { useQueryClient } from '@tanstack/react-query';
+import { DtoUserDTOResponse } from '@/api/models';
 
 type AuthContextType = {
-  token: string | null;
-  login: (token: string) => void;
-  logout: () => void;
+  user: DtoUserDTOResponse | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,25 +21,22 @@ export const useAuth = (): AuthContextType => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const storedToken = readTokenFromCookie('accessTokenFromGoBackend');
-    if (storedToken) {
-      setToken(storedToken);
+  const { data: user, isLoading, isError } = useGetLoggedinUser();
+
+  const { mutate: postLogout } = usePostLoggedinLogout();
+
+  const logout = async () => {
+    try {
+      postLogout();
+      queryClient.invalidateQueries({ queryKey: ['/loggedin/user'] });
+    } catch (error) {
+      console.error('Logout failed', error);
     }
-    setIsLoading(false);
-  }, []);
-
-  const login = (token: string) => {
-    setToken(token);
   };
 
-  const logout = () => {
-    setToken(null);
-    document.cookie = `accessTokenFromGoBackend=; Max-Age=0; path=/;`;
-  };
+  const isAuthenticated = !isLoading && !isError && !!user;
 
-  return <AuthContext.Provider value={{ token, login, logout, isLoading }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user: user ?? null, isAuthenticated, isLoading, logout }}>{children}</AuthContext.Provider>;
 };

@@ -27,6 +27,11 @@ definitions:
       error:
         type: string
     type: object
+  dto.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
   dto.TokenDTO:
     properties:
       token:
@@ -91,6 +96,19 @@ info:
   title: Go Auth API
   version: "1.0"
 paths:
+  /loggedin/logout:
+    post:
+      description: アクセストークンのCookieを削除します
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ログアウト成功
+          schema:
+            $ref: '#/definitions/dto.MessageResponse'
+      summary: ログアウト
+      tags:
+      - auth
   /loggedin/user:
     get:
       description: トークンを元にログイン中のユーザー情報を返す

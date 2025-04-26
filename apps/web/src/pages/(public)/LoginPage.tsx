@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostLogin } from '@/api/auth/auth';
-import { useAuth } from '@/context/AuthContext';
 import type { DtoTokenResponse, DtoErrorResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
@@ -18,7 +17,6 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
-  const { login } = useAuth();
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,10 +68,7 @@ const LoginPage = () => {
       { data },
       {
         onSuccess: (res: DtoTokenResponse) => {
-          // console.log('loginResponse:', res?.data?.token);
           if (res?.data?.token) {
-            const accessTokenFromGoBackend = res.data.token;
-            login(accessTokenFromGoBackend);
             navigate('/dashboard');
           }
         },

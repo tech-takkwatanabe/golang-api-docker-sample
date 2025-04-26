@@ -19,13 +19,6 @@ const DashboardPage = () => {
   const { data, isLoading, isError } = useGetLoggedinUser();
 
   useEffect(() => {
-    // ログイン状態の確認
-    const token = document.cookie.split(';').some((item) => item.trim().startsWith('accessTokenFromGoBackend='));
-    if (!token) {
-      navigate('/login'); // トークンが無い場合、ログインページへリダイレクト
-      return;
-    }
-
     if (data) {
       setUser(
         data.data

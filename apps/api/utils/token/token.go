@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,14 +27,22 @@ func GenerateToken(id uint) (string, error) {
 	return token.SignedString([]byte(os.Getenv("API_SECRET")))
 }
 
-func extractTokenString(c *gin.Context) string {
-	bearerToken := c.Request.Header.Get("Authorization")
-	strArr := strings.Split(bearerToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
-	}
+// Authorization headerからトークンを抽出抽出する場合
+// func extractTokenFromString(c *gin.Context) string {
+// 	bearerToken := c.Request.Header.Get("Authorization")
+// 	strArr := strings.Split(bearerToken, " ")
+// 	if len(strArr) == 2 {
+// 		return strArr[1]
+// 	}
+// 	return ""
+// }
 
-	return ""
+func extractTokenFromCookie(c *gin.Context) string {
+	cookie, err := c.Cookie("accessTokenFromGoBackend")
+	if err != nil {
+		return ""
+	}
+	return cookie
 }
 
 func parseToken(tokenString string) (*jwt.Token, error) {
@@ -55,7 +62,7 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 
 // トークンが有効かどうかを検証
 func TokenValid(c *gin.Context) error {
-	tokenString := extractTokenString(c)
+	tokenString := extractTokenFromCookie(c)
 
 	token, err := parseToken(tokenString)
 
@@ -72,7 +79,7 @@ func TokenValid(c *gin.Context) error {
 
 // トークンからユーザーIDを取得
 func ExtractTokenId(c *gin.Context) (uint, error) {
-	tokenString := extractTokenString(c)
+	tokenString := extractTokenFromCookie(c)
 
 	token, err := parseToken(tokenString)
 
