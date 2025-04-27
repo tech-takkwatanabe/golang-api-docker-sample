@@ -39,7 +39,6 @@ func main() {
 
 	public.POST("/register", controllers.Register(userService))
 	public.POST("/login", controllers.Login(userService))
-	// public.POST("/logout", controllers.Logout())
 
 	protected := router.Group("/api/loggedin")
 	// JWT認証ミドルウェアを適用
