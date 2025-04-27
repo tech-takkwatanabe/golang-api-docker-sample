@@ -17,3 +17,6 @@ tidy:
 
 swag:
 	docker compose exec go swag init
+
+gotest:
+	docker compose exec go go test ./test
