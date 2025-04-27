@@ -21,6 +21,8 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const checkeAuthCookie = getIsAuthenticatedCookie();
     if (checkeAuthCookie) {
@@ -28,7 +30,14 @@ const RegisterPage = () => {
     }
   }, []);
 
-  const navigate = useNavigate();
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
   const {
     register,
     handleSubmit,
@@ -39,8 +48,6 @@ const RegisterPage = () => {
 
   const { mutate: registerMutation, status } = usePostRegister();
   const isLoading = status === 'pending';
-
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   const translateError = (errorCode: string): string => {
     switch (errorCode) {
@@ -71,12 +78,6 @@ const RegisterPage = () => {
       }
     );
   };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
