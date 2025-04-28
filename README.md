@@ -98,9 +98,13 @@ pnpm dev
 
 ## 開発ガイドライン
 
-- 初めに参考にさせていただいた記事🙇 : https://qiita.com/fujifuji1414/items/b95d3f0d5f79d77360cb
+- Goで初めに参考にさせていただいた記事🙇 : https://qiita.com/fujifuji1414/items/b95d3f0d5f79d77360cb
 - バックエンドAPIはクリーンアーキテクチャ的に構築
 - フロントエンドはあえて`Vite`ではなくあえて`CRA`で作成から構築（そのうちNextjsに変えたい）
+- フロントエンドの雛形は`Claude`で、その後は`ChatGPT`と壁打ちしながら、が大枠です
+- 大半はVSCodeで作業（`Github Copilot`あり）
+- READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
+- AIに課金はしていません
 - ServerlessでRefreshTokenを`DynamoDB`に保存するような構成にしていく予定
 - 今後の課題 
   - テストコードの追加 etc・・
