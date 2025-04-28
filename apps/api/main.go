@@ -37,17 +37,22 @@ func main() {
 
 	public := router.Group("/api")
 
-	public.POST("/register", controllers.Register(userService))
-	public.POST("/login", controllers.Login(userService))
-
-	protected := router.Group("/api/loggedin")
-	// JWT認証ミドルウェアを適用
-	protected.Use(middlewares.JwtAuthMiddleware())
-	// 認証されたユーザー情報を取得するルートを定義
-	protected.GET("/user", controllers.CurrentUser(userService))
 	// Swagger UIのエンドポイント
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// 新規ユーザー登録
+	public.POST("/register", controllers.Register(userService))
+	// ログイン
+	public.POST("/login", controllers.Login(userService))
+
+	// 認証後のルート
+	protected := router.Group("/api/loggedin")
+	// JWT認証ミドルウェアを適用
+	protected.Use(middlewares.JwtAuthMiddleware())
+
+	// 認証されたユーザー情報を取得する
+	protected.GET("/user", controllers.CurrentUser(userService))
+	// ログアウト
 	protected.POST("/logout", controllers.Logout())
 
 	router.Run(":8080")
