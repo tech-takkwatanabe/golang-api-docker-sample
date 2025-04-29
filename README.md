@@ -94,7 +94,7 @@ pnpm dev
 - Zod
 - craco
 - ESLint（FlatConfig対応）
-- Prittier
+- Prettier
 
 ## 開発ガイドライン
 
