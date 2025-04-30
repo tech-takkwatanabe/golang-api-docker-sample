@@ -13,16 +13,16 @@ import (
 )
 
 var (
-	tokenHourLifespan   int
-	httpOnlyCookieName  string
-	authCheckCookieName string
+	accessTokenExpireSeconds int
+	httpOnlyCookieName       string
+	authCheckCookieName      string
 )
 
 func init() {
 	var err error
-	tokenHourLifespan, err = strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+	accessTokenExpireSeconds, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
 	if err != nil {
-		tokenHourLifespan = 1
+		accessTokenExpireSeconds = 900
 	}
 	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
 	if httpOnlyCookieName == "" {
@@ -112,7 +112,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		maxAge := tokenHourLifespan * 3600
+		maxAge := accessTokenExpireSeconds
 
 		c.SetCookie(
 			httpOnlyCookieName,

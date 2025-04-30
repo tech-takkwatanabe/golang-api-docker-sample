@@ -13,28 +13,29 @@ import (
 )
 
 func NewDynamoDBClient() *dynamodb.Client {
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	_ = godotenv.Load()
 
 	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
 	secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 	region := os.Getenv("AWS_REGION")
 
-	if accessKey == "" || secretKey == "" || region == "" {
-		log.Fatal("AWS credentials or region are not set in environment variables")
-	}
+	var cfg aws.Config
+	var err error
 
-	creds := aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKey, secretKey, ""))
-
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(region),
-		config.WithCredentialsProvider(creds),
-	)
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+	if accessKey != "" && secretKey != "" && region != "" {
+		creds := aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKey, secretKey, ""))
+		cfg, err = config.LoadDefaultConfig(context.TODO(),
+			config.WithRegion(region),
+			config.WithCredentialsProvider(creds),
+		)
+		if err != nil {
+			log.Fatalf("failed to load SDK config from env vars: %v", err)
+		}
+	} else {
+		cfg, err = config.LoadDefaultConfig(context.TODO())
+		if err != nil {
+			log.Fatalf("failed to load SDK default config: %v", err)
+		}
 	}
 
 	return dynamodb.NewFromConfig(cfg)

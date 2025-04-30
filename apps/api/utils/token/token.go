@@ -3,7 +3,6 @@ package token
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,17 +10,11 @@ import (
 )
 
 var (
-	tokenHourLifespan  int
 	httpOnlyCookieName string
 	apiSecret          string
 )
 
 func init() {
-	var err error
-	tokenHourLifespan, err = strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
-	if err != nil {
-		tokenHourLifespan = 1
-	}
 	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
 	if httpOnlyCookieName == "" {
 		httpOnlyCookieName = "accessTokenFromGoBackend"
@@ -33,13 +26,13 @@ func init() {
 }
 
 // 指定されたユーザーIDに基づいてJWTトークンを生成する
-func GenerateToken(id uint) (string, error) {
+func GenerateToken(id uint, expiresInSec int) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = id
-	claims["exp"] = time.Now().Add(time.Hour * time.Duration(tokenHourLifespan)).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	claims["exp"] = time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix()
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(apiSecret))
 }
 

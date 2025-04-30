@@ -9,6 +9,7 @@ import (
 	"os"
 
 	_ "go-auth/docs"
+	dynamodbRepo "go-auth/infrastructure/dynamodb"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -33,7 +34,8 @@ func main() {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	userRepo := repository.NewUserRepository()
-	userService := service.NewUserService(userRepo)
+	refreshTokenRepo := dynamodbRepo.NewRefreshTokenRepository()
+	userService := service.NewUserService(userRepo, refreshTokenRepo)
 
 	public := router.Group("/api")
 
