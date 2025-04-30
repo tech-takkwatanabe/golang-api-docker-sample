@@ -27,6 +27,11 @@
 - 認証中のユーザー情報を表示します
 - 認証成功後にJWTを発行し、HttpOnlyのCookieで管理しています
 - ログイン前にアクセスすると`/login`へリダイレクトされます
+<hr>
+
+### API Doc
+![スクリーンショット 2025-04-30 20 49 49](https://github.com/user-attachments/assets/545d30b0-34f3-40a7-b70d-3e5c34464791)
+<hr>
 
 ## プロジェクト構成
 
