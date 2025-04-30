@@ -25,7 +25,7 @@
 ### ダッシュボード
 ![interface_4](https://github.com/user-attachments/assets/4842c773-73db-4f0c-8e06-cd1d3acb3320)
 - 認証中のユーザー情報を表示します
-- 認証状態はHttpOnlyのCookieで管理しています
+- 認証成功後にJWTを発行し、HttpOnlyのCookieで管理しています
 - ログイン前にアクセスすると`/login`へリダイレクトされます
 
 ## プロジェクト構成
