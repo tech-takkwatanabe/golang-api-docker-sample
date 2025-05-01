@@ -113,6 +113,6 @@ pnpm dev
 - 大半はVSCodeで作業（`Github Copilot`あり）
 - READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
 - AIに課金はしていません
-- ServerlessでRefreshTokenを`DynamoDB`に保存するような構成にしていく予定
+- ServerlessでRefreshTokenを`DynamoDB`に保存するところまで設定（TODO: RefreshTokenを確認してAccessTokenの再生成）
 - 今後の課題 
   - テストコードの追加 etc・・
