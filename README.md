@@ -99,6 +99,7 @@ pnpm dev
 - Orval (APIクライアント生成)
 - React Hook Form
 - Zod
+- jotai
 - craco
 - ESLint（FlatConfig対応）
 - Prettier
