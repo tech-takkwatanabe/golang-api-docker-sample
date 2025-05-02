@@ -57,7 +57,7 @@
 │       ├── public/     # 静的ファイル
 │       └── node_modules/ # 依存パッケージ
 │
-└── serverless/        # サーバーレス関連の設定ファイル（追加予定）
+└── serverless/        # サーバーレス関連の設定ファイル
 ```
 
 ## Getting Started
