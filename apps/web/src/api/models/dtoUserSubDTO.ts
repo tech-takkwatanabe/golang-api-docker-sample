@@ -6,6 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface DtoTokenDTO {
-  token?: string;
+export interface DtoUserSubDTO {
+  sub?: string;
 }

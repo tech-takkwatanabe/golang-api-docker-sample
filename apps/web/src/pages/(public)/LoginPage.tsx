@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostLogin } from '@/api/auth/auth';
-import type { DtoTokenResponse, DtoErrorResponse } from '@/api/models';
+import type { DtoErrorResponse, DtoLoginResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
@@ -75,8 +75,8 @@ const LoginPage = () => {
     loginMutation(
       { data },
       {
-        onSuccess: (res: DtoTokenResponse) => {
-          if (res?.data?.token) {
+        onSuccess: (res: DtoLoginResponse) => {
+          if (res?.accessToken) {
             navigate('/dashboard');
           }
         },

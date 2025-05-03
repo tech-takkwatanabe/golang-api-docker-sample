@@ -8,7 +8,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { DataTag, DefinedInitialDataOptions, DefinedUseQueryResult, MutationFunction, QueryClient, QueryFunction, QueryKey, UndefinedInitialDataOptions, UseMutationOptions, UseMutationResult, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
-import type { ControllersLoginInput, ControllersRegisterInput, DtoErrorResponse, DtoMessageResponse, DtoTokenResponse, DtoUserDTOResponse } from '.././models';
+import type { ControllersLoginInput, ControllersRegisterInput, DtoErrorResponse, DtoLoginResponse, DtoMessageResponse, DtoUserDTOResponse } from '.././models';
 
 import { customInstance } from '.././mutator/custom-instance';
 
@@ -116,7 +116,7 @@ export function useGetLoggedinUser<TData = Awaited<ReturnType<typeof getLoggedin
  * @summary ログイン
  */
 export const postLogin = (controllersLoginInput: ControllersLoginInput, options?: SecondParameter<typeof customInstance>, signal?: AbortSignal) => {
-  return customInstance<DtoTokenResponse>({ url: `/login`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: controllersLoginInput, signal }, options);
+  return customInstance<DtoLoginResponse>({ url: `/login`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: controllersLoginInput, signal }, options);
 };
 
 export const getPostLoginMutationOptions = <TError = DtoErrorResponse, TContext = unknown>(options?: {
