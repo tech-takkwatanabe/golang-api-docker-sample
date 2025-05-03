@@ -6,8 +6,6 @@ import (
 	"go-auth/domain/vo"
 	"go-auth/service"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type RegisterInput struct {
@@ -27,10 +25,8 @@ func RegisterUseCase(input RegisterInput, svc service.UserService) (*dto.UserDTO
 		return nil, err
 	}
 
-	uid, err := vo.NewUUID(uuid.NewString())
-	if err != nil {
-		return nil, err
-	}
+	// uuid生成
+	uid := vo.NewUUIDv7()
 
 	now := vo.NewDateTime(time.Now())
 
