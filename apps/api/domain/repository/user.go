@@ -29,7 +29,7 @@ func (r *userRepository) FindByID(id uint) (*entity.User, error) {
 
 func (r *userRepository) FindByUUID(uuid vo.UUID) (*entity.User, error) {
 	var model models.User
-	if err := models.DB.First(&model, uuid).Error; err != nil {
+	if err := models.DB.Where("uuid = ?", uuid.String()).First(&model).Error; err != nil {
 		return nil, err
 	}
 	return models.ToEntity(&model)
