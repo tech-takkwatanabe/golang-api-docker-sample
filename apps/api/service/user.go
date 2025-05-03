@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"go-auth/domain/dto"
 	"go-auth/domain/entity"
@@ -10,6 +11,7 @@ import (
 	"go-auth/utils/token"
 	"os"
 	"strconv"
+	"time"
 )
 
 var (
@@ -101,6 +103,32 @@ func (s *userService) LoginUser(email vo.Email, password string) (string, vo.UUI
 	accessTokenStr, err := token.GenerateToken(user.UUID, accessTokenExpireSeconds)
 	if err != nil {
 		return "", vo.UUID{}, err
+	}
+
+	refreshTokenStr, err := token.GenerateToken(user.UUID, refreshTokenExpireSeconds)
+	if err != nil {
+		return "", vo.UUID{}, err
+	}
+
+	// リフレッシュトークンのidをユーザーのUUIDに設定
+	refreshTokenID, err := vo.NewUUID(user.UUID.String())
+	if err != nil {
+		return "", vo.UUID{}, fmt.Errorf("invalid user UUID: %w", err)
+	}
+
+	expiresAt := time.Now().Add(time.Duration(refreshTokenExpireSeconds) * time.Second).Unix()
+
+	// 新しいリフレッシュトークンをDynamoDBに保存
+	refreshToken := &entity.RefreshToken{
+		RefreshTokenID: refreshTokenID,
+		UserID:         user.ID,
+		Token:          refreshTokenStr,
+		ExpiresAt:      time.Unix(expiresAt, 0),
+		CreatedAt:      time.Now(),
+	}
+
+	if err := s.refreshTokenRepo.Put(context.Background(), refreshToken); err != nil {
+		return "", vo.UUID{}, fmt.Errorf("failed to save refresh token: %w", err)
 	}
 
 	return accessTokenStr, user.UUID, nil
