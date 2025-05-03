@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-auth/domain/dto"
+	"go-auth/domain/vo"
 	"go-auth/service"
 	"go-auth/usecase/user"
 	"go-auth/utils/token"
@@ -89,7 +90,7 @@ type LoginInput struct {
 // @Accept       json
 // @Produce      json
 // @Param        input  body      LoginInput           true  "ログイン情報"
-// @Success      200    {object}  dto.TokenResponse
+// @Success      200    {object}  dto.LoginResponse	 "ログイン成功時のレスポンス"
 // @Failure      400    {object}   dto.ErrorResponse  "バリデーションエラー"
 // @Failure      401    {object}   dto.ErrorResponse  "認証エラー"
 // @Router       /login [post]
@@ -101,12 +102,18 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
+		emailVO, err := vo.NewEmail(input.Email)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
 		loginInput := user.LoginInput{
-			Email:    input.Email,
+			Email:    *emailVO,
 			Password: input.Password,
 		}
 
-		tokenDTO, err := user.LoginUseCase(loginInput, userService)
+		loginResponse, err := user.LoginUseCase(loginInput, userService)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
@@ -116,25 +123,25 @@ func Login(userService service.UserService) gin.HandlerFunc {
 
 		c.SetCookie(
 			httpOnlyCookieName,
-			tokenDTO.Token,
-			maxAge, // Max-Age
-			"/",    // Path
-			"",     // Domain (指定しない)
-			false,  // Secure
-			true,   // HttpOnly
+			loginResponse.AccessToken,
+			maxAge,
+			"/",
+			"",
+			false,
+			true,
 		)
 
 		c.SetCookie(
 			authCheckCookieName,
 			"true",
-			maxAge, // Max-Age
-			"/",    // Path
-			"",     // Domain (指定しない)
-			false,  // Secure
-			false,  // HttpOnly
+			maxAge,
+			"/",
+			"",
+			false,
+			false,
 		)
 
-		c.JSON(http.StatusOK, dto.TokenResponse{Data: tokenDTO})
+		c.JSON(http.StatusOK, loginResponse)
 	}
 }
 

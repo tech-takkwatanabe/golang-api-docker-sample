@@ -27,20 +27,17 @@ definitions:
       error:
         type: string
     type: object
+  dto.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserSubDTO'
+    type: object
   dto.MessageResponse:
     properties:
       message:
         type: string
-    type: object
-  dto.TokenDTO:
-    properties:
-      token:
-        type: string
-    type: object
-  dto.TokenResponse:
-    properties:
-      data:
-        $ref: '#/definitions/dto.TokenDTO'
     type: object
   dto.UserDTO:
     properties:
@@ -83,6 +80,11 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/dto.UserDTO'
+    type: object
+  dto.UserSubDTO:
+    properties:
+      sub:
+        type: string
     type: object
   vo.DateTime:
     type: object
@@ -144,9 +146,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: ログイン成功時のレスポンス
           schema:
-            $ref: '#/definitions/dto.TokenResponse'
+            $ref: '#/definitions/dto.LoginResponse'
         "400":
           description: バリデーションエラー
           schema:

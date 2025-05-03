@@ -1,20 +1,27 @@
 package user
 
 import (
+	"fmt"
 	"go-auth/domain/dto"
+	"go-auth/domain/vo"
 	"go-auth/service"
 )
 
 type LoginInput struct {
-	Email    string
+	Email    vo.Email
 	Password string
 }
 
-func LoginUseCase(input LoginInput, svc service.UserService) (*dto.TokenDTO, error) {
-	token, err := svc.LoginUser(input.Email, input.Password)
+func LoginUseCase(input LoginInput, svc service.UserService) (*dto.LoginResponse, error) {
+	token, uuid, err := svc.LoginUser(input.Email, input.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("login failed: %w", err)
 	}
 
-	return &dto.TokenDTO{Token: token}, nil
+	return &dto.LoginResponse{
+		AccessToken: token,
+		User: dto.UserSubDTO{
+			Sub: uuid.String(),
+		},
+	}, nil
 }

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"go-auth/domain/dto"
 	"go-auth/domain/entity"
@@ -11,7 +10,6 @@ import (
 	"go-auth/utils/token"
 	"os"
 	"strconv"
-	"time"
 )
 
 var (
@@ -35,7 +33,7 @@ type UserService interface {
 	GetUserByID(id uint) (*dto.UserDTO, error)
 	GetUserBySub(uuid vo.UUID) (*dto.UserDTO, error)
 	RegisterUser(user *entity.User) error
-	LoginUser(email string, password string) (string, error)
+	LoginUser(email vo.Email, password string) (string, vo.UUID, error)
 }
 
 type userService struct {
@@ -86,53 +84,24 @@ func (s *userService) RegisterUser(user *entity.User) error {
 	return nil
 }
 
-func (s *userService) LoginUser(email string, password string) (string, error) {
-	emailVO, err := vo.NewEmail(email)
+func (s *userService) LoginUser(email vo.Email, password string) (string, vo.UUID, error) {
+	emailVO, err := vo.NewEmail(email.String())
 	if err != nil {
-		return "", fmt.Errorf("invalid email format")
+		return "", vo.UUID{}, fmt.Errorf("invalid email format")
 	}
 	user, err := s.repo.FindByEmail(*emailVO)
 	if err != nil {
-		return "", fmt.Errorf("invalid email")
+		return "", vo.UUID{}, fmt.Errorf("invalid email")
 	}
 
 	if !hash.CheckPasswordHash(password, user.Password) {
-		return "", fmt.Errorf("invalid password")
+		return "", vo.UUID{}, fmt.Errorf("invalid password")
 	}
 
 	accessTokenStr, err := token.GenerateToken(user.UUID, accessTokenExpireSeconds)
 	if err != nil {
-		return "", err
+		return "", vo.UUID{}, err
 	}
 
-	refreshTokenStr, err := token.GenerateToken(user.UUID, refreshTokenExpireSeconds)
-	if err != nil {
-		return "", err
-	}
-
-	// リフレッシュトークンのidをユーザーのUUIDに設定
-	refreshTokenID, err := vo.NewUUID(user.UUID.String())
-	if err != nil {
-		return "", fmt.Errorf("invalid user UUID: %w", err)
-	}
-
-	// 既存のリフレッシュトークンがあれば削除（オプション）
-	_ = s.refreshTokenRepo.Delete(context.Background(), refreshTokenID)
-
-	expiresAt := time.Now().Add(time.Duration(refreshTokenExpireSeconds) * time.Second).Unix()
-
-	// 新しいリフレッシュトークンをDynamoDBに保存
-	refreshToken := &entity.RefreshToken{
-		RefreshTokenID: refreshTokenID,
-		UserID:         user.ID,
-		Token:          refreshTokenStr,
-		ExpiresAt:      time.Unix(expiresAt, 0),
-		CreatedAt:      time.Now(),
-	}
-
-	if err := s.refreshTokenRepo.Put(context.Background(), refreshToken); err != nil {
-		return "", fmt.Errorf("failed to save refresh token: %w", err)
-	}
-
-	return accessTokenStr, nil
+	return accessTokenStr, user.UUID, nil
 }
