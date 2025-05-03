@@ -21,7 +21,7 @@ func LoginUseCase(input LoginInput, svc service.UserService) (*dto.LoginResponse
 	return &dto.LoginResponse{
 		AccessToken: token,
 		User: dto.UserSubDTO{
-			Sub: uuid.String(),
+			Sub: uuid,
 		},
 	}, nil
 }
