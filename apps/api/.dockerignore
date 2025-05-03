@@ -1,0 +1,18 @@
+# Docker関係
+docker/data/
+docker/mysql/
+docker-compose.yml
+
+# Git
+.git
+.gitignore
+
+# 実行ファイルやキャッシュ
+*.exe
+*.out
+*.test
+*.log
+*.pid
+*.ibd
+
+.DS_Store
