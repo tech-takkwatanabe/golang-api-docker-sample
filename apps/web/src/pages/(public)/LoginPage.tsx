@@ -9,6 +9,8 @@ import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
 import getIsAuthenticatedCookie from '@/utile/getIsAuthenticatedCookie';
+import { subAtom } from '@/atoms/authAtom';
+import { useSetAtom } from 'jotai';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -57,7 +59,6 @@ const LoginPage = () => {
   });
 
   const { mutate: loginMutation, status } = usePostLogin();
-
   const isLoading = status === 'pending';
 
   const translateError = (errorCode: string): string => {
@@ -71,12 +72,15 @@ const LoginPage = () => {
     }
   };
 
+  const setSub = useSetAtom(subAtom);
+
   const onSubmit = (data: LoginForm) => {
     loginMutation(
       { data },
       {
         onSuccess: (res: DtoLoginResponse) => {
-          if (res?.accessToken) {
+          if (res?.accessToken && res?.user?.sub) {
+            setSub(res.user.sub);
             navigate('/dashboard');
           }
         },

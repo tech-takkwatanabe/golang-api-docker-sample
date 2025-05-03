@@ -9,3 +9,6 @@ export const isLoadingAtom = atom(true);
 
 // 認証されているか
 export const isAuthenticatedAtom = atom((get) => !!get(userAtom));
+
+// sub（uuid）を保持
+export const subAtom = atom<string>('');
