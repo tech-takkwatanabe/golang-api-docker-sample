@@ -9,18 +9,18 @@ import (
 )
 
 type RegisterInput struct {
-	Name     string
-	Email    string
+	Name     vo.Name
+	Email    vo.Email
 	Password string
 }
 
 func RegisterUseCase(input RegisterInput, svc service.UserService) (*dto.UserDTO, error) {
-	name, err := vo.NewName(input.Name)
+	name, err := vo.NewName(input.Name.String())
 	if err != nil {
 		return nil, err
 	}
 
-	email, err := vo.NewEmail(input.Email)
+	email, err := vo.NewEmail(input.Email.String())
 	if err != nil {
 		return nil, err
 	}

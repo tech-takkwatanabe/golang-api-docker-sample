@@ -62,9 +62,21 @@ func Register(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
+		nameVO, err := vo.NewName(input.Name)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		emailVO, err := vo.NewEmail(input.Email)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
 		registerInput := user.RegisterInput{
-			Name:     input.Name,
-			Email:    input.Email,
+			Name:     *nameVO,
+			Email:    *emailVO,
 			Password: input.Password,
 		}
 
