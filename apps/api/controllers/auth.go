@@ -149,13 +149,13 @@ func Login(userService service.UserService) gin.HandlerFunc {
 // @Router       /loggedin/user [get]
 func CurrentUser(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userId, err := token.ExtractTokenId(c)
+		uuid, err := token.ExtractTokenSub(c)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
 		}
 
-		userDto, err := user.CurrentUserUseCase(userId, userService)
+		userDto, err := user.CurrentUserUseCase(uuid, userService)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return

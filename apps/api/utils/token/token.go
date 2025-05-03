@@ -1,7 +1,9 @@
 package token
 
 import (
+	"errors"
 	"fmt"
+	"go-auth/domain/vo"
 	"os"
 	"time"
 
@@ -25,11 +27,11 @@ func init() {
 	}
 }
 
-// 指定されたユーザーIDに基づいてJWTトークンを生成する
-func GenerateToken(id uint, expiresInSec int) (string, error) {
+// 指定されたuuidに基づいてJWTトークンを生成する
+func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["user_id"] = id
+	claims["sub"] = uuid.String()
 	claims["exp"] = time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -86,27 +88,29 @@ func TokenValid(c *gin.Context) error {
 	return nil
 }
 
-// トークンからユーザーIDを取得
-func ExtractTokenId(c *gin.Context) (uint, error) {
+// トークンからsub（uuid）を取得
+func ExtractTokenSub(c *gin.Context) (vo.UUID, error) {
 	tokenString := extractTokenFromCookie(c)
 
 	token, err := parseToken(tokenString)
-
 	if err != nil {
-		return 0, err
+		return vo.UUID{}, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-
-	if ok && token.Valid {
-		userId, ok := claims["user_id"].(float64)
-
-		if !ok {
-			return 0, nil
-		}
-
-		return uint(userId), nil
+	if !ok || !token.Valid {
+		return vo.UUID{}, errors.New("invalid token")
 	}
 
-	return 0, nil
+	sub, ok := claims["sub"].(string)
+	if !ok {
+		return vo.UUID{}, errors.New("sub claim not found or not a string")
+	}
+
+	uuidVO, err := vo.NewUUID(sub)
+	if err != nil {
+		return vo.UUID{}, fmt.Errorf("invalid uuid format: %w", err)
+	}
+
+	return *uuidVO, nil
 }

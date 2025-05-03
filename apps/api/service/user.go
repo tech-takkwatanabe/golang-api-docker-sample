@@ -33,6 +33,7 @@ func init() {
 
 type UserService interface {
 	GetUserByID(id uint) (*dto.UserDTO, error)
+	GetUserBySub(uuid vo.UUID) (*dto.UserDTO, error)
 	RegisterUser(user *entity.User) error
 	LoginUser(email string, password string) (string, error)
 }
@@ -51,6 +52,14 @@ func NewUserService(repo repository.UserRepository, refreshTokenRepo repository.
 
 func (s *userService) GetUserByID(id uint) (*dto.UserDTO, error) {
 	user, err := s.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return user.ToDTO(), nil
+}
+
+func (s *userService) GetUserBySub(uuid vo.UUID) (*dto.UserDTO, error) {
+	user, err := s.repo.FindByUUID(uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -91,12 +100,12 @@ func (s *userService) LoginUser(email string, password string) (string, error) {
 		return "", fmt.Errorf("invalid password")
 	}
 
-	accessTokenStr, err := token.GenerateToken(user.ID, accessTokenExpireSeconds)
+	accessTokenStr, err := token.GenerateToken(user.UUID, accessTokenExpireSeconds)
 	if err != nil {
 		return "", err
 	}
 
-	refreshTokenStr, err := token.GenerateToken(user.ID, refreshTokenExpireSeconds)
+	refreshTokenStr, err := token.GenerateToken(user.UUID, refreshTokenExpireSeconds)
 	if err != nil {
 		return "", err
 	}

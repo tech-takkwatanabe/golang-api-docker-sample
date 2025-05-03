@@ -8,6 +8,7 @@ import (
 
 type UserRepository interface {
 	FindByID(id uint) (*entity.User, error)
+	FindByUUID(uuid vo.UUID) (*entity.User, error)
 	FindByEmail(email vo.Email) (*entity.User, error)
 	Save(user *entity.User) error
 }
@@ -21,6 +22,14 @@ func NewUserRepository() UserRepository {
 func (r *userRepository) FindByID(id uint) (*entity.User, error) {
 	var model models.User
 	if err := models.DB.First(&model, id).Error; err != nil {
+		return nil, err
+	}
+	return models.ToEntity(&model)
+}
+
+func (r *userRepository) FindByUUID(uuid vo.UUID) (*entity.User, error) {
+	var model models.User
+	if err := models.DB.First(&model, uuid).Error; err != nil {
 		return nil, err
 	}
 	return models.ToEntity(&model)
