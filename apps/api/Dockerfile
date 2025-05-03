@@ -2,6 +2,7 @@ FROM golang:1.24.2
 
 ENV GO111MODULE=on
 ENV PATH="/go/bin:${PATH}"
+ENV GOCACHE=/tmp/.cache/go-build
 
 WORKDIR /app
 
@@ -11,6 +12,12 @@ RUN go mod tidy
 
 COPY . .
 
-RUN go install github.com/air-verse/air@latest
+# ビルドキャッシュ節約のために先に swag 入れる
+RUN go install github.com/swaggo/swag/cmd/swag@latest \
+  && cp /go/bin/swag /usr/local/bin/ \
+  && go clean -cache
+
+RUN go install github.com/air-verse/air@latest \
+  && go clean -cache
 
 CMD ["air", "-c", ".air.toml"]
