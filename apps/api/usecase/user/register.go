@@ -26,12 +26,12 @@ func RegisterUseCase(input RegisterInput, svc service.UserService) (*dto.UserDTO
 	}
 
 	// uuid生成
-	uid := vo.NewUUIDv7()
+	uuid := vo.NewUUIDv7()
 
 	now := vo.NewDateTime(time.Now())
 
 	user := &entity.User{
-		UUID:      *uid,
+		UUID:      *uuid,
 		Name:      *name,
 		Email:     *email,
 		Password:  input.Password,
