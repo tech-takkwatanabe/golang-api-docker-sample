@@ -56,6 +56,8 @@ func main() {
 	protected.GET("/user", controllers.CurrentUser(userService))
 	// ログアウト
 	protected.POST("/logout", controllers.Logout())
+	// トークンリフレッシュ
+	protected.POST("/refresh", controllers.Refresh(userService))
 
 	router.Run(":8080")
 }

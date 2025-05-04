@@ -14,20 +14,30 @@ import (
 )
 
 var (
-	accessTokenExpireSeconds int
-	httpOnlyCookieName       string
-	authCheckCookieName      string
+	accessTokenExpireSeconds  int
+	refreshTokenExpireSeconds int
+	accessTokenCookieName     string
+	refreshTokenCookieName    string
+	authCheckCookieName       string
 )
 
 func init() {
 	var err error
 	accessTokenExpireSeconds, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
 	if err != nil {
-		accessTokenExpireSeconds = 900
+		accessTokenExpireSeconds = 3600 * 24
 	}
-	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
-	if httpOnlyCookieName == "" {
-		httpOnlyCookieName = "accessTokenFromGoBackend"
+	refreshTokenExpireSeconds, err = strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRE_SECONDS"))
+	if err != nil {
+		refreshTokenExpireSeconds = 3600 * 24 * 7
+	}
+	accessTokenCookieName = os.Getenv("ACCESS_TOKEN_COOKIE_NAME")
+	if accessTokenCookieName == "" {
+		accessTokenCookieName = "accessTokenFromGoBackend"
+	}
+	refreshTokenCookieName = os.Getenv("REFRESH_TOKEN_COOKIE_NAME")
+	if refreshTokenCookieName == "" {
+		refreshTokenCookieName = "refreshTokenFromGoBackend"
 	}
 	authCheckCookieName = os.Getenv("AUTH_CHECK_COOKIE_NAME")
 	if authCheckCookieName == "" {
@@ -134,13 +144,13 @@ func Login(userService service.UserService) gin.HandlerFunc {
 		maxAge := accessTokenExpireSeconds
 
 		c.SetCookie(
-			httpOnlyCookieName,
+			accessTokenCookieName,
 			loginResponse.AccessToken,
 			maxAge,
 			"/",
 			"",
 			false,
-			true,
+			true, // HttpOnly
 		)
 
 		c.SetCookie(
@@ -153,6 +163,16 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			false,
 		)
 
+		c.SetCookie(
+			refreshTokenCookieName,
+			loginResponse.RefreshToken,
+			refreshTokenExpireSeconds,
+			"/",
+			"",
+			false,
+			true, // HttpOnly
+		)
+
 		c.JSON(http.StatusOK, loginResponse)
 	}
 }
@@ -162,13 +182,13 @@ func Login(userService service.UserService) gin.HandlerFunc {
 // @Description  トークンを元にログイン中のユーザー情報を返す
 // @Tags         auth
 // @Produce      json
-// @Security     BearerAuth
+// @Security     AccessToken
 // @Success      200  {object}  dto.UserDTOResponse
 // @Failure      401  {object}   dto.ErrorResponse  "認証エラー"
 // @Router       /loggedin/user [get]
 func CurrentUser(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uuid, err := token.ExtractTokenSub(c)
+		uuid, err := token.ExtractTokenSub(c, accessTokenCookieName)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
@@ -189,30 +209,91 @@ func CurrentUser(userService service.UserService) gin.HandlerFunc {
 // @Description  アクセストークンのCookieを削除します
 // @Tags         auth
 // @Produce      json
+// @Security     AccessToken
 // @Success      200  {object}  dto.MessageResponse  "ログアウト成功"
 // @Router       /loggedin/logout [post]
 func Logout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie(
-			httpOnlyCookieName,
-			"",    // 空にする
-			-1,    // Max-Ageを負数にすると即時削除される
-			"/",   // Path
-			"",    // Domain（省略）
-			false, // Secure（必要なら true に）
-			true,  // HttpOnly
+			accessTokenCookieName,
+			"", // 空にする
+			-1, // Max-Ageを負数にすると即時削除される
+			"/",
+			"",
+			false,
+			true,
 		)
 
 		c.SetCookie(
 			authCheckCookieName,
 			"",
-			-1,    // Max-Age
-			"/",   // Path
-			"",    // Domain (指定しない)
-			false, // Secure
-			false, // HttpOnly
+			-1,
+			"/",
+			"",
+			false,
+			false,
+		)
+
+		c.SetCookie(
+			refreshTokenCookieName,
+			"",
+			-1,
+			"/",
+			"",
+			false,
+			true,
 		)
 
 		c.JSON(http.StatusOK, dto.MessageResponse{Message: "Logged out successfully"})
+	}
+}
+
+// Refresh godoc
+// @Summary      トークンリフレッシュ
+// @Description  リフレッシュトークンを使用して新しいアクセストークンを生成して返します
+// @Tags         auth
+// @Produce      json
+// @Security     Sub
+// @Success      200  {object}  dto.TokenRefreshResponse
+// @Failure      401  {object}   dto.ErrorResponse  "認証エラー"
+// @Failure      400  {object}   dto.ErrorResponse  "リフレッシュトークンエラー"
+// @Router       /loggedin/refresh [post]
+func Refresh(userService service.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		uuid, err := token.ExtractTokenSub(c, refreshTokenCookieName)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: "Invalid refresh token"})
+			return
+		}
+
+		TokenRefreshResponse, err := user.RefreshUseCase(uuid, userService)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		maxAge := accessTokenExpireSeconds
+
+		c.SetCookie(
+			accessTokenCookieName,
+			TokenRefreshResponse.AccessToken,
+			maxAge,
+			"/",
+			"",
+			false,
+			true,
+		)
+
+		c.SetCookie(
+			authCheckCookieName,
+			"true",
+			maxAge,
+			"/",
+			"",
+			false,
+			false,
+		)
+
+		c.JSON(http.StatusOK, TokenRefreshResponse)
 	}
 }

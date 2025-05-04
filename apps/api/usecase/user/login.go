@@ -13,13 +13,14 @@ type LoginInput struct {
 }
 
 func LoginUseCase(input LoginInput, svc service.UserService) (*dto.LoginResponse, error) {
-	token, uuid, err := svc.LoginUser(input.Email, input.Password)
+	accessToken, refreshToken, uuid, err := svc.LoginUser(input.Email, input.Password)
 	if err != nil {
 		return nil, fmt.Errorf("login failed: %w", err)
 	}
 
 	return &dto.LoginResponse{
-		AccessToken: token,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 		User: dto.UserSubDTO{
 			Sub: uuid,
 		},

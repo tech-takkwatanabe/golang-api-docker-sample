@@ -7,39 +7,35 @@ import (
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
-	httpOnlyCookieName string
-	apiSecret          string
+	apiSecret string
 )
 
 func init() {
-	httpOnlyCookieName = os.Getenv("HTTP_ONLY_COOKIE_NAME")
-	if httpOnlyCookieName == "" {
-		httpOnlyCookieName = "accessTokenFromGoBackend"
-	}
 	apiSecret = os.Getenv("API_SECRET")
 	if apiSecret == "" {
 		apiSecret = "apiSecret"
 	}
 }
 
-// 指定されたuuidに基づいてJWTトークンを生成する
+// トークン生成
 func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["sub"] = uuid.String()
-	claims["exp"] = time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix()
+	claims := jwt.MapClaims{
+		"authorized": true,
+		"sub":        uuid.String(),
+		"exp":        time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix(),
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(apiSecret))
 }
 
-// Authorization headerからトークンを抽出抽出する場合
-// func extractTokenFromString(c *gin.Context) string {
+// Authorization header からトークン取得の場合
+// func extractTokenFromHeader(c *gin.Context) string {
 // 	bearerToken := c.Request.Header.Get("Authorization")
 // 	strArr := strings.Split(bearerToken, " ")
 // 	if len(strArr) == 2 {
@@ -48,35 +44,30 @@ func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 // 	return ""
 // }
 
-func extractTokenFromCookie(c *gin.Context) string {
-	cookie, err := c.Cookie(httpOnlyCookieName)
+// 任意の Cookie 名からトークンを取得
+func extractTokenFromCookie(c *gin.Context, cookieName string) string {
+	cookie, err := c.Cookie(cookieName)
 	if err != nil {
 		return ""
 	}
 	return cookie
 }
 
+// トークンパース（v5 のパース関数は引数が増えている）
 func parseToken(tokenString string) (*jwt.Token, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// 署名方法がHMACであることを検証
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("there was an error")
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(apiSecret), nil
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return token, nil
 }
 
-// トークンが有効かどうかを検証
-func TokenValid(c *gin.Context) error {
-	tokenString := extractTokenFromCookie(c)
-
+// トークンが有効かチェック
+func TokenValid(c *gin.Context, cookieName string) error {
+	tokenString := extractTokenFromCookie(c, cookieName)
 	token, err := parseToken(tokenString)
-
 	if err != nil {
 		return err
 	}
@@ -88,10 +79,9 @@ func TokenValid(c *gin.Context) error {
 	return nil
 }
 
-// トークンからsub（uuid）を取得
-func ExtractTokenSub(c *gin.Context) (vo.UUID, error) {
-	tokenString := extractTokenFromCookie(c)
-
+// uuid を sub claim から取得
+func ExtractTokenSub(c *gin.Context, cookieName string) (vo.UUID, error) {
+	tokenString := extractTokenFromCookie(c, cookieName)
 	token, err := parseToken(tokenString)
 	if err != nil {
 		return vo.UUID{}, err
