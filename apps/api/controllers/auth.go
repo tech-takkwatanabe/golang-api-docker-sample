@@ -253,7 +253,7 @@ func Logout() gin.HandlerFunc {
 // @Description  リフレッシュトークンを使用して新しいアクセストークンを生成して返します
 // @Tags         auth
 // @Produce      json
-// @Security     Sub
+// @Security     RefreshToken
 // @Success      200  {object}  dto.TokenRefreshResponse
 // @Failure      401  {object}   dto.ErrorResponse  "認証エラー"
 // @Failure      400  {object}   dto.ErrorResponse  "リフレッシュトークンエラー"

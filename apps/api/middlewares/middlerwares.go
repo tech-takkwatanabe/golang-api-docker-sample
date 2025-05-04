@@ -21,9 +21,9 @@ func init() {
 }
 
 // JwtAuthMiddleware はJWT認証を行うミドルウェアを返します
-func JwtAuthMiddleware() gin.HandlerFunc {
+func JwtAuthMiddleware(cookieName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		err := token.TokenValid(c, accessTokenCookieName)
+		err := token.TokenValid(c, cookieName)
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})

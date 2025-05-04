@@ -44,7 +44,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "Sub": []
+                        "RefreshToken": []
                     }
                 ],
                 "description": "リフレッシュトークンを使用して新しいアクセストークンを生成して返します",
