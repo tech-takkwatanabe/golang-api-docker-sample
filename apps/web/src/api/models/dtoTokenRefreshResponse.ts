@@ -5,10 +5,7 @@
  * Gin + JWT 認証API
  * OpenAPI spec version: 1.0
  */
-import type { DtoUserSubDTO } from './dtoUserSubDTO';
 
-export interface DtoLoginResponse {
+export interface DtoTokenRefreshResponse {
   accessToken?: string;
-  refreshToken?: string;
-  user?: DtoUserSubDTO;
 }

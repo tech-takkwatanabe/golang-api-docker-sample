@@ -8,7 +8,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { DataTag, DefinedInitialDataOptions, DefinedUseQueryResult, MutationFunction, QueryClient, QueryFunction, QueryKey, UndefinedInitialDataOptions, UseMutationOptions, UseMutationResult, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
-import type { ControllersLoginInput, ControllersRegisterInput, DtoErrorResponse, DtoLoginResponse, DtoMessageResponse, DtoUserDTOResponse } from '.././models';
+import type { ControllersLoginInput, ControllersRegisterInput, DtoErrorResponse, DtoLoginResponse, DtoMessageResponse, DtoTokenRefreshResponse, DtoUserDTOResponse } from '.././models';
 
 import { customInstance } from '.././mutator/custom-instance';
 
@@ -48,6 +48,43 @@ export const usePostLoggedinLogout = <TError = unknown, TContext = unknown>(
   queryClient?: QueryClient
 ): UseMutationResult<Awaited<ReturnType<typeof postLoggedinLogout>>, TError, void, TContext> => {
   const mutationOptions = getPostLoggedinLogoutMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * リフレッシュトークンを使用して新しいアクセストークンを生成して返します
+ * @summary トークンリフレッシュ
+ */
+export const postLoggedinRefresh = (options?: SecondParameter<typeof customInstance>, signal?: AbortSignal) => {
+  return customInstance<DtoTokenRefreshResponse>({ url: `/loggedin/refresh`, method: 'POST', signal }, options);
+};
+
+export const getPostLoggedinRefreshMutationOptions = <TError = DtoErrorResponse, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<Awaited<ReturnType<typeof postLoggedinRefresh>>, TError, void, TContext>;
+  request?: SecondParameter<typeof customInstance>;
+}): UseMutationOptions<Awaited<ReturnType<typeof postLoggedinRefresh>>, TError, void, TContext> => {
+  const mutationKey = ['postLoggedinRefresh'];
+  const { mutation: mutationOptions, request: requestOptions } = options ? (options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ? options : { ...options, mutation: { ...options.mutation, mutationKey } }) : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof postLoggedinRefresh>>, void> = () => {
+    return postLoggedinRefresh(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type PostLoggedinRefreshMutationResult = NonNullable<Awaited<ReturnType<typeof postLoggedinRefresh>>>;
+
+export type PostLoggedinRefreshMutationError = DtoErrorResponse;
+
+/**
+ * @summary トークンリフレッシュ
+ */
+export const usePostLoggedinRefresh = <TError = DtoErrorResponse, TContext = unknown>(
+  options?: { mutation?: UseMutationOptions<Awaited<ReturnType<typeof postLoggedinRefresh>>, TError, void, TContext>; request?: SecondParameter<typeof customInstance> },
+  queryClient?: QueryClient
+): UseMutationResult<Awaited<ReturnType<typeof postLoggedinRefresh>>, TError, void, TContext> => {
+  const mutationOptions = getPostLoggedinRefreshMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

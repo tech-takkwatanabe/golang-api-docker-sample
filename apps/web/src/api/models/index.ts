@@ -11,6 +11,7 @@ export * from './controllersRegisterInput';
 export * from './dtoErrorResponse';
 export * from './dtoLoginResponse';
 export * from './dtoMessageResponse';
+export * from './dtoTokenRefreshResponse';
 export * from './dtoUserDTO';
 export * from './dtoUserDTOResponse';
 export * from './dtoUserSubDTO';

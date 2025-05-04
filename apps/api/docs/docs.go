@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/loggedin/logout": {
             "post": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
                 "description": "アクセストークンのCookieを削除します",
                 "produces": [
                     "application/json"
@@ -35,11 +40,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/loggedin/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "Sub": []
+                    }
+                ],
+                "description": "リフレッシュトークンを使用して新しいアクセストークンを生成して返します",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "トークンリフレッシュ",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.TokenRefreshResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "リフレッシュトークンエラー",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "認証エラー",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/loggedin/user": {
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "AccessToken": []
                     }
                 ],
                 "description": "トークンを元にログイン中のユーザー情報を返す",
@@ -202,6 +244,9 @@ const docTemplate = `{
                 "accessToken": {
                     "type": "string"
                 },
+                "refreshToken": {
+                    "type": "string"
+                },
                 "user": {
                     "$ref": "#/definitions/dto.UserSubDTO"
                 }
@@ -211,6 +256,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TokenRefreshResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
                     "type": "string"
                 }
             }
