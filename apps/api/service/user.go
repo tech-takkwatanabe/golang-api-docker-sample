@@ -23,11 +23,11 @@ func init() {
 	var err error
 	accessTokenExpireSeconds, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
 	if err != nil {
-		accessTokenExpireSeconds = 900
+		accessTokenExpireSeconds = 3600 * 24
 	}
 	refreshTokenExpireSeconds, err = strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRE_SECONDS"))
 	if err != nil {
-		refreshTokenExpireSeconds = 3600
+		refreshTokenExpireSeconds = 3600 * 24 * 7
 	}
 }
 
