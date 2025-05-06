@@ -1,17 +1,20 @@
 package main
 
 import (
+	"go-auth/config"
 	"go-auth/controllers"
 	"go-auth/domain/repository"
 	"go-auth/middlewares"
 	"go-auth/models"
 	"go-auth/service"
+	"log"
 	"os"
 
 	_ "go-auth/docs"
 	dynamodbRepo "go-auth/infrastructure/dynamodb"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -42,6 +45,11 @@ func init() {
 // @description JWTトークンをAuthorizationヘッダーに含めてください
 // @host      localhost:8080
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+	config.LoadConfig()
 	models.ConnectDataBase()
 	router := gin.Default()
 

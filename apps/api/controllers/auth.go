@@ -1,49 +1,16 @@
 package controllers
 
 import (
+	"go-auth/config"
 	"go-auth/domain/dto"
 	"go-auth/domain/vo"
 	"go-auth/service"
 	"go-auth/usecase/user"
 	"go-auth/utils/token"
 	"net/http"
-	"os"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-var (
-	accessTokenExpireSeconds  int
-	refreshTokenExpireSeconds int
-	accessTokenCookieName     string
-	refreshTokenCookieName    string
-	authCheckCookieName       string
-)
-
-func init() {
-	var err error
-	accessTokenExpireSeconds, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
-	if err != nil {
-		accessTokenExpireSeconds = 3600 * 24
-	}
-	refreshTokenExpireSeconds, err = strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRE_SECONDS"))
-	if err != nil {
-		refreshTokenExpireSeconds = 3600 * 24 * 7
-	}
-	accessTokenCookieName = os.Getenv("ACCESS_TOKEN_COOKIE_NAME")
-	if accessTokenCookieName == "" {
-		accessTokenCookieName = "accessTokenFromGoBackend"
-	}
-	refreshTokenCookieName = os.Getenv("REFRESH_TOKEN_COOKIE_NAME")
-	if refreshTokenCookieName == "" {
-		refreshTokenCookieName = "refreshTokenFromGoBackend"
-	}
-	authCheckCookieName = os.Getenv("AUTH_CHECK_COOKIE_NAME")
-	if authCheckCookieName == "" {
-		authCheckCookieName = "isAuthenticatedByGoBackend"
-	}
-}
 
 // RegisterInput represents the input for user registration
 // @swagger:model
@@ -141,10 +108,10 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		maxAge := accessTokenExpireSeconds
+		maxAge := config.AccessTokenExpireSeconds
 
 		c.SetCookie(
-			accessTokenCookieName,
+			config.AccessTokenCookieName,
 			loginResponse.AccessToken,
 			maxAge,
 			"/",
@@ -154,7 +121,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			authCheckCookieName,
+			config.AuthCheckCookieName,
 			"true",
 			maxAge,
 			"/",
@@ -164,9 +131,9 @@ func Login(userService service.UserService) gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			refreshTokenCookieName,
+			config.RefreshTokenCookieName,
 			loginResponse.RefreshToken,
-			refreshTokenExpireSeconds,
+			config.RefreshTokenExpireSeconds,
 			"/",
 			"",
 			false,
@@ -188,7 +155,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 // @Router       /loggedin/user [get]
 func CurrentUser(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uuid, err := token.ExtractTokenSub(c, accessTokenCookieName)
+		uuid, err := token.ExtractTokenSub(c, config.AccessTokenCookieName)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
@@ -215,7 +182,7 @@ func CurrentUser(userService service.UserService) gin.HandlerFunc {
 func Logout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie(
-			accessTokenCookieName,
+			config.AccessTokenCookieName,
 			"", // 空にする
 			-1, // Max-Ageを負数にすると即時削除される
 			"/",
@@ -225,7 +192,7 @@ func Logout() gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			authCheckCookieName,
+			config.AuthCheckCookieName,
 			"",
 			-1,
 			"/",
@@ -235,7 +202,7 @@ func Logout() gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			refreshTokenCookieName,
+			config.RefreshTokenCookieName,
 			"",
 			-1,
 			"/",
@@ -260,7 +227,7 @@ func Logout() gin.HandlerFunc {
 // @Router       /loggedin/refresh [post]
 func Refresh(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uuid, err := token.ExtractTokenSub(c, refreshTokenCookieName)
+		uuid, err := token.ExtractTokenSub(c, config.RefreshTokenCookieName)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: "Invalid refresh token"})
 			return
@@ -272,10 +239,10 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		maxAge := accessTokenExpireSeconds
+		maxAge := config.AccessTokenExpireSeconds
 
 		c.SetCookie(
-			accessTokenCookieName,
+			config.AccessTokenCookieName,
 			TokenRefreshResponse.AccessToken,
 			maxAge,
 			"/",
@@ -285,7 +252,7 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 		)
 
 		c.SetCookie(
-			authCheckCookieName,
+			config.AuthCheckCookieName,
 			"true",
 			maxAge,
 			"/",

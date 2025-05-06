@@ -3,33 +3,15 @@ package service
 import (
 	"context"
 	"fmt"
+	"go-auth/config"
 	"go-auth/domain/dto"
 	"go-auth/domain/entity"
 	"go-auth/domain/repository"
 	"go-auth/domain/vo"
 	"go-auth/utils/hash"
 	"go-auth/utils/token"
-	"os"
-	"strconv"
 	"time"
 )
-
-var (
-	accessTokenExpireSeconds  int
-	refreshTokenExpireSeconds int
-)
-
-func init() {
-	var err error
-	accessTokenExpireSeconds, err = strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRE_SECONDS"))
-	if err != nil {
-		accessTokenExpireSeconds = 3600 * 24
-	}
-	refreshTokenExpireSeconds, err = strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRE_SECONDS"))
-	if err != nil {
-		refreshTokenExpireSeconds = 3600 * 24 * 7
-	}
-}
 
 type UserService interface {
 	GetUserByID(id uint) (*dto.UserDTO, error)
@@ -124,12 +106,12 @@ func (s *userService) LoginUser(email vo.Email, password string) (string, string
 		return "", "", vo.UUID{}, fmt.Errorf("invalid password")
 	}
 
-	accessTokenStr, err := token.GenerateToken(user.UUID, accessTokenExpireSeconds)
+	accessTokenStr, err := token.GenerateToken(user.UUID, config.AccessTokenExpireSeconds)
 	if err != nil {
 		return "", "", vo.UUID{}, err
 	}
 
-	refreshTokenStr, err := token.GenerateToken(user.UUID, refreshTokenExpireSeconds)
+	refreshTokenStr, err := token.GenerateToken(user.UUID, config.RefreshTokenExpireSeconds)
 	if err != nil {
 		return "", "", vo.UUID{}, err
 	}
@@ -140,13 +122,13 @@ func (s *userService) LoginUser(email vo.Email, password string) (string, string
 		return "", "", vo.UUID{}, fmt.Errorf("invalid user UUID: %w", err)
 	}
 
-	expiresAt := time.Now().Add(time.Duration(refreshTokenExpireSeconds) * time.Second).Unix()
+	expiresAt := time.Now().Add(time.Duration(config.RefreshTokenExpireSeconds) * time.Second).Unix()
 
 	refreshToken := &entity.RefreshToken{
 		RefreshTokenID: refreshTokenID,
 		UserID:         user.ID,
 		Token:          refreshTokenStr,
-		ExpiresAt:      time.Unix(expiresAt, 0),
+		ExpiresAt:      expiresAt,
 		CreatedAt:      time.Now(),
 	}
 	// 新しいリフレッシュトークンをDynamoDBに保存
@@ -168,11 +150,11 @@ func (s *userService) RefreshToken(refreshTokenID vo.UUID) (*dto.TokenRefreshRes
 		return nil, fmt.Errorf("failed to get refresh token: %w", err)
 	}
 
-	if time.Now().After(refreshToken.ExpiresAt) {
+	if time.Now().After(time.Unix(refreshToken.ExpiresAt, 0)) {
 		return nil, fmt.Errorf("refresh token expired")
 	}
 
-	newAccessTokenStr, err := token.GenerateToken(*refreshToken.RefreshTokenID, accessTokenExpireSeconds)
+	newAccessTokenStr, err := token.GenerateToken(*refreshToken.RefreshTokenID, config.AccessTokenExpireSeconds)
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate access token: %w", err)
 	}
