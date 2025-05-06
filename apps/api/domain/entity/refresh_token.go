@@ -9,6 +9,6 @@ type RefreshToken struct {
 	RefreshTokenID *vo.UUID // user.uuid
 	UserID         uint
 	Token          string
-	ExpiresAt      time.Time
+	ExpiresAt      int64
 	CreatedAt      time.Time
 }
