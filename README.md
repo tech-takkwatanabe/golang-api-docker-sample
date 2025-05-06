@@ -101,6 +101,7 @@ pnpm dev
 - Zod
 - jotai
 - craco
+- TanStack Query
 - ESLint（FlatConfig対応）
 - Prettier
 
