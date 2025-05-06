@@ -10,7 +10,7 @@ import type { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom } from '@/atoms/authAtom';
-import getIsAuthenticatedCookie from '@/utile/getIsAuthenticatedCookie';
+import getIsAuthenticatedCookie from '@/util/getIsAuthenticatedCookie';
 
 const registerSchema = z.object({
   name: nameSchema,

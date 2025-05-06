@@ -8,7 +8,7 @@ import type { DtoErrorResponse, DtoLoginResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
 import type { AxiosError } from 'axios';
-import getIsAuthenticatedCookie from '@/utile/getIsAuthenticatedCookie';
+import getIsAuthenticatedCookie from '@/util/getIsAuthenticatedCookie';
 import { subAtom } from '@/atoms/authAtom';
 import { useSetAtom } from 'jotai';
 
