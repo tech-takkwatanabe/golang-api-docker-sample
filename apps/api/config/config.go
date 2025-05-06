@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	AccessTokenExpireSeconds  int
-	RefreshTokenExpireSeconds int
-	AccessTokenCookieName     string
-	RefreshTokenCookieName    string
-	AuthCheckCookieName       string
+	AccessTokenExpireSeconds         int
+	RefreshTokenExpireSeconds        int
+	AccessTokenCookieName            string
+	RefreshTokenCookieName           string
+	AuthCheckCookieName              string
+	RefreshTokenExistCheckCookieName string
 )
 
 func LoadConfig() {
@@ -39,6 +40,11 @@ func LoadConfig() {
 	AuthCheckCookieName = os.Getenv("AUTH_CHECK_COOKIE_NAME")
 	if AuthCheckCookieName == "" {
 		AuthCheckCookieName = "isAuthenticatedByGoBackend"
+	}
+
+	RefreshTokenExistCheckCookieName = os.Getenv("REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME")
+	if RefreshTokenExistCheckCookieName == "" {
+		RefreshTokenExistCheckCookieName = "refreshTokenByGoBackendExists"
 	}
 
 	if AccessTokenExpireSeconds == 0 || RefreshTokenExpireSeconds == 0 {

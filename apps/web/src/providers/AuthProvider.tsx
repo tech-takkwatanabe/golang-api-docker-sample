@@ -1,12 +1,20 @@
-// apps/web/src/providers/AuthProvider.tsx
 import React, { useEffect } from 'react';
 import { useGetLoggedinUser } from '@/api/auth/auth';
 import { useSetAtom } from 'jotai';
 import { userAtom, isLoadingAtom } from '@/atoms/authAtom';
+import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useEffect(() => {
+    const checkeRefreshTokenExistsCookie = getRefreshTokenExistsCookie();
+    if (!checkeRefreshTokenExistsCookie) {
+      window.location.href = '/login';
+    }
+  }, []);
+
   const setUser = useSetAtom(userAtom);
   const setLoading = useSetAtom(isLoadingAtom);
+
   const { data, isLoading, isError } = useGetLoggedinUser({ query: { retry: false } });
 
   useEffect(() => {

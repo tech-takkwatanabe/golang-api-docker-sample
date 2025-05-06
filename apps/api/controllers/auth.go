@@ -140,6 +140,16 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			true, // HttpOnly
 		)
 
+		c.SetCookie(
+			config.RefreshTokenExistCheckCookieName,
+			"true",
+			config.RefreshTokenExpireSeconds,
+			"/",
+			"",
+			false,
+			false,
+		)
+
 		c.JSON(http.StatusOK, loginResponse)
 	}
 }
@@ -183,8 +193,8 @@ func Logout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.SetCookie(
 			config.AccessTokenCookieName,
-			"", // 空にする
-			-1, // Max-Ageを負数にすると即時削除される
+			"",
+			-1,
 			"/",
 			"",
 			false,
@@ -209,6 +219,16 @@ func Logout() gin.HandlerFunc {
 			"",
 			false,
 			true,
+		)
+
+		c.SetCookie(
+			config.RefreshTokenExistCheckCookieName,
+			"",
+			-1,
+			"/",
+			"",
+			false,
+			false,
 		)
 
 		c.JSON(http.StatusOK, dto.MessageResponse{Message: "Logged out successfully"})

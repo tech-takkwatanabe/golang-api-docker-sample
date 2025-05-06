@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 const AuthenticatedLayout = () => (
   <AuthProvider>
     <ProtectedRoute>
-      <Outlet /> {/* ネストされたルートがここに描画される */}
+      <Outlet />
     </ProtectedRoute>
   </AuthProvider>
 );
@@ -37,8 +37,8 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
           </Route>
         </Routes>
-        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </Router>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
     </QueryClientProvider>
   );
 }
