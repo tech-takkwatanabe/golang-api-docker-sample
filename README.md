@@ -41,19 +41,30 @@
 .
 ├── apps/
 │   ├── api/          # Go言語で実装されたバックエンドAPI
+│   │   ├── config/      # 定数
 │   │   ├── controllers/  # APIコントローラー
+│   │   ├── docs/        # APIドキュメント生成
+│   │   ├── docker/      # Docker関連ファイル
 │   │   ├── domain/      # ドメインモデル
+│   │   ├── infrastructure/  # インフラ層
+│   │   ├── internal/    # AWS接続用
 │   │   ├── middlewares/ # ミドルウェア
 │   │   ├── models/      # データモデル
 │   │   ├── service/     # ビジネスロジック
-│   │   ├── usecase/     # ユースケース
-│   │   ├── utils/       # ユーティリティ
-│   │   ├── docs/        # APIドキュメント
 │   │   ├── test/        # テストコード
-│   │   └── docker/      # Docker関連ファイル
+│   │   ├── utils/       # ユーティリティ
+│   │   ├── usecase/     # ユースケース
+│   │   └── utils/      　# ユーティリティ
 │   │
 │   └── web/           # Reactで実装されたフロントエンド
 │       ├── src/        # ソースコード
+│       │   ├── api/    # APIクライアント生成
+│       │   ├── atoms/  # jotaiのアトム
+│       │   ├── hooks/  # カスタムフック
+│       │   ├── pages/  # ページコンポーネント
+│       │   ├── providers/ # プロバイダー
+│       │   ├── schemas/   # Zodスキーマ
+│       │   └── utils/     # ユーティリティ
 │       ├── public/     # 静的ファイル
 │       └── node_modules/ # 依存パッケージ
 │
