@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"go-auth/domain/entity"
 	"go-auth/domain/vo"
-	awsclient "go-auth/internal/aws"
+	awsclient "go-auth/external/aws"
 	awsutil "go-auth/utils/aws"
 	timeutil "go-auth/utils/time"
 	"os"

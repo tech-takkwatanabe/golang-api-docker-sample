@@ -47,8 +47,8 @@
 │   │   ├── docs/        # APIドキュメント生成
 │   │   ├── docker/      # Docker関連ファイル
 │   │   ├── domain/      # ドメインモデル
+│   │   ├── external/    # 外部接続
 │   │   ├── infrastructure/  # インフラ層
-│   │   ├── internal/    # AWS接続用
 │   │   ├── middlewares/ # ミドルウェア
 │   │   ├── models/      # データモデル
 │   │   ├── service/     # ビジネスロジック

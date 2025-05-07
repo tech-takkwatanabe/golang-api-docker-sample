@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
 
-	"go-auth/internal/aws"
+	"go-auth/external/aws"
 )
 
 func main() {
