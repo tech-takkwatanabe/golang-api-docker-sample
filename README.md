@@ -117,6 +117,9 @@ pnpm dev
 - ESLint（FlatConfig対応）
 - Prettier
 
+### PaaS
+- AWS DynamoDB
+
 ## 開発ガイドライン
 
 - Goで初めに参考にさせていただいた記事🙇 : https://qiita.com/fujifuji1414/items/b95d3f0d5f79d77360cb
