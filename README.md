@@ -20,6 +20,7 @@
 ![interface_3](https://github.com/user-attachments/assets/9c9c77a7-b149-4d38-8a89-592f49b739b3)
 - Zodでバリデーションを設定しています
 - ログイン後にアクセスすると`/dashboard`へリダイレクトされます
+- ログイン時にAccessTokenとRefreshTokenを発行し、RefreshTokenを`AWS DynamoDB`に保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください。」のalertを出すようにしてあります。
 <hr>
 
 ### ダッシュボード
@@ -126,6 +127,5 @@ pnpm dev
 - 大半はVSCodeで作業（`Github Copilot`あり）
 - READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
 - AIに課金はしていません
-- ServerlessでRefreshTokenを`DynamoDB`に保存するところまで設定（TODO: RefreshTokenを確認してAccessTokenの再生成, DynamoDB Localにしてみる など・・）
 - 今後の課題 
-  - テストコードの追加 etc・・
+  - テストコードの追加, DynamoDB Localを試してみる etc・・
