@@ -91,6 +91,13 @@ pnpm install
 pnpm dev
 ```
 
+### RefreshToken用テーブル作成 (DynamoDB)
+
+```bash
+sam deploy --guided \
+  --template-file serverless/refresh_token_dynamodb.yaml
+```
+
 ## 技術スタック
 
 ### バックエンド
