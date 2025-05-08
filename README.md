@@ -20,13 +20,13 @@
 ![interface_3](https://github.com/user-attachments/assets/9c9c77a7-b149-4d38-8a89-592f49b739b3)
 - Zodでバリデーションを設定しています
 - ログイン後にアクセスすると`/dashboard`へリダイレクトされます
-- ログイン時にAccessTokenとRefreshTokenを発行し、RefreshTokenを`AWS DynamoDB`に保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください。」のalertを出すようにしてあります。
 <hr>
 
 ### ダッシュボード
 ![interface_4](https://github.com/user-attachments/assets/4842c773-73db-4f0c-8e06-cd1d3acb3320)
 - 認証中のユーザー情報を表示します
-- 認証成功後にJWTを発行し、HttpOnlyのCookieで管理しています
+- 認証成功後にAccessTokenとRefreshTokenを発行し、HttpOnlyのCookieで管理します
+- RefreshTokenは`AWS DynamoDB`にも保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください」のalertを表示します
 - ログイン前にアクセスすると`/login`へリダイレクトされます
 <hr>
 
