@@ -26,7 +26,7 @@
 ![interface_4](https://github.com/user-attachments/assets/4842c773-73db-4f0c-8e06-cd1d3acb3320)
 - 認証中のユーザー情報を表示します
 - 認証成功後にAccessTokenとRefreshTokenを発行し、HttpOnlyのCookieで管理します
-- RefreshTokenは`AWS DynamoDB`にも保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください」のalertを表示します
+- RefreshTokenは`AWS DynamoDB`にも保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください」のアラートを表示します
 - ログイン前にアクセスすると`/login`へリダイレクトされます
 <hr>
 
