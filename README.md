@@ -37,7 +37,7 @@
 <hr>
 
 ### DynamoDBに保存されるRefreshToken
-![スクリーンショット 2025-05-08 22 34 35](https://github.com/user-attachments/assets/4e2fc3b9-fc0f-4949-b256-98eaa2fac35d)
+![スクリーンショット 2025-05-08 22 34 35](https://github.com/user-attachments/assets/9b95060e-7cb8-429f-a3e1-7b07955a5be3)
 - `refresh_token_id` = `user.uuid`にしているので、同じユーザーでログインし直すと上書きされます。
 - `expire_at`をTTLに指定していることで、自動的にレコードが消えます（DynamoDBの仕様で、期限後すぐには消滅するわけではない）。
 <hr>
