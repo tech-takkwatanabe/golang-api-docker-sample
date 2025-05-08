@@ -31,7 +31,7 @@
 <hr>
 
 ### API Doc
-![スクリーンショット 2025-05-08 18 56 36](https://github.com/user-attachments/assets/cc074392-e2f6-47af-a749-29e29f37c15b)
+![スクリーンショット 2025-05-08 18 58 46](https://github.com/user-attachments/assets/222783cc-a5ec-4d77-ac78-17fecbd5a7b1)
 - バックエンドを立ち上げた状態で http://localhost:8080/swagger/index.html へアクセスしてください。
 - APIに変更を加えた場合、`apps/api`にて`make swag`実行後、`apps/web`にて`pnpm orval`を実行してください。
 <hr>
