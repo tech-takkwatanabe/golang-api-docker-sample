@@ -50,7 +50,7 @@
 │   ├── api/          # Go言語で実装されたバックエンドAPI
 │   │   ├── config/      # 定数
 │   │   ├── controllers/  # APIコントローラー
-│   │   ├── docs/        # APIドキュメント生成
+│   │   ├── docs/        # 生成されたAPIドキュメント
 │   │   ├── docker/      # Docker関連ファイル
 │   │   ├── domain/      # ドメインモデル
 │   │   ├── external/    # 外部接続
@@ -65,7 +65,7 @@
 │   │
 │   └── web/           # Reactで実装されたフロントエンド
 │       ├── src/        # ソースコード
-│       │   ├── api/    # APIクライアント生成
+│       │   ├── api/    # 生成されたAPIクライアント
 │       │   ├── atoms/  # jotaiのアトム
 │       │   ├── hooks/  # カスタムフック
 │       │   ├── pages/  # ページコンポーネント
