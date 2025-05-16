@@ -12,13 +12,13 @@ import (
 )
 
 var (
-	apiSecret string
+	jwtSecret string
 )
 
 func init() {
-	apiSecret = os.Getenv("API_SECRET")
-	if apiSecret == "" {
-		apiSecret = "apiSecret"
+	jwtSecret = os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		jwtSecret = "jwtSecret"
 	}
 }
 
@@ -31,7 +31,7 @@ func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(apiSecret))
+	return token.SignedString([]byte(jwtSecret))
 }
 
 // Authorization header からトークン取得の場合
@@ -60,7 +60,7 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(apiSecret), nil
+		return []byte(jwtSecret), nil
 	})
 }
 
