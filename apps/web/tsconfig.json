@@ -20,5 +20,14 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src", "tailwind.config.js", "tailwind.config.d.ts", "postcss.config.mjs", "eslint.config.mjs", "orval.config.ts", ".prettierrc.json", "craco.config.js"]
+  "include": [
+    "src",
+    "tailwind.config.js",
+    "tailwind.config.d.ts",
+    "postcss.config.mjs",
+    "eslint.config.mjs",
+    "orval.config.ts",
+    ".prettierrc.json",
+    "config-overrides.js"
+  ]
 }

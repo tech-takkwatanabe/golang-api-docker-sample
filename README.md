@@ -125,7 +125,6 @@ sam deploy --guided \
 - React Hook Form
 - Zod
 - jotai
-- craco
 - TanStack Query
 - ESLint（FlatConfig対応）
 - Prettier
