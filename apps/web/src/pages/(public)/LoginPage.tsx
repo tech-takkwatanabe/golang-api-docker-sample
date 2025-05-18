@@ -102,14 +102,24 @@ const LoginPage = () => {
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">ログイン</h2>
 
-        {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{errorMessage}</div>}
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
               メールアドレス
             </label>
-            <input id="email" type="email" {...register('email')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" />
+            <input
+              id="email"
+              type="email"
+              {...register('email')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="your@email.com"
+            />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
@@ -117,12 +127,24 @@ const LoginPage = () => {
             <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
               パスワード
             </label>
-            <input id="password" type="password" {...register('password')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="******" />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+            <input
+              id="password"
+              type="password"
+              {...register('password')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="******"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
 
           <div className="mb-6">
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
+            >
               {isLoading ? 'ログイン中...' : 'ログイン'}
             </button>
           </div>

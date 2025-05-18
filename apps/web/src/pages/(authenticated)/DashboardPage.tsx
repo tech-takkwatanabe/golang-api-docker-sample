@@ -37,7 +37,11 @@ const DashboardPage = () => {
               <h1 className="text-xl font-bold text-gray-800">ダッシュボード</h1>
             </div>
             <div className="flex items-center">
-              <button type="button" onClick={handleLogout} className="ml-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="ml-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
+              >
                 ログアウト
               </button>
             </div>

@@ -4,7 +4,10 @@ import { postLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
-export async function customInstance<T>(config: AxiosRequestConfig, onUnauthorized?: () => void): Promise<T> {
+export async function customInstance<T>(
+  config: AxiosRequestConfig,
+  onUnauthorized?: () => void
+): Promise<T> {
   const source = axios.CancelToken.source();
 
   const defaultConfig: AxiosRequestConfig = {
@@ -18,7 +21,12 @@ export async function customInstance<T>(config: AxiosRequestConfig, onUnauthoriz
     const response = await axios(defaultConfig);
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401 && !config.url?.includes('/loggedin/refresh') && !config.url?.includes('/loggedin/logout')) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401 &&
+      !config.url?.includes('/loggedin/refresh') &&
+      !config.url?.includes('/loggedin/logout')
+    ) {
       try {
         onUnauthorized?.();
         await postLoggedinRefresh(); // ✅ リフレッシュ試行

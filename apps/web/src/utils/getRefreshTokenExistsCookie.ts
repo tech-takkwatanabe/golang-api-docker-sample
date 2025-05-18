@@ -11,7 +11,8 @@ const getRefreshTokenExistsCookie = (): boolean => {
     return acc;
   }, {});
 
-  const cookieName = process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
+  const cookieName =
+    process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
 
   return cookies.hasOwnProperty(cookieName);
 };

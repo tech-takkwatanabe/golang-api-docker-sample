@@ -89,7 +89,12 @@ const RegisterPage = () => {
             <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
               名前
             </label>
-            <input id="name" {...register('name')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="山田太郎" />
+            <input
+              id="name"
+              {...register('name')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="山田太郎"
+            />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
           </div>
 
@@ -97,7 +102,13 @@ const RegisterPage = () => {
             <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
               メールアドレス
             </label>
-            <input id="email" type="email" {...register('email')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" />
+            <input
+              id="email"
+              type="email"
+              {...register('email')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="your@email.com"
+            />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
@@ -105,12 +116,24 @@ const RegisterPage = () => {
             <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
               パスワード
             </label>
-            <input id="password" type="password" {...register('password')} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="******" />
-            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+            <input
+              id="password"
+              type="password"
+              {...register('password')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="******"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
 
           <div className="mb-6">
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={isLoading}>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
+            >
               {isLoading ? '登録中...' : '登録する'}
             </button>
           </div>
