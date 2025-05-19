@@ -11,7 +11,7 @@
     "eject": "react-app-rewired eject",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
-    "generate:openapi": "orval --config orval.config.ts"
+    "ovl": "orval --config orval.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
