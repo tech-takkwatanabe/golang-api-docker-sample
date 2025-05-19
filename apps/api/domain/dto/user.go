@@ -1,5 +1,7 @@
 package dto
 
+import "go-auth/domain/vo"
+
 // UserDTO represents the user data transfer object
 // @swagger:model
 type UserDTO struct {
@@ -8,19 +10,19 @@ type UserDTO struct {
 	ID uint `json:"id"`
 	// @description ユーザーUUID
 	// @example "550e8400-e29b-41d4-a716-446655440000"
-	UUID string `json:"uuid"` // 型は string
+	UUID vo.UUID `json:"uuid"`
 	// @description ユーザー名
 	// @example "山田太郎"
-	Name string `json:"name"` // 型は string
+	Name vo.Name `json:"name"`
 	// @description メールアドレス
 	// @example "user@example.com"
-	Email string `json:"email"` // 型は string
+	Email vo.Email `json:"email"`
 	// @description 作成日時（RFC3339形式）
 	// @example "2024-03-21T12:34:56.789Z"
-	CreatedAt string `json:"created_at"` // 型は string
+	CreatedAt vo.DateTime `json:"created_at"`
 	// @description 更新日時（RFC3339形式）
 	// @example "2024-03-21T12:34:56.789Z"
-	UpdatedAt string `json:"updated_at"` // 型は string
+	UpdatedAt vo.DateTime `json:"updated_at"`
 }
 
 type UserDTOResponse struct {
