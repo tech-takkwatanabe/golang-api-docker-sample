@@ -49,34 +49,30 @@ definitions:
   dto.UserDTO:
     properties:
       created_at:
-        allOf:
-        - $ref: '#/definitions/vo.DateTime'
         description: |-
           @description 作成日時（RFC3339形式）
           @example "2024-03-21T12:34:56.789Z"
+        type: string
       email:
-        allOf:
-        - $ref: '#/definitions/vo.Email'
         description: |-
           @description メールアドレス
           @example "user@example.com"
+        type: string
       id:
         description: |-
           @description ユーザーID
           @example 1
         type: integer
       name:
-        allOf:
-        - $ref: '#/definitions/vo.Name'
         description: |-
           @description ユーザー名
           @example "山田太郎"
+        type: string
       updated_at:
-        allOf:
-        - $ref: '#/definitions/vo.DateTime'
         description: |-
           @description 更新日時（RFC3339形式）
           @example "2024-03-21T12:34:56.789Z"
+        type: string
       uuid:
         description: |-
           @description ユーザーUUID
@@ -92,12 +88,6 @@ definitions:
     properties:
       sub:
         type: string
-    type: object
-  vo.DateTime:
-    type: object
-  vo.Email:
-    type: object
-  vo.Name:
     type: object
 info:
   contact: {}

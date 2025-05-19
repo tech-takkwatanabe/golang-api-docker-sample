@@ -15,6 +15,3 @@ export * from './dtoTokenRefreshResponse';
 export * from './dtoUserDTO';
 export * from './dtoUserDTOResponse';
 export * from './dtoUserSubDTO';
-export * from './voDateTime';
-export * from './voEmail';
-export * from './voName';

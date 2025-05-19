@@ -18,10 +18,10 @@ type User struct {
 func (u *User) ToDTO() *dto.UserDTO {
 	return &dto.UserDTO{
 		ID:        u.ID,
-		UUID:      u.UUID,
-		Name:      u.Name,
-		Email:     u.Email,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
+		UUID:      u.UUID.String(),
+		Name:      u.Name.String(),
+		Email:     u.Email.String(),
+		CreatedAt: u.CreatedAt.String(),
+		UpdatedAt: u.UpdatedAt.String(),
 	}
 }

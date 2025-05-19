@@ -273,19 +273,11 @@ const docTemplate = `{
             "properties": {
                 "created_at": {
                     "description": "@description 作成日時（RFC3339形式）\n@example \"2024-03-21T12:34:56.789Z\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/vo.DateTime"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "email": {
                     "description": "@description メールアドレス\n@example \"user@example.com\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/vo.Email"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "id": {
                     "description": "@description ユーザーID\n@example 1",
@@ -293,19 +285,11 @@ const docTemplate = `{
                 },
                 "name": {
                     "description": "@description ユーザー名\n@example \"山田太郎\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/vo.Name"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "updated_at": {
                     "description": "@description 更新日時（RFC3339形式）\n@example \"2024-03-21T12:34:56.789Z\"",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/vo.DateTime"
-                        }
-                    ]
+                    "type": "string"
                 },
                 "uuid": {
                     "description": "@description ユーザーUUID\n@example \"550e8400-e29b-41d4-a716-446655440000\"",
@@ -328,15 +312,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "vo.DateTime": {
-            "type": "object"
-        },
-        "vo.Email": {
-            "type": "object"
-        },
-        "vo.Name": {
-            "type": "object"
         }
     },
     "securityDefinitions": {
