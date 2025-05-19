@@ -19,22 +19,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-var (
-	accessTokenCookieName  string
-	refreshTokenCookieName string
-)
-
-func init() {
-	accessTokenCookieName = os.Getenv("ACCESS_TOKEN_COOKIE_NAME")
-	if accessTokenCookieName == "" {
-		accessTokenCookieName = "accessTokenFromGoBackend"
-	}
-	refreshTokenCookieName = os.Getenv("REFRESH_TOKEN_COOKIE_NAME")
-	if refreshTokenCookieName == "" {
-		refreshTokenCookieName = "refreshTokenFromGoBackend"
-	}
-}
-
 // @title           Go Auth API
 // @version         1.0
 // @description     Gin + JWT 認証API
@@ -74,14 +58,14 @@ func main() {
 	// 認証後のルート
 	protected := router.Group("/api/loggedin")
 	// JWT認証ミドルウェアを適用
-	protected.Use(middlewares.JwtAuthMiddleware(accessTokenCookieName))
+	protected.Use(middlewares.JwtAuthMiddleware(config.AccessTokenCookieName))
 
 	// 認証されたユーザー情報を取得する
 	protected.GET("/user", controllers.CurrentUser(userService))
 	// ログアウト
 	protected.POST("/logout", controllers.Logout())
 	// トークンリフレッシュ
-	router.POST("/api/loggedin/refresh", middlewares.JwtAuthMiddleware(refreshTokenCookieName), controllers.Refresh(userService))
+	router.POST("/api/loggedin/refresh", middlewares.JwtAuthMiddleware(config.RefreshTokenCookieName), controllers.Refresh(userService))
 
 	router.Run(":8080")
 }
