@@ -5,26 +5,23 @@
  * Gin + JWT 認証API
  * OpenAPI spec version: 1.0
  */
-import type { VoDateTime } from './voDateTime';
-import type { VoEmail } from './voEmail';
-import type { VoName } from './voName';
 
 export interface DtoUserDTO {
   /** @description 作成日時（RFC3339形式）
 @example "2024-03-21T12:34:56.789Z" */
-  created_at?: VoDateTime;
+  created_at?: string;
   /** @description メールアドレス
 @example "user@example.com" */
-  email?: VoEmail;
+  email?: string;
   /** @description ユーザーID
 @example 1 */
   id?: number;
   /** @description ユーザー名
 @example "山田太郎" */
-  name?: VoName;
+  name?: string;
   /** @description 更新日時（RFC3339形式）
 @example "2024-03-21T12:34:56.789Z" */
-  updated_at?: VoDateTime;
+  updated_at?: string;
   /** @description ユーザーUUID
 @example "550e8400-e29b-41d4-a716-446655440000" */
   uuid?: string;
