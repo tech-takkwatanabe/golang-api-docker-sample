@@ -63,9 +63,9 @@ const LoginPage = () => {
 
   const translateError = (errorCode: string): string => {
     switch (errorCode) {
-      case 'invalid email':
+      case 'login failed: invalid email':
         return '不正なメールアドレスです';
-      case 'invalid password':
+      case 'login failed: invalid password':
         return 'パスワードが無効です';
       default:
         return 'ログインに失敗しました';
