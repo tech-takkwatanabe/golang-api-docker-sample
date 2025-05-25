@@ -1,51 +1,77 @@
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
-import { postLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
+import { postLoggedinRefresh, postLoggedinLogout } from '@/api/auth/auth';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+});
+
+let isRefreshing = false;
+let pendingRequests: (() => void)[] = [];
+
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
+
 export async function customInstance<T>(
   config: AxiosRequestConfig,
-  onUnauthorized?: () => void
+  _onUnauthorized?: () => void
 ): Promise<T> {
-  const source = axios.CancelToken.source();
-
   const defaultConfig: AxiosRequestConfig = {
     ...config,
-    baseURL: API_URL,
-    cancelToken: source.token,
     withCredentials: true,
+    baseURL: API_URL,
   };
 
   try {
-    const response = await axios(defaultConfig);
+    const response = await axiosInstance(defaultConfig);
     return response.data;
   } catch (error) {
+    const originalRequest = config as CustomAxiosRequestConfig;
     const path = new URL(config.url!, API_URL).pathname;
+
     if (
       axios.isAxiosError(error) &&
       error.response?.status === 401 &&
+      !originalRequest._retry &&
       !['/loggedin/refresh', '/loggedin/logout', '/login'].includes(path)
     ) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          pendingRequests.push(() => resolve(axiosInstance(defaultConfig)));
+        });
+      }
+
+      isRefreshing = true;
       try {
-        onUnauthorized?.();
-        await postLoggedinRefresh(); // ✅ リフレッシュ試行
-        const retryResponse = await axios(defaultConfig); // ✅ リトライ
+        await postLoggedinRefresh();
+
+        isRefreshing = false;
+        pendingRequests.forEach((cb) => cb());
+        pendingRequests = [];
+
+        const retryResponse = await axiosInstance(defaultConfig);
         return retryResponse.data;
       } catch (refreshError) {
+        isRefreshing = false;
+        pendingRequests = [];
+        alert('セッションの有効期限が切れました。もう一度ログインしてください。');
         try {
           await postLoggedinLogout();
         } catch (logoutError) {
-          console.warn('Logout failed, possibly already logged out', logoutError);
+          console.warn('Logout failed after refresh failure', logoutError);
         }
 
-        alert('セッションの有効期限が切れました。もう一度ログインしてください。');
         window.location.href = '/login';
-
-        return await Promise.reject(refreshError);
+        return Promise.reject(refreshError);
       }
     }
 
-    return await Promise.reject(error);
+    return Promise.reject(error);
   }
 }
