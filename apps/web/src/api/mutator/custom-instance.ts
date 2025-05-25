@@ -21,11 +21,11 @@ export async function customInstance<T>(
     const response = await axios(defaultConfig);
     return response.data;
   } catch (error) {
+    const path = new URL(config.url!, API_URL).pathname;
     if (
       axios.isAxiosError(error) &&
       error.response?.status === 401 &&
-      !config.url?.includes('/loggedin/refresh') &&
-      !config.url?.includes('/loggedin/logout')
+      !['/loggedin/refresh', '/loggedin/logout', '/login'].includes(path)
     ) {
       try {
         onUnauthorized?.();
