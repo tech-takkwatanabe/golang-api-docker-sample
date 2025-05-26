@@ -209,9 +209,9 @@ paths:
       tags:
       - auth
 securityDefinitions:
-  BearerAuth:
-    description: JWTトークンをAuthorizationヘッダーに含めてください
+  CookieAuth:
+    description: HttpOnly Cookie (access_token) によって自動で認証されます
     in: header
-    name: Authorization
+    name: Cookie
     type: apiKey
 swagger: "2.0"

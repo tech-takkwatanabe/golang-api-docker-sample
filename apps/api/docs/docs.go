@@ -315,10 +315,10 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "BearerAuth": {
-            "description": "JWTトークンをAuthorizationヘッダーに含めてください",
+        "CookieAuth": {
+            "description": "HttpOnly Cookie (access_token) によって自動で認証されます",
             "type": "apiKey",
-            "name": "Authorization",
+            "name": "Cookie",
             "in": "header"
         }
     }

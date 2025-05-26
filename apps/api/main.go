@@ -23,11 +23,10 @@ import (
 // @version         1.0
 // @description     Gin + JWT 認証API
 
-// @securityDefinitions.apikey BearerAuth
+// @securityDefinitions.apikey CookieAuth
 // @in header
-// @name Authorization
-// @description JWTトークンをAuthorizationヘッダーに含めてください
-// @host      localhost:8080
+// @name Cookie
+// @description HttpOnly Cookie (access_token) によって自動で認証されます
 func main() {
 	err := godotenv.Load()
 	if err != nil {
