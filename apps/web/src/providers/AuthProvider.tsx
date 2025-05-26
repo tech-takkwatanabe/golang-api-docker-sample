@@ -6,11 +6,6 @@ import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const checkeRefreshTokenExistsCookie = getRefreshTokenExistsCookie();
-  useEffect(() => {
-    if (!checkeRefreshTokenExistsCookie) {
-      window.location.href = '/login';
-    }
-  }, []);
 
   const setUser = useSetAtom(userAtom);
   const setLoading = useSetAtom(isLoadingAtom);
