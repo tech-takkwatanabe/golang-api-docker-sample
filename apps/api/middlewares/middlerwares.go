@@ -3,22 +3,10 @@ package middlewares
 import (
 	"go-auth/utils/token"
 	"net/http"
-	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
-
-var (
-	accessTokenCookieName string
-)
-
-func init() {
-	accessTokenCookieName = os.Getenv("ACCESS_TOKEN_COOKIE_NAME")
-	if accessTokenCookieName == "" {
-		accessTokenCookieName = "accessTokenFromGoBackend"
-	}
-}
 
 // JwtAuthMiddleware はJWT認証を行うミドルウェアを返します
 func JwtAuthMiddleware(cookieName string) gin.HandlerFunc {
