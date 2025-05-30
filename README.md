@@ -7,20 +7,20 @@
 ### ホーム画面
 ![interface_1](https://github.com/user-attachments/assets/d44d25b5-fcc7-4a83-a40f-29dc2d975f9f)
 - 見た目の設定はClaudeに作成してもらったものから触っていません
-<hr>
+---
 
 ### アカウント登録
 ![interface_2](https://github.com/user-attachments/assets/182a3f87-c128-4112-b5f6-3c5f88b461cd)
 - Zodでバリデーションを設定しています
 - メールアドレスが登録済みのものだとエラーになります
 - ログイン後にアクセスすると`/dashboard`へリダイレクトされます
-<hr>
+---
 
 ### ログイン画面
 ![interface_3](https://github.com/user-attachments/assets/9c9c77a7-b149-4d38-8a89-592f49b739b3)
 - Zodでバリデーションを設定しています
 - ログイン後にアクセスすると`/dashboard`へリダイレクトされます
-<hr>
+---
 
 ### ダッシュボード
 ![interface_4](https://github.com/user-attachments/assets/4842c773-73db-4f0c-8e06-cd1d3acb3320)
@@ -28,19 +28,19 @@
 - 認証成功後にAccessTokenとRefreshTokenを発行し、HttpOnlyのCookieで管理します
 - RefreshTokenは`AWS DynamoDB`にも保存する構成になっています。RefreshTokenが有効な限り、AccessTokenの有効期限が切れても自動で再発行します。RefreshTokenの期限が切れた際には「もう一度ログインしてください」のアラートを表示します
 - ログイン前にアクセスすると`/login`へリダイレクトされます
-<hr>
+---
 
 ### API Doc
 ![スクリーンショット 2025-05-08 18 58 46](https://github.com/user-attachments/assets/222783cc-a5ec-4d77-ac78-17fecbd5a7b1)
 - バックエンドを立ち上げた状態で http://localhost:8080/swagger/index.html へアクセスしてください。
 - APIに変更を加えた場合、`apps/api`にて`make swag`実行後、`apps/web`にて`pnpm orval`を実行してください。
-<hr>
+---
 
 ### DynamoDBに保存されるRefreshToken
 ![スクリーンショット 2025-05-08 22 34 35](https://github.com/user-attachments/assets/9b95060e-7cb8-429f-a3e1-7b07955a5be3)
 - `refresh_token_id` = `user.uuid`にしているので、同じユーザーでログインし直すと上書きされます。
 - `expire_at`をTTLに指定していることで、自動的にレコードが消えます（DynamoDBの仕様で、期限後すぐには消滅するわけではない）。
-<hr>
+---
 
 ## プロジェクト構成
 
