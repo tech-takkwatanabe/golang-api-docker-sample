@@ -33,7 +33,7 @@
 ### API Doc
 ![スクリーンショット 2025-05-08 18 58 46](https://github.com/user-attachments/assets/222783cc-a5ec-4d77-ac78-17fecbd5a7b1)
 - バックエンドを立ち上げた状態で http://localhost:8080/swagger/index.html へアクセスしてください。
-- APIに変更を加えた場合、`apps/api`にて`make swag`実行後、`apps/web`にて`pnpm orval`を実行してください。
+- APIに変更を加えた場合、`apps/api`にて`make swag`実行後、`apps/web`にて`pnpm ovl`を実行してください。
 ***
 
 ### DynamoDBに保存されるRefreshToken
