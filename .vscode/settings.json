@@ -39,11 +39,6 @@
 		}
 	},
 
-	// Lint 実行を Go 拡張でサポート（golangci-lint を使うなら）
-	"go.lintTool": "golangci-lint",
-	"go.lintFlags": ["--fast"],
-	"go.formatTool": "gofmt",
-
 	// ESLint 設定
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
