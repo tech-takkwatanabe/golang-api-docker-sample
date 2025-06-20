@@ -142,4 +142,4 @@ sam deploy --guided \
 - READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
 - AIに課金はしていません
 - 今後の課題 
-  - テストコードの追加, DynamoDB Localを試してみる etc・・
+  - テストコードの追加, DynamoDB Localを試してみる, RefreshTokenのローテーション etc・・
