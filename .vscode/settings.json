@@ -32,6 +32,8 @@
 		"ui.completion.usePlaceholders": true,
 		"staticcheck": true,
 		"analyses": {
+			"ST1000": false,
+			"ST1020": false,
 			"unusedparams": true,
 			"shadow": true
 		}
