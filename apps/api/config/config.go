@@ -14,6 +14,7 @@ var (
 	AuthCheckCookieName              string
 	RefreshTokenExistCheckCookieName string
 	JwtSecret                        string
+	FrontendURL                      string
 )
 
 func LoadConfig() {
@@ -52,5 +53,11 @@ func LoadConfig() {
 	if JwtSecret == "" {
 		JwtSecret = "jwtSecret"
 		log.Println("Warning: JWT_SECRET is not set, using default value.")
+	}
+
+	FrontendURL = os.Getenv("FRONTEND_URL")
+	if FrontendURL == "" {
+		FrontendURL = "http://localhost:3000"
+		log.Println("Warning: FRONTEND_URL is not set, using default value http://localhost:3000.")
 	}
 }

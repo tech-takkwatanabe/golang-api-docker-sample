@@ -8,7 +8,6 @@ import (
 	"go-auth/models"
 	"go-auth/service"
 	"log"
-	"os"
 
 	_ "go-auth/docs"
 	dynamodbRepo "go-auth/infrastructure/dynamodb"
@@ -36,7 +35,7 @@ func main() {
 	models.ConnectDataBase()
 	router := gin.Default()
 
-	frontendURL := os.Getenv("FRONTEND_URL")
+	frontendURL := config.FrontendURL
 	router.Use(middlewares.CorsMiddleware([]string{frontendURL}))
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
