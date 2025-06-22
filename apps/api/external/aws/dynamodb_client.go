@@ -2,11 +2,11 @@ package aws
 
 import (
 	"context"
+	"go-auth/config"
 	"log"
-	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
+	sdkConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/joho/godotenv"
@@ -15,24 +15,24 @@ import (
 func NewDynamoDBClient() *dynamodb.Client {
 	_ = godotenv.Load()
 
-	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
-	secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
-	region := os.Getenv("AWS_REGION")
+	accessKey := config.AwsAccessKeyID
+	secretKey := config.AwsSecretAccessKey
+	region := config.AwsRegion
 
 	var cfg aws.Config
 	var err error
 
 	if accessKey != "" && secretKey != "" && region != "" {
 		creds := aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(accessKey, secretKey, ""))
-		cfg, err = config.LoadDefaultConfig(context.TODO(),
-			config.WithRegion(region),
-			config.WithCredentialsProvider(creds),
+		cfg, err = sdkConfig.LoadDefaultConfig(context.TODO(),
+			sdkConfig.WithRegion(region),
+			sdkConfig.WithCredentialsProvider(creds),
 		)
 		if err != nil {
 			log.Fatalf("failed to load SDK config from env vars: %v", err)
 		}
 	} else {
-		cfg, err = config.LoadDefaultConfig(context.TODO())
+		cfg, err = sdkConfig.LoadDefaultConfig(context.TODO())
 		if err != nil {
 			log.Fatalf("failed to load SDK default config: %v", err)
 		}

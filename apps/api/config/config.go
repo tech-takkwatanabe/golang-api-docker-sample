@@ -15,6 +15,9 @@ var (
 	RefreshTokenExistCheckCookieName string
 	JwtSecret                        string
 	FrontendURL                      string
+	AwsAccessKeyID                   string
+	AwsSecretAccessKey               string
+	AwsRegion                        string
 )
 
 func LoadConfig() {
@@ -59,5 +62,18 @@ func LoadConfig() {
 	if FrontendURL == "" {
 		FrontendURL = "http://localhost:3000"
 		log.Println("Warning: FRONTEND_URL is not set, using default value http://localhost:3000.")
+	}
+
+	AwsAccessKeyID = os.Getenv("AWS_ACCESS_KEY_ID")
+	if AwsAccessKeyID == "" {
+		log.Println("Warning: AWS_ACCESS_KEY_ID is not set, AWS services may not work properly.")
+	}
+	AwsSecretAccessKey = os.Getenv("AWS_SECRET_ACCESS_KEY")
+	if AwsSecretAccessKey == "" {
+		log.Println("Warning: AWS_SECRET_ACCESS_KEY is not set, AWS services may not work properly.")
+	}
+	AwsRegion = os.Getenv("AWS_REGION")
+	if AwsRegion == "" {
+		log.Println("Warning: AWS_REGION is not set, AWS services may not work properly.")
 	}
 }
