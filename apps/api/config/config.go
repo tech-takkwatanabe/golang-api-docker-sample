@@ -19,6 +19,11 @@ var (
 	AwsSecretAccessKey               string
 	AwsRegion                        string
 	DynamoDBRefreshTokenTableName    string
+	DBName                           string
+	DBUser                           string
+	DBPassword                       string
+	DBHost                           string
+	DBPort                           string
 )
 
 func LoadConfig() {
@@ -81,5 +86,31 @@ func LoadConfig() {
 	DynamoDBRefreshTokenTableName = os.Getenv("DYNAMODB_REFRESH_TOKEN_TABLE_NAME")
 	if DynamoDBRefreshTokenTableName == "" {
 		log.Println("Warning: DYNAMODB_REFRESH_TOKEN_TABLE_NAME is not set, DynamoDB operations may not work properly.")
+	}
+
+	DBName = os.Getenv("DB_NAME")
+	if DBName == "" {
+		log.Println("Warning: DB_NAME is not set, using default value 'go_auth'.")
+		DBName = "go_auth"
+	}
+	DBUser = os.Getenv("DB_USER")
+	if DBUser == "" {
+		log.Println("Warning: DB_USER is not set, using default value 'root'.")
+		DBUser = "root"
+	}
+	DBPassword = os.Getenv("DB_PASSWORD")
+	if DBPassword == "" {
+		log.Println("Warning: DB_PASSWORD is not set, using default value 'password'.")
+		DBPassword = "password"
+	}
+	DBHost = os.Getenv("DB_HOST")
+	if DBHost == "" {
+		log.Println("Warning: DB_HOST is not set, using default value 'localhost'.")
+		DBHost = "localhost"
+	}
+	DBPort = os.Getenv("DB_PORT")
+	if DBPort == "" {
+		log.Println("Warning: DB_PORT is not set, using default value '3306'.")
+		DBPort = "3306"
 	}
 }
