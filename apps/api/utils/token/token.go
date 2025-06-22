@@ -3,24 +3,13 @@ package token
 import (
 	"errors"
 	"fmt"
+	"go-auth/config"
 	"go-auth/domain/vo"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var (
-	jwtSecret string
-)
-
-func init() {
-	jwtSecret = os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
-		jwtSecret = "jwtSecret"
-	}
-}
 
 // トークン生成
 func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
@@ -36,7 +25,7 @@ func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(jwtSecret))
+	return token.SignedString([]byte(config.JwtSecret))
 }
 
 // Authorization header からトークン取得の場合
@@ -60,12 +49,12 @@ func extractTokenFromCookie(c *gin.Context, cookieName string) string {
 
 // トークンパース（v5 のパース関数は引数が増えている）
 func parseToken(tokenString string) (*jwt.Token, error) {
-	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		// 署名方法がHMACであることを検証
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(jwtSecret), nil
+		return []byte(config.JwtSecret), nil
 	})
 }
 

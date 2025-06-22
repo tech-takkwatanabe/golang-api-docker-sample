@@ -13,6 +13,7 @@ var (
 	RefreshTokenCookieName           string
 	AuthCheckCookieName              string
 	RefreshTokenExistCheckCookieName string
+	JwtSecret                        string
 )
 
 func LoadConfig() {
@@ -45,6 +46,12 @@ func LoadConfig() {
 	RefreshTokenExistCheckCookieName = os.Getenv("REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME")
 	if RefreshTokenExistCheckCookieName == "" {
 		RefreshTokenExistCheckCookieName = "refreshTokenByGoBackendExists"
+	}
+
+	JwtSecret = os.Getenv("JWT_SECRET")
+	if JwtSecret == "" {
+		JwtSecret = "jwtSecret"
+		log.Println("Warning: JWT_SECRET is not set, using default value.")
 	}
 
 	if AccessTokenExpireSeconds == 0 || RefreshTokenExpireSeconds == 0 {
