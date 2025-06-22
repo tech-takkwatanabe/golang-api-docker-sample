@@ -53,8 +53,4 @@ func LoadConfig() {
 		JwtSecret = "jwtSecret"
 		log.Println("Warning: JWT_SECRET is not set, using default value.")
 	}
-
-	if AccessTokenExpireSeconds == 0 || RefreshTokenExpireSeconds == 0 {
-		log.Println("Warning: some configuration values are using default values.")
-	}
 }
