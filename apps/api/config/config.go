@@ -18,6 +18,7 @@ var (
 	AwsAccessKeyID                   string
 	AwsSecretAccessKey               string
 	AwsRegion                        string
+	DynamoDBRefreshTokenTableName    string
 )
 
 func LoadConfig() {
@@ -75,5 +76,10 @@ func LoadConfig() {
 	AwsRegion = os.Getenv("AWS_REGION")
 	if AwsRegion == "" {
 		log.Println("Warning: AWS_REGION is not set, AWS services may not work properly.")
+	}
+
+	DynamoDBRefreshTokenTableName = os.Getenv("DYNAMODB_REFRESH_TOKEN_TABLE_NAME")
+	if DynamoDBRefreshTokenTableName == "" {
+		log.Println("Warning: DYNAMODB_REFRESH_TOKEN_TABLE_NAME is not set, DynamoDB operations may not work properly.")
 	}
 }

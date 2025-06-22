@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go-auth/config"
 	"go-auth/domain/entity"
 	"go-auth/domain/vo"
 	awsclient "go-auth/external/aws"
 	awsutil "go-auth/utils/aws"
 	timeutil "go-auth/utils/time"
-	"os"
 	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -24,7 +24,7 @@ type RefreshTokenRepository struct {
 
 func NewRefreshTokenRepository() *RefreshTokenRepository {
 	client := awsclient.NewDynamoDBClient()
-	tableName := os.Getenv("DYNAMODB_REFRESH_TOKEN_TABLE_NAME")
+	tableName := config.DynamoDBRefreshTokenTableName
 	if tableName == "" {
 		panic("DYNAMODB_REFRESH_TOKEN_TABLE_NAME is not set")
 	}
