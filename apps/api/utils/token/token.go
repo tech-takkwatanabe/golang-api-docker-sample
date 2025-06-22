@@ -27,13 +27,12 @@ func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 	// generate jti (JWT ID) as a random string
 	jti := vo.NewUUIDv7()
 	claims := jwt.MapClaims{
-		"authorized": true,
-		"iat":        time.Now().Unix(),
-		"jti":        jti,
-		"iss":        "go-auth",
-		"aud":        "go-auth",
-		"sub":        uuid.String(),
-		"exp":        time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix(),
+		"iat": time.Now().Unix(),
+		"jti": jti,
+		"iss": "go-auth",
+		"aud": "go-auth",
+		"sub": uuid.String(),
+		"exp": time.Now().Add(time.Duration(expiresInSec) * time.Second).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
