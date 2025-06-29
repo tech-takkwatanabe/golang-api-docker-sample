@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "test:w": "react-app-rewired test --watch",
-    "test:cc": "jest --clearCache",
+    "test": "jest --config jest.config.js --passWithNoTests",
+    "test:w": "jest --watch --config jest.config.js",
+    "test:cc": "jest --clearCache --config jest.config.js",
     "eject": "react-app-rewired eject",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
