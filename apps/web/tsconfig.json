@@ -29,6 +29,6 @@
     "orval.config.ts",
     ".prettierrc.json",
     "config-overrides.js",
-    "jest.config.js"
+    "jest.config.cjs"
   ]
 }
