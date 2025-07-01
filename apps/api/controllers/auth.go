@@ -108,12 +108,10 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		maxAge := config.AccessTokenExpireSeconds
-
 		c.SetCookie(
 			config.AccessTokenCookieName,
 			loginResponse.AccessToken,
-			maxAge,
+			config.AccessTokenExpireSeconds,
 			"/",
 			"",
 			false,
@@ -123,7 +121,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 		c.SetCookie(
 			config.AuthCheckCookieName,
 			"true",
-			maxAge,
+			config.AccessTokenExpireSeconds,
 			"/",
 			"",
 			false,
