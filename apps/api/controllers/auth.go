@@ -259,12 +259,10 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		maxAge := config.AccessTokenExpireSeconds
-
 		c.SetCookie(
 			config.AccessTokenCookieName,
 			TokenRefreshResponse.AccessToken,
-			maxAge,
+			config.AccessTokenExpireSeconds,
 			"/",
 			"",
 			false,
@@ -274,7 +272,7 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 		c.SetCookie(
 			config.AuthCheckCookieName,
 			"true",
-			maxAge,
+			config.AccessTokenExpireSeconds,
 			"/",
 			"",
 			false,
