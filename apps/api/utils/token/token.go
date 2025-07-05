@@ -98,3 +98,29 @@ func ExtractTokenSub(c *gin.Context, cookieName string) (vo.UUID, error) {
 
 	return *uuidVO, nil
 }
+
+// トークンの jti を取得
+func ExtractTokenJti(c *gin.Context, cookieName string) (vo.UUID, error) {
+	tokenString := extractTokenFromCookie(c, cookieName)
+	token, err := parseToken(tokenString)
+	if err != nil {
+		return vo.UUID{}, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return vo.UUID{}, errors.New("invalid token")
+	}
+
+	jti, ok := claims["jti"].(string)
+	if !ok {
+		return vo.UUID{}, errors.New("jti claim not found or not a string")
+	}
+
+	jtiVO, err := vo.NewUUID(jti)
+	if err != nil {
+		return vo.UUID{}, fmt.Errorf("invalid jti format: %w", err)
+	}
+
+	return *jtiVO, nil
+}
