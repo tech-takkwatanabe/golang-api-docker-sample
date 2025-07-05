@@ -13,6 +13,7 @@ import (
 	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
@@ -103,4 +104,58 @@ func (r *RefreshTokenRepository) Delete(ctx context.Context, refreshTokenID *vo.
 		Key:       key,
 	})
 	return err
+}
+
+func (r *RefreshTokenRepository) Rotate(ctx context.Context, oldRefreshTokenID *vo.UUID, newRefreshToken *entity.RefreshToken) error {
+	// 新しいリフレッシュトークンをDynamoDBの属性値マップにマーシャリング
+	av, err := attributevalue.MarshalMap(newRefreshToken)
+	if err != nil {
+		return fmt.Errorf("failed to marshal new refresh token: %w", err)
+	}
+
+	// 古いリフレッシュトークンのキーをマーシャリング
+	oldKey, err := attributevalue.MarshalMap(map[string]string{
+		"refresh_token_id": oldRefreshTokenID.String(),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to marshal old refresh token key: %w", err)
+	}
+
+	// トランザクションのアイテムを作成
+	transactItems := []types.TransactWriteItem{
+		// 1. 新しいトークンを保存 (Put)
+		{
+			Put: &types.Put{
+				TableName: aws.String(r.TableName),
+				Item:      av,
+				// 念のため、同じIDのトークンが既に存在しないことを確認
+				ConditionExpression: aws.String("attribute_not_exists(refresh_token_id)"),
+			},
+		},
+		// 2. 古いトークンを削除 (Delete)
+		{
+			Delete: &types.Delete{
+				TableName: aws.String(r.TableName),
+				Key:       oldKey,
+				// 削除対象のトークンが存在することを確認 (リプレイアタック対策)
+				ConditionExpression: aws.String("attribute_exists(refresh_token_id)"),
+			},
+		},
+	}
+
+	// トランザクション書き込みを実行
+	_, err = r.Client.TransactWriteItems(ctx, &dynamodb.TransactWriteItemsInput{
+		TransactItems: transactItems,
+	})
+
+	if err != nil {
+		// 条件チェック失敗 (ConditionalCheckFailed) はリプレイアタックの可能性を示唆
+		var tce *types.TransactionCanceledException
+		if errors.As(err, &tce) {
+			return fmt.Errorf("token rotation failed due to a conditional check, possible replay attack: %w", err)
+		}
+		return fmt.Errorf("failed to execute transact write items for token rotation: %w", err)
+	}
+
+	return nil
 }

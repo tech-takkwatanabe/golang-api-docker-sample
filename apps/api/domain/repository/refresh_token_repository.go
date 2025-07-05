@@ -10,6 +10,7 @@ type RefreshTokenRepository interface {
 	Put(ctx context.Context, token *entity.RefreshToken) error
 	Get(ctx context.Context, refreshTokenID *vo.UUID) (*entity.RefreshToken, error)
 	Delete(ctx context.Context, refreshTokenID *vo.UUID) error
+	Rotate(ctx context.Context, oldRefreshTokenID *vo.UUID, newRefreshToken *entity.RefreshToken) error
 }
 
 // Concrete implementation of the RefreshTokenRepository interface
@@ -26,6 +27,11 @@ func (r *refreshTokenRepositoryImpl) Get(ctx context.Context, refreshTokenID *vo
 }
 
 func (r *refreshTokenRepositoryImpl) Delete(ctx context.Context, refreshTokenID *vo.UUID) error {
+	// Implement the method
+	return nil
+}
+
+func (r *refreshTokenRepositoryImpl) Rotate(ctx context.Context, oldRefreshTokenID *vo.UUID, newRefreshToken *entity.RefreshToken) error {
 	// Implement the method
 	return nil
 }
