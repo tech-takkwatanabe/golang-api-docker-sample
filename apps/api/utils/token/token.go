@@ -12,7 +12,7 @@ import (
 )
 
 // トークン生成
-func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
+func GenerateToken(uuid vo.UUID, expiresInSec int) (string, string, error) {
 	// generate jti (JWT ID) as a random string
 	jti := vo.NewUUIDv7()
 	claims := jwt.MapClaims{
@@ -25,7 +25,11 @@ func GenerateToken(uuid vo.UUID, expiresInSec int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.JwtSecret))
+	signedToken, err := token.SignedString([]byte(config.JwtSecret))
+	if err != nil {
+		return "", "", err
+	}
+	return signedToken, jti.String(), nil
 }
 
 // Authorization header からトークン取得の場合
@@ -48,7 +52,7 @@ func extractTokenFromCookie(c *gin.Context, cookieName string) string {
 }
 
 // トークンパース（v5 のパース関数は引数が増えている）
-func parseToken(tokenString string) (*jwt.Token, error) {
+func ParseToken(tokenString string) (*jwt.Token, error) {
 	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		// 署名方法がHMACであることを検証
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -61,7 +65,7 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 // トークンが有効かチェック
 func TokenValid(c *gin.Context, cookieName string) error {
 	tokenString := extractTokenFromCookie(c, cookieName)
-	token, err := parseToken(tokenString)
+	token, err := ParseToken(tokenString)
 	if err != nil {
 		return err
 	}
@@ -76,7 +80,7 @@ func TokenValid(c *gin.Context, cookieName string) error {
 // uuid を sub claim から取得
 func ExtractTokenSub(c *gin.Context, cookieName string) (vo.UUID, error) {
 	tokenString := extractTokenFromCookie(c, cookieName)
-	token, err := parseToken(tokenString)
+	token, err := ParseToken(tokenString)
 	if err != nil {
 		return vo.UUID{}, err
 	}
@@ -102,7 +106,7 @@ func ExtractTokenSub(c *gin.Context, cookieName string) (vo.UUID, error) {
 // トークンの jti を取得
 func ExtractTokenJti(c *gin.Context, cookieName string) (vo.UUID, error) {
 	tokenString := extractTokenFromCookie(c, cookieName)
-	token, err := parseToken(tokenString)
+	token, err := ParseToken(tokenString)
 	if err != nil {
 		return vo.UUID{}, err
 	}
