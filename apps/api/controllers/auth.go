@@ -245,13 +245,13 @@ func Logout() gin.HandlerFunc {
 // @Router       /loggedin/refresh [post]
 func Refresh(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		uuid, err := token.ExtractTokenSub(c, config.RefreshTokenCookieName)
+		refreshTokenID, err := token.ExtractTokenJti(c, config.RefreshTokenCookieName)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: "Invalid refresh token"})
 			return
 		}
 
-		TokenRefreshResponse, err := user.RefreshUseCase(uuid, userService)
+		TokenRefreshResponse, err := user.RefreshUseCase(c, refreshTokenID, userService)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{Error: err.Error()})
 			return
@@ -271,6 +271,26 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 			config.AuthCheckCookieName,
 			"true",
 			config.AccessTokenExpireSeconds,
+			"/",
+			"",
+			false,
+			false,
+		)
+
+		c.SetCookie(
+			config.RefreshTokenCookieName,
+			TokenRefreshResponse.RefreshToken,
+			config.RefreshTokenExpireSeconds,
+			"/",
+			"",
+			false,
+			true, // HttpOnly
+		)
+
+		c.SetCookie(
+			config.RefreshTokenExistCheckCookieName,
+			"true",
+			config.RefreshTokenExpireSeconds,
 			"/",
 			"",
 			false,
