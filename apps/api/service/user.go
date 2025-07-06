@@ -22,6 +22,7 @@ type UserService interface {
 	RegisterUser(user *entity.User) error
 	LoginUser(email vo.Email, password string) (string, string, vo.UUID, error)
 	RefreshToken(c *gin.Context, refreshTokenID vo.UUID) (*dto.TokenRefreshResponse, error)
+	DeleteRefreshToken(ctx context.Context, refreshTokenID vo.UUID) error
 }
 
 type userService struct {
@@ -210,4 +211,13 @@ func (s *userService) RefreshToken(c *gin.Context, refreshTokenID vo.UUID) (*dto
 		AccessToken:  newAccessTokenStr,
 		RefreshToken: newRefreshTokenStr,
 	}, nil
+}
+
+/** * リフレッシュトークンを削除する
+ * @param ctx context.Context
+ * @param refreshTokenID リフレッシュトークンID
+ * @return error エラー
+ */
+func (s *userService) DeleteRefreshToken(ctx context.Context, refreshTokenID vo.UUID) error {
+	return s.refreshTokenRepo.Delete(ctx, &refreshTokenID)
 }

@@ -61,7 +61,7 @@ func main() {
 	// 認証されたユーザー情報を取得する
 	protected.GET("/user", controllers.CurrentUser(userService))
 	// ログアウト
-	protected.POST("/logout", controllers.Logout())
+	protected.POST("/logout", controllers.Logout(userService))
 	// トークンリフレッシュ
 	router.POST("/api/loggedin/refresh", middlewares.JwtAuthMiddleware(config.RefreshTokenCookieName), controllers.Refresh(userService))
 

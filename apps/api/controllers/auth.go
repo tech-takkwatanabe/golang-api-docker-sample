@@ -181,14 +181,16 @@ func CurrentUser(userService service.UserService) gin.HandlerFunc {
 
 // Logout godoc
 // @Summary      ログアウト
-// @Description  アクセストークンのCookieを削除します
+// @Description  サーバーからリフレッシュトークンを無効化し、クライアントのCookieを削除します
 // @Tags         auth
 // @Produce      json
 // @Security     AccessToken
 // @Success      200  {object}  dto.MessageResponse  "ログアウト成功"
 // @Router       /loggedin/logout [post]
-func Logout() gin.HandlerFunc {
+func Logout(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		user.LogoutUseCase(c, userService)
+
 		c.SetCookie(
 			config.AccessTokenCookieName,
 			"",
