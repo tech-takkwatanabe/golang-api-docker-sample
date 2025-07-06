@@ -172,11 +172,6 @@ func (s *userService) RefreshToken(c *gin.Context, refreshTokenID vo.UUID) (*dto
 	if !ok {
 		return nil, fmt.Errorf("sub claim not found in refresh token")
 	}
-	// 古いリフレッシュトークンを削除
-	if delErr := s.refreshTokenRepo.Delete(context.Background(), &refreshTokenID); delErr != nil {
-		return nil, fmt.Errorf("failed to delete old refresh token: %w", delErr)
-	}
-
 	// リフレッシュトークンの再生成
 	subUUID, err := vo.NewUUID(subStr)
 	if err != nil {

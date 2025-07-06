@@ -39,7 +39,7 @@ func (r *RefreshTokenRepository) Put(ctx context.Context, token *entity.RefreshT
 	createdAtStr := timeutil.Format(token.CreatedAt)
 
 	item := map[string]types.AttributeValue{
-		"refresh_token_id": &types.AttributeValueMemberS{Value: token.RefreshTokenID.String()}, // user.uuid
+		"refresh_token_id": &types.AttributeValueMemberS{Value: token.RefreshTokenID.String()}, // jti
 		"user_id":          &types.AttributeValueMemberN{Value: fmt.Sprintf("%d", token.UserID)},
 		"refresh_token":    &types.AttributeValueMemberS{Value: token.Token},
 		"created_at":       &types.AttributeValueMemberS{Value: createdAtStr},
@@ -107,8 +107,14 @@ func (r *RefreshTokenRepository) Delete(ctx context.Context, refreshTokenID *vo.
 }
 
 func (r *RefreshTokenRepository) Rotate(ctx context.Context, oldRefreshTokenID *vo.UUID, newRefreshToken *entity.RefreshToken) error {
-	// 新しいリフレッシュトークンをDynamoDBの属性値マップにマーシャリング
-	av, err := attributevalue.MarshalMap(newRefreshToken)
+	newItem := map[string]interface{}{
+		"refresh_token_id": newRefreshToken.RefreshTokenID.String(),
+		"user_id":          newRefreshToken.UserID,
+		"token":            newRefreshToken.Token,
+		"expires_at":       newRefreshToken.ExpiresAt,
+		"created_at":       newRefreshToken.CreatedAt,
+	}
+	av, err := attributevalue.MarshalMap(newItem)
 	if err != nil {
 		return fmt.Errorf("failed to marshal new refresh token: %w", err)
 	}
@@ -152,7 +158,14 @@ func (r *RefreshTokenRepository) Rotate(ctx context.Context, oldRefreshTokenID *
 		// 条件チェック失敗 (ConditionalCheckFailed) はリプレイアタックの可能性を示唆
 		var tce *types.TransactionCanceledException
 		if errors.As(err, &tce) {
-			return fmt.Errorf("token rotation failed due to a conditional check, possible replay attack: %w", err)
+			// キャンセルの理由を具体的にチェックする
+			for _, reason := range tce.CancellationReasons {
+				if reason.Code != nil && *reason.Code == "ConditionalCheckFailed" {
+					return fmt.Errorf("token rotation failed due to a conditional check, possible replay attack: %w", err)
+				}
+			}
+			// ConditionalCheckFailed 以外の理由でキャンセルされた場合 (例: ValidationError)
+			return fmt.Errorf("token rotation transaction was canceled: %w", err)
 		}
 		return fmt.Errorf("failed to execute transact write items for token rotation: %w", err)
 	}
