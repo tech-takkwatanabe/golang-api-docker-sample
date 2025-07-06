@@ -38,7 +38,7 @@
 
 ### DynamoDBに保存されるRefreshToken
 ![スクリーンショット 2025-05-08 22 34 35](https://github.com/user-attachments/assets/9b95060e-7cb8-429f-a3e1-7b07955a5be3)
-- `refresh_token_id` = `user.uuid`にしているので、同じユーザーでログインし直すと上書きされます。
+- ~~`refresh_token_id` = `user.uuid`にしているので、同じユーザーでログインし直すと上書きされます。~~ → マルチデバイスへのログイン等を考慮し、 `refresh_token_id` = `jti`に変更。ローテーション実装。
 - `expire_at`をTTLに指定していることで、自動的にレコードが消えます（DynamoDBの仕様で、期限後すぐには消滅するわけではない）。
 ***
 
@@ -142,4 +142,4 @@ sam deploy --guided \
 - READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
 - AIに課金はしていません
 - 今後の課題 
-  - テストコードの追加, DynamoDB Localを試してみる, RefreshTokenのローテーション etc・・
+  - テストコードの追加, DynamoDB Localを試してみる etc・・
