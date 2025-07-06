@@ -108,45 +108,7 @@ func Login(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		c.SetCookie(
-			config.AccessTokenCookieName,
-			loginResponse.AccessToken,
-			config.AccessTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			true, // HttpOnly
-		)
-
-		c.SetCookie(
-			config.AuthCheckCookieName,
-			"true",
-			config.AccessTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			false,
-		)
-
-		c.SetCookie(
-			config.RefreshTokenCookieName,
-			loginResponse.RefreshToken,
-			config.RefreshTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			true, // HttpOnly
-		)
-
-		c.SetCookie(
-			config.RefreshTokenExistCheckCookieName,
-			"true",
-			config.RefreshTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			false,
-		)
+		SetAuthCookies(c, loginResponse.AccessToken, loginResponse.RefreshToken)
 
 		c.JSON(http.StatusOK, loginResponse)
 	}
@@ -191,45 +153,7 @@ func Logout(userService service.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user.LogoutUseCase(c, userService)
 
-		c.SetCookie(
-			config.AccessTokenCookieName,
-			"",
-			-1,
-			"/",
-			"",
-			false,
-			true,
-		)
-
-		c.SetCookie(
-			config.AuthCheckCookieName,
-			"",
-			-1,
-			"/",
-			"",
-			false,
-			false,
-		)
-
-		c.SetCookie(
-			config.RefreshTokenCookieName,
-			"",
-			-1,
-			"/",
-			"",
-			false,
-			true,
-		)
-
-		c.SetCookie(
-			config.RefreshTokenExistCheckCookieName,
-			"",
-			-1,
-			"/",
-			"",
-			false,
-			false,
-		)
+		ClearAuthCookies(c)
 
 		c.JSON(http.StatusOK, dto.MessageResponse{Message: "Logged out successfully"})
 	}
@@ -259,45 +183,7 @@ func Refresh(userService service.UserService) gin.HandlerFunc {
 			return
 		}
 
-		c.SetCookie(
-			config.AccessTokenCookieName,
-			TokenRefreshResponse.AccessToken,
-			config.AccessTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			true,
-		)
-
-		c.SetCookie(
-			config.AuthCheckCookieName,
-			"true",
-			config.AccessTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			false,
-		)
-
-		c.SetCookie(
-			config.RefreshTokenCookieName,
-			TokenRefreshResponse.RefreshToken,
-			config.RefreshTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			true, // HttpOnly
-		)
-
-		c.SetCookie(
-			config.RefreshTokenExistCheckCookieName,
-			"true",
-			config.RefreshTokenExpireSeconds,
-			"/",
-			"",
-			false,
-			false,
-		)
+		SetAuthCookies(c, TokenRefreshResponse.AccessToken, TokenRefreshResponse.RefreshToken)
 
 		c.JSON(http.StatusOK, TokenRefreshResponse)
 	}
