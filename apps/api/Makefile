@@ -18,5 +18,8 @@ tidy:
 swag:
 	docker compose exec go swag init
 
+migrate:
+	docker compose exec go go run main.go -migrate
+
 gotest:
 	docker compose exec go go test ./test

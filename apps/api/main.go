@@ -1,16 +1,19 @@
 package main
 
 import (
+	"flag"
 	"go-auth/config"
 	"go-auth/controllers"
-	"go-auth/domain/repository"
+	"go-auth/external"
 	"go-auth/middlewares"
 	"go-auth/models"
 	"go-auth/service"
 	"log"
+	"os"
 
 	_ "go-auth/docs"
 	dynamodbRepo "go-auth/infrastructure/dynamodb"
+	infra_repo "go-auth/infrastructure/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -32,14 +35,23 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 	config.LoadConfig()
-	models.ConnectDataBase()
+	db := external.ConnectDB()
+
+	var migrate bool
+	flag.BoolVar(&migrate, "migrate", false, "Run database migrations and exit")
+	flag.Parse()
+	if migrate {
+		models.DBMigrate(db)
+		os.Exit(0) // マイグレーションが完了したらサーバーは起動せずに終了
+	}
+
 	router := gin.Default()
 
 	frontendURL := config.FrontendURL
 	router.Use(middlewares.CorsMiddleware([]string{frontendURL}))
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
-	userRepo := repository.NewUserRepository()
+	userRepo := infra_repo.NewUserRepository(db)
 	refreshTokenRepo := dynamodbRepo.NewRefreshTokenRepository()
 	userService := service.NewUserService(userRepo, refreshTokenRepo)
 
