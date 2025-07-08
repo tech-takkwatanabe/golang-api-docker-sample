@@ -12,16 +12,17 @@ const axiosInstance = axios.create({
 let isRefreshing = false;
 let pendingRequests: (() => void)[] = [];
 
-interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+type CustomAxiosRequestConfig = AxiosRequestConfig & {
   _retry?: boolean;
-}
+};
 
 export async function customInstance<T>(
   config: AxiosRequestConfig,
-  _onUnauthorized?: () => void
+  extraOptions?: AxiosRequestConfig
 ): Promise<T> {
   const defaultConfig: AxiosRequestConfig = {
     ...config,
+    ...extraOptions,
     withCredentials: true,
     baseURL: API_URL,
   };
