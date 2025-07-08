@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import LoginPage from '@/pages/(public)/LoginPage';
 import * as authHooks from '@/api/auth/auth';
-import * as jotai from 'jotai';
 import * as authUtils from '@/utils/getIsAuthenticatedCookie';
 
 // Mock the necessary hooks and utilities
