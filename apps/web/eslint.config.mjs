@@ -1,35 +1,24 @@
-import typescript from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 import unicorn from 'eslint-plugin-unicorn';
 import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.mjs', '**/*.cjs', '!**/eslint.config.mjs'],
+    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: {
-        Logger: 'readonly',
-        SpreadsheetApp: 'readonly',
-      },
-      parser: typescriptParser,
+      parser: tsParser,
       parserOptions: {
-        project: 'tsconfig.json',
+        project: './tsconfig.json',
         loggerFn: false,
         extraFileExtensions: ['.json', '.html'],
       },
     },
-    settings: {
-      'import/resolver': {
-        typescript: {
-          project: 'tsconfig.json',
-        },
-      },
-    },
     plugins: {
-      '@typescript-eslint': typescript,
-      unicorn: unicorn,
+      '@typescript-eslint': tsPlugin,
+      unicorn,
     },
     rules: {
       'no-var': 'error',
@@ -41,6 +30,13 @@ export default [
       'no-console': ['warn', { allow: ['error', 'warn'] }],
       'unicorn/filename-case': 'off',
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
     ignores: [
       'node_modules/',
       'dist/',
@@ -50,12 +46,12 @@ export default [
       'lib/cs-api/client/',
       'public/mockServiceWorker.js',
       'public/pdf.worker.min.js',
+      '*.md',
       'package.json',
       'tsconfig.json',
       'public/index.html',
       'src/api/auth/*',
       'src/api/models/*',
-      '*.md',
       'public/manifest.json',
     ],
   },
