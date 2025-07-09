@@ -98,9 +98,9 @@ func LoadConfig() {
 		log.Println("Warning: DB_USER is not set, using default value 'root'.")
 		DBUser = "root"
 	}
-	DBPassword = os.Getenv("DB_PASSWORD")
+	DBPassword = os.Getenv("DB_PASS")
 	if DBPassword == "" {
-		log.Println("Warning: DB_PASSWORD is not set, using default value 'password'.")
+		log.Println("Warning: DB_PASS is not set, using default value 'password'.")
 		DBPassword = "password"
 	}
 	DBHost = os.Getenv("DB_HOST")
