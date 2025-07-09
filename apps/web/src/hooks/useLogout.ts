@@ -27,7 +27,7 @@ export const useLogout = () => {
       }
     } finally {
       setSub('');
-      queryClient.invalidateQueries({ queryKey: ['/loggedin/user'] });
+      queryClient.removeQueries({ queryKey: ['/loggedin/user'] });
       navigate('/login');
     }
   };
