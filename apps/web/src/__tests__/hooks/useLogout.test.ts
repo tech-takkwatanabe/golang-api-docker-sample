@@ -47,6 +47,7 @@ describe('useLogout', () => {
     });
     (postLoggedinRefresh as jest.Mock).mockImplementation(mockPostLoggedinRefresh);
     (useQueryClient as jest.Mock).mockReturnValue({
+      removeQueries: mockInvalidateQueries,
       invalidateQueries: mockInvalidateQueries,
     });
     (useSetAtom as jest.Mock).mockReturnValue(mockSetSub);
