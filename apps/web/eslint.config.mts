@@ -5,7 +5,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mjs'],
+    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mts'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -57,7 +57,7 @@ export default [
       '.vscode/',
       '.prettierrc.json',
       '.prettierignore',
-      'eslint.config.mjs',
+      'eslint.config.mts',
       '.gitignore',
       'jest.setup.cjs',
       'pnpm-lock.yaml',

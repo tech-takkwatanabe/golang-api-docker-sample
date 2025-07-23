@@ -25,7 +25,7 @@ module.exports = override(
     // 自前の ESLintPlugin を追加
     config.plugins.push(
       new ESLintPlugin({
-        overrideConfigFile: path.resolve(__dirname, 'eslint.config.mjs'),
+        overrideConfigFile: path.resolve(__dirname, 'eslint.config.mts'),
         extensions: ['js', 'jsx', 'ts', 'tsx'],
       })
     );

@@ -25,7 +25,7 @@
     "tailwind.config.js",
     "tailwind.config.d.ts",
     "postcss.config.mjs",
-    "eslint.config.mjs",
+    "eslint.config.mts",
     "orval.config.ts",
     ".prettierrc.json",
     "config-overrides.js",
