@@ -10,7 +10,7 @@
     "test:cc": "jest --clearCache",
     "eject": "react-app-rewired eject",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
-    "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
+    "fmt": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "ovl": "orval --config orval.config.ts"
   },
   "dependencies": {

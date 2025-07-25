@@ -22,13 +22,16 @@ describe('DashboardPage', () => {
     // Mock useAtom for userAtom, isLoadingAtom, isAuthenticatedAtom
     (jotai.useAtom as jest.Mock).mockImplementation((atom) => {
       if (atom === authAtoms.userAtom) {
-        return [{
-          data: {
-            id: '123',
-            name: 'Test User',
-            email: 'test@example.com',
+        return [
+          {
+            data: {
+              id: '123',
+              name: 'Test User',
+              email: 'test@example.com',
+            },
           },
-        }, jest.fn()];
+          jest.fn(),
+        ];
       } else if (atom === authAtoms.isLoadingAtom) {
         return [false, jest.fn()];
       } else if (atom === authAtoms.isAuthenticatedAtom) {
