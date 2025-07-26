@@ -63,16 +63,21 @@
 │   │   └── utils/      　# ユーティリティ
 │   │
 │   └── web/           # Reactで実装されたフロントエンド
-│       ├── src/        # ソースコード
-│       │   ├── api/    # 生成されたAPIクライアント
-│       │   ├── atoms/  # jotaiのアトム
-│       │   ├── hooks/  # カスタムフック
-│       │   ├── pages/  # ページコンポーネント
-│       │   ├── providers/ # プロバイダー
-│       │   ├── schemas/   # Zodスキーマ
-│       │   └── utils/     # ユーティリティ
-│       ├── public/     # 静的ファイル
-│       └── node_modules/ # 依存パッケージ
+       ├── .storybook/ # Storybook設定ファイル
+       ├── src/        # ソースコード
+       │   ├── __tests__/ # テストファイル
+       │   ├── api/    # 生成されたAPIクライアント
+       │   ├── atoms/  # jotaiのアトム
+       │   ├── components/ # 再利用可能コンポーネント
+       │   ├── hooks/  # カスタムフック
+       │   ├── pages/  # ページコンポーネント
+       │   ├── providers/ # プロバイダー
+       │   ├── schemas/   # Zodスキーマ
+       │   ├── stories/   # Storybookストーリー
+       │   └── utils/     # ユーティリティ
+       ├── public/     # 静的ファイル
+       ├── storybook-static/ # Storybookビルド出力
+       └── node_modules/ # 依存パッケージ
 │
 └── serverless/        # サーバーレス関連の設定ファイル
 ```
