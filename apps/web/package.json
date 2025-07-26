@@ -9,7 +9,7 @@
     "test:w": "jest --watch",
     "test:cc": "jest --clearCache",
     "eject": "react-app-rewired eject",
-    "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
+    "lint": "tsc --noEmit && eslint './src/**/*.{js,jsx,ts,tsx}'",
     "fmt": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "ovl": "orval --config orval.config.ts",
     "storybook": "storybook dev -p 6006",
