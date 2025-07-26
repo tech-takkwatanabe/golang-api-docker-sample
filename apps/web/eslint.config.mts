@@ -2,6 +2,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import unicorn from 'eslint-plugin-unicorn';
 import prettier from 'eslint-config-prettier';
+import storybook from 'eslint-plugin-storybook';
 
 export default [
   {
@@ -72,5 +73,15 @@ export default [
   {
     name: 'prettier-config',
     rules: prettier.rules,
+  },
+  {
+    files: ['**/*.stories.@(js|jsx|ts|tsx)'],
+    plugins: {
+      storybook,
+    },
+    rules: {
+      'storybook/hierarchy-separator': 'error',
+      'storybook/default-exports': 'error',
+    },
   },
 ];

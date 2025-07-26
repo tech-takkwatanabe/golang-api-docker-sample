@@ -11,7 +11,9 @@
     "eject": "react-app-rewired eject",
     "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
     "fmt": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
-    "ovl": "orval --config orval.config.ts"
+    "ovl": "orval --config orval.config.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -28,6 +30,10 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.0.5",
+    "@storybook/addon-docs": "^9.0.18",
+    "@storybook/addon-onboarding": "^9.0.18",
+    "@storybook/preset-create-react-app": "^9.0.18",
+    "@storybook/react-webpack5": "^9.0.18",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -43,6 +49,7 @@
     "esbuild": "^0.25.8",
     "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-storybook": "^9.0.18",
     "eslint-plugin-unicorn": "^60.0.0",
     "eslint-webpack-plugin": "^5.0.2",
     "jest": "^30.0.5",
@@ -50,10 +57,13 @@
     "orval": "^7.10.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "prop-types": "^15.8.1",
     "react-app-rewired": "^2.2.1",
+    "storybook": "^9.0.18",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.4.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "webpack": "^5.100.2"
   },
   "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad",
   "browserslist": {
