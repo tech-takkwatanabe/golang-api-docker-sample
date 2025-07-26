@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Button from '@/components/Button';
 
 const HomePage = () => {
   return (
@@ -17,11 +18,8 @@ const HomePage = () => {
                 >
                   ログイン
                 </Link>
-                <Link
-                  to="/register"
-                  className="ml-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                >
-                  登録
+                <Link to="/register" className="ml-4">
+                  <Button variant="primary">登録</Button>
                 </Link>
               </>
             </div>
@@ -39,11 +37,10 @@ const HomePage = () => {
               JWT認証を使用したシンプルなアプリケーション
             </p>
             <div className="mt-8 flex justify-center">
-              <Link
-                to="/register"
-                className="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-              >
-                今すぐ始める
+              <Link to="/register">
+                <Button variant="primary" size="large">
+                  今すぐ始める
+                </Button>
               </Link>
             </div>
           </div>

@@ -33,7 +33,7 @@ export type ButtonProps = {
    * 追加のCSSクラス
    */
   className?: string;
-}
+};
 
 const Button: React.FC<ButtonProps> = ({
   children,
@@ -46,7 +46,7 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
 }) => {
   const baseClasses = 'font-medium rounded-md focus:outline-none focus:ring-2 transition-colors';
-  
+
   const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
     secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
@@ -74,12 +74,7 @@ const Button: React.FC<ButtonProps> = ({
     .join(' ');
 
   return (
-    <button
-      type={type}
-      className={buttonClasses}
-      disabled={disabled || loading}
-      onClick={onClick}
-    >
+    <button type={type} className={buttonClasses} disabled={disabled || loading} onClick={onClick}>
       {loading ? (
         <div className="flex items-center">
           <svg

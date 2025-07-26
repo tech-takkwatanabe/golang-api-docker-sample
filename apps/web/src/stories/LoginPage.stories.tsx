@@ -42,8 +42,6 @@ const LoginPageMock = () => (
   </div>
 );
 
-
-
 const meta = {
   title: 'Pages/LoginPage',
   component: LoginPageMock,

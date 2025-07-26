@@ -11,6 +11,7 @@ import type { AxiosError } from 'axios';
 import getIsAuthenticatedCookie from '@/utils/getIsAuthenticatedCookie';
 import { subAtom } from '@/atoms/authAtom';
 import { useSetAtom } from 'jotai';
+import Button from '@/components/Button';
 
 const loginSchema = z.object({
   email: emailSchema,
@@ -140,13 +141,9 @@ const LoginPage = () => {
           </div>
 
           <div className="mb-6">
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            >
-              {isLoading ? 'ログイン中...' : 'ログイン'}
-            </button>
+            <Button type="submit" variant="primary" loading={isLoading} className="w-full">
+              ログイン
+            </Button>
           </div>
 
           <div className="text-center">

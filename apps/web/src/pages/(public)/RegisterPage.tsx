@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom } from '@/atoms/authAtom';
 import getIsAuthenticatedCookie from '@/utils/getIsAuthenticatedCookie';
+import Button from '@/components/Button';
 
 const registerSchema = z.object({
   name: nameSchema,
@@ -129,13 +130,9 @@ const RegisterPage = () => {
           </div>
 
           <div className="mb-6">
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            >
-              {isLoading ? '登録中...' : '登録する'}
-            </button>
+            <Button type="submit" variant="primary" loading={isLoading} className="w-full">
+              登録する
+            </Button>
           </div>
 
           <div className="text-center">
