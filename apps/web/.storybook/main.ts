@@ -1,28 +1,30 @@
 import type { StorybookConfig } from '@storybook/react-webpack5';
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/**/*.mdx',
-    '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'
-  ],
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: [
     '@storybook/preset-create-react-app',
     '@storybook/addon-docs',
-    '@storybook/addon-onboarding'
+    '@storybook/addon-onboarding',
   ],
   framework: {
     name: '@storybook/react-webpack5',
-    options: {}
+    options: {},
   },
-  staticDirs: [
-    '../public'
-  ],
+  staticDirs: ['../public'],
   webpackFinal: async (config) => {
     // ESLintプラグインを無効化してエラーを回避
     config.plugins = config.plugins?.filter(
       (plugin) => plugin && plugin.constructor.name !== 'ESLintWebpackPlugin'
     );
-    
+
+    // パスエイリアス設定を追加 - 絶対パスを使用
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': '/Users/watanabetaku/htdocs/golang-api-docker-sample/apps/web/src',
+    };
+
     return config;
   },
   typescript: {

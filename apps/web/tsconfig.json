@@ -18,10 +18,14 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
-    }
+    },
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "src",
+    ".storybook",
+    ".storybook/types.d.ts",
     "tailwind.config.js",
     "tailwind.config.d.ts",
     "postcss.config.mjs",
