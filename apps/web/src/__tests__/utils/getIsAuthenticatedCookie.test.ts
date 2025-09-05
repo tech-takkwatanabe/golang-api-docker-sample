@@ -11,8 +11,8 @@ describe('getIsAuthenticatedCookie', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset process.env.REACT_APP_AUTH_CHECK_COOKIE_NAME before each test
-    delete process.env.REACT_APP_AUTH_CHECK_COOKIE_NAME;
+    // Reset VITE_AUTH_CHECK_COOKIE_NAME before each test
+    delete import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME;
   });
 
   it('should return true if the authentication cookie exists', () => {
@@ -30,7 +30,7 @@ describe('getIsAuthenticatedCookie', () => {
   });
 
   it('should return true if the authentication cookie exists with a custom name', () => {
-    process.env.REACT_APP_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
+    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
     (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
       `myCustomAuthCookie=true; otherCookie=value`
     );
@@ -38,7 +38,7 @@ describe('getIsAuthenticatedCookie', () => {
   });
 
   it('should return false if the authentication cookie does not exist with a custom name', () => {
-    process.env.REACT_APP_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
+    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
     (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
       'otherCookie=value'
     );

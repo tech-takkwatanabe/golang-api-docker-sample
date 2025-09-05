@@ -11,8 +11,8 @@ describe('getRefreshTokenExistsCookie', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME before each test
-    delete process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME;
+    // Reset VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME before each test
+    delete import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME;
   });
 
   it('should return true if the refresh token cookie exists', () => {
@@ -30,7 +30,7 @@ describe('getRefreshTokenExistsCookie', () => {
   });
 
   it('should return true if the refresh token cookie exists with a custom name', () => {
-    process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
+    import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
     (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
       `myCustomRefreshCookie=true; otherCookie=value`
     );
@@ -38,7 +38,7 @@ describe('getRefreshTokenExistsCookie', () => {
   });
 
   it('should return false if the refresh token cookie does not exist with a custom name', () => {
-    process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
+    import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
     (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
       'otherCookie=value'
     );

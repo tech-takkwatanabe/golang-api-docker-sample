@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -9,8 +10,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "node16",
-    "moduleResolution": "node16",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -19,8 +20,14 @@
     "paths": {
       "@/*": ["*"]
     },
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types"]
+    "types": ["vite/client"],
+    "typeRoots": ["./node_modules/@types"],
+    "noImplicitAny": false
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   },
   "include": [
     "src",
@@ -31,6 +38,7 @@
     "postcss.config.mjs",
     "eslint.config.mts",
     "orval.config.ts",
+    "vite.config.ts",
     ".prettierrc.json",
     "config-overrides.js",
     "jest.config.cjs"

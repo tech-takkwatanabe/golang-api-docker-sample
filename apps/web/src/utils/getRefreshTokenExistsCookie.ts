@@ -1,5 +1,5 @@
 /**
- * クッキー `REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME` の値を取得し、認証状態を確認する関数
+ * クッキー `VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME` の値を取得し、認証状態を確認する関数
  * @returns {boolean} クッキーに基づいた認証状態。
  */
 const getRefreshTokenExistsCookie = (): boolean => {
@@ -12,7 +12,7 @@ const getRefreshTokenExistsCookie = (): boolean => {
   }, {});
 
   const cookieName =
-    process.env.REACT_APP_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
+    import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
 
   return cookies.hasOwnProperty(cookieName);
 };
