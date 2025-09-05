@@ -24,8 +24,8 @@
   },
   "include": [
     "src",
-    ".storybook",
-    ".storybook/types.d.ts",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
     "tailwind.config.js",
     "tailwind.config.d.ts",
     "postcss.config.mjs",
