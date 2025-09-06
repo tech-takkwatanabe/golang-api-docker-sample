@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 
 describe('getRefreshTokenExistsCookie', () => {
@@ -5,25 +6,27 @@ describe('getRefreshTokenExistsCookie', () => {
 
   // Mock document.cookie
   Object.defineProperty(document, 'cookie', {
-    get: jest.fn(),
+    get: vi.fn(),
     configurable: true,
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Reset VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME before each test
-    delete import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME;
+    if (import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME) {
+      delete import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME;
+    }
   });
 
   it('should return true if the refresh token cookie exists', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
+    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
       `${COOKIE_NAME}=true; otherCookie=value`
     );
     expect(getRefreshTokenExistsCookie()).toBe(true);
   });
 
   it('should return false if the refresh token cookie does not exist', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
+    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
       'otherCookie=value'
     );
     expect(getRefreshTokenExistsCookie()).toBe(false);
@@ -31,7 +34,7 @@ describe('getRefreshTokenExistsCookie', () => {
 
   it('should return true if the refresh token cookie exists with a custom name', () => {
     import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
+    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
       `myCustomRefreshCookie=true; otherCookie=value`
     );
     expect(getRefreshTokenExistsCookie()).toBe(true);
@@ -39,28 +42,27 @@ describe('getRefreshTokenExistsCookie', () => {
 
   it('should return false if the refresh token cookie does not exist with a custom name', () => {
     import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME = 'myCustomRefreshCookie';
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
+    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
       'otherCookie=value'
     );
     expect(getRefreshTokenExistsCookie()).toBe(false);
   });
 
   it('should handle empty cookie string', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue('');
+    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue('');
     expect(getRefreshTokenExistsCookie()).toBe(false);
   });
 
   it('should handle multiple cookies correctly', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
-      `cookie1=value1; ${COOKIE_NAME}=true; cookie2=value2`
-    );
+    // Set the cookie value directly since we're using the mock from setup.ts
+    document.cookie = `cookie1=value1; ${COOKIE_NAME}=true; cookie2=value2`;
+    
     expect(getRefreshTokenExistsCookie()).toBe(true);
   });
 
   it('should handle cookie name as part of another cookie value', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
-      `anotherCookie=${COOKIE_NAME}Value`
-    );
+    document.cookie = `anotherCookie=${COOKIE_NAME}Value`;
+    
     expect(getRefreshTokenExistsCookie()).toBe(false);
   });
 });

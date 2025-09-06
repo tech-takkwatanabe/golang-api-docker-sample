@@ -20,8 +20,11 @@
     "paths": {
       "@/*": ["*"]
     },
-    "types": ["vite/client"],
-    "typeRoots": ["./node_modules/@types"],
+    "types": ["vite/client", "node"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "noImplicitAny": false
   },
   "ts-node": {
@@ -39,6 +42,7 @@
     "eslint.config.mts",
     "orval.config.ts",
     "vite.config.ts",
+    "vitest.config.ts",
     ".prettierrc.json",
     "config-overrides.js",
     "jest.config.cjs"
