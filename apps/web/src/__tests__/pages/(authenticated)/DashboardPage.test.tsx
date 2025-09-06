@@ -1,26 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import DashboardPage from '@/pages/(authenticated)/DashboardPage';
 import * as jotai from 'jotai';
 import * as authAtoms from '@/atoms/authAtom';
 import * as useLogoutHook from '@/hooks/useLogout';
 
 // Mock the necessary hooks and utilities
-jest.mock('jotai', () => ({
-  atom: jest.fn((initialValue) => initialValue), // Mock atom to return its initial value
-  useSetAtom: jest.fn(),
-  useAtom: jest.fn(),
+vi.mock('jotai', () => ({
+  atom: vi.fn((initialValue) => initialValue), // Mock atom to return its initial value
+  useSetAtom: vi.fn(),
+  useAtom: vi.fn(),
 }));
-jest.mock('@/atoms/authAtom');
-jest.mock('@/hooks/useLogout');
+vi.mock('@/atoms/authAtom');
+vi.mock('@/hooks/useLogout');
 
 describe('DashboardPage', () => {
   beforeEach(() => {
     // Reset mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Mock useAtom for userAtom, isLoadingAtom, isAuthenticatedAtom
-    (jotai.useAtom as jest.Mock).mockImplementation((atom) => {
+    vi.mocked(jotai.useAtom).mockImplementation((atom) => {
       if (atom === authAtoms.userAtom) {
         return [
           {
@@ -30,21 +31,21 @@ describe('DashboardPage', () => {
               email: 'test@example.com',
             },
           },
-          jest.fn(),
-        ];
+          vi.fn(),
+        ] as any;
       } else if (atom === authAtoms.isLoadingAtom) {
-        return [false, jest.fn()];
+        return [false, vi.fn()] as any;
       } else if (atom === authAtoms.isAuthenticatedAtom) {
-        return [true, jest.fn()];
+        return [true, vi.fn()] as any;
       }
-      return [undefined, jest.fn()];
+      return [undefined, vi.fn()] as any;
     });
 
     // Mock useLogout
-    (useLogoutHook.useLogout as jest.Mock).mockReturnValue(jest.fn());
+    vi.mocked(useLogoutHook.useLogout).mockReturnValue(vi.fn() as any);
   });
 
-  test('renders DashboardPage component with user information when authenticated', () => {
+  it('renders DashboardPage component with user information when authenticated', () => {
     render(
       <BrowserRouter>
         <DashboardPage />

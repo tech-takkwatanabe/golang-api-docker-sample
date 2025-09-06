@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
+import { vi, describe, expect } from 'vitest';
 import App from '@/App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Mock react-router-dom
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   BrowserRouter: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mock-browser-router">{children}</div>
   ),
@@ -20,31 +21,33 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // Mock the AuthProvider to simplify testing
-jest.mock('../providers/AuthProvider', () => ({
+vi.mock('../providers/AuthProvider', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mock-auth-provider">{children}</div>
   ),
 }));
 
 // Mock react-toastify's ToastContainer
-jest.mock('react-toastify', () => ({
+vi.mock('react-toastify', () => ({
   ToastContainer: () => <div data-testid="mock-toast-container" />,
 }));
 
 // Mock page components
-jest.mock('../pages/(public)/HomePage', () => () => <div data-testid="home-page">Home Page</div>);
-jest.mock('../pages/(public)/LoginPage', () => () => (
-  <div data-testid="login-page">Login Page</div>
-));
-jest.mock('../pages/(public)/RegisterPage', () => () => (
-  <div data-testid="register-page">Register Page</div>
-));
-jest.mock('../pages/(public)/NotFoundPage', () => () => (
-  <div data-testid="not-found-page">Not Found Page</div>
-));
-jest.mock('../pages/(authenticated)/DashboardPage', () => () => (
-  <div data-testid="dashboard-page">Dashboard Page</div>
-));
+vi.mock('../pages/(public)/HomePage', () => ({
+  default: () => <div data-testid="home-page">Home Page</div>,
+}));
+vi.mock('../pages/(public)/LoginPage', () => ({
+  default: () => <div data-testid="login-page">Login Page</div>,
+}));
+vi.mock('../pages/(public)/RegisterPage', () => ({
+  default: () => <div data-testid="register-page">Register Page</div>,
+}));
+vi.mock('../pages/(public)/NotFoundPage', () => ({
+  default: () => <div data-testid="not-found-page">Not Found Page</div>,
+}));
+vi.mock('../pages/(authenticated)/DashboardPage', () => ({
+  default: () => <div data-testid="dashboard-page">Dashboard Page</div>,
+}));
 
 const queryClient = new QueryClient();
 

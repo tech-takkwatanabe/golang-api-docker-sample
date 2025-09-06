@@ -1,38 +1,39 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import RegisterPage from '@/pages/(public)/RegisterPage';
 import * as authHooks from '@/api/auth/auth';
 import * as jotai from 'jotai';
 import * as authUtils from '@/utils/getIsAuthenticatedCookie';
 
 // Mock the necessary hooks and utilities
-jest.mock('@/api/auth/auth');
-jest.mock('jotai', () => ({
-  atom: jest.fn((initialValue) => initialValue), // Mock atom to return its initial value
-  useSetAtom: jest.fn(),
-  useAtom: jest.fn(),
+vi.mock('@/api/auth/auth');
+vi.mock('jotai', () => ({
+  atom: vi.fn((initialValue) => initialValue), // Mock atom to return its initial value
+  useSetAtom: vi.fn(),
+  useAtom: vi.fn(),
 }));
-jest.mock('@/utils/getIsAuthenticatedCookie');
+vi.mock('@/utils/getIsAuthenticatedCookie');
 
 describe('RegisterPage', () => {
   beforeEach(() => {
     // Reset mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Mock usePostRegister to return a successful status by default
-    (authHooks.usePostRegister as jest.Mock).mockReturnValue({
-      mutate: jest.fn(),
+    vi.mocked(authHooks.usePostRegister).mockReturnValue({
+      mutate: vi.fn(),
       status: 'success',
-    });
+    } as any);
 
     // Mock useAtom
-    (jotai.useAtom as jest.Mock).mockReturnValue([false]);
+    vi.mocked(jotai.useAtom).mockReturnValue([false, vi.fn()]);
 
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
-    (authUtils.default as jest.Mock).mockReturnValue(false);
+    vi.mocked(authUtils.default).mockReturnValue(false);
   });
 
-  test('renders RegisterPage component with correct elements', () => {
+  it('renders RegisterPage component with correct elements', () => {
     render(
       <BrowserRouter>
         <RegisterPage />

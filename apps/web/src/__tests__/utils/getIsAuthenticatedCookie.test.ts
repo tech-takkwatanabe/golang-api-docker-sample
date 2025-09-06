@@ -3,11 +3,22 @@ import getIsAuthenticatedCookie from '@/utils/getIsAuthenticatedCookie';
 
 describe('getIsAuthenticatedCookie', () => {
   const COOKIE_NAME = 'isAuthenticatedByGoBackend';
+  const originalDocumentCookie = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie');
+  // Create a deep copy of the original env
+  const originalEnv = { ...import.meta.env };
 
   // Mock document.cookie
-  Object.defineProperty(document, 'cookie', {
+  const mockCookie = {
     get: vi.fn(),
-    configurable: true,
+    set: vi.fn(),
+  };
+
+  beforeAll(() => {
+    Object.defineProperty(document, 'cookie', {
+      get: mockCookie.get,
+      set: mockCookie.set,
+      configurable: true,
+    });
   });
 
   beforeEach(() => {
@@ -18,51 +29,65 @@ describe('getIsAuthenticatedCookie', () => {
     }
   });
 
+  afterAll(() => {
+    if (originalDocumentCookie) {
+      Object.defineProperty(document, 'cookie', originalDocumentCookie);
+    } else {
+      delete (document as any).cookie;
+    }
+    // Restore original env values
+    Object.entries(originalEnv).forEach(([key, value]) => {
+      (import.meta.env as any)[key] = value;
+    });
+  });
+
   it('should return true if the authentication cookie exists', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
-      `${COOKIE_NAME}=true; otherCookie=value`
-    );
+    // The cookie value can be any non-empty string, the function only checks for the presence of the key
+    mockCookie.get.mockReturnValue(`${COOKIE_NAME}=anyvalue; otherCookie=value`);
     expect(getIsAuthenticatedCookie()).toBe(true);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should return false if the authentication cookie does not exist', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
-      'otherCookie=value'
-    );
+    mockCookie.get.mockReturnValue('otherCookie=value');
     expect(getIsAuthenticatedCookie()).toBe(false);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should return true if the authentication cookie exists with a custom name', () => {
-    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as jest.Mock).mockReturnValue(
-      `myCustomAuthCookie=true; otherCookie=value`
-    );
+    const customCookieName = 'myCustomAuthCookie';
+    // @ts-ignore - We're intentionally modifying a readonly property for testing
+    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = customCookieName;
+    mockCookie.get.mockReturnValue(`${customCookieName}=true; otherCookie=value`);
     expect(getIsAuthenticatedCookie()).toBe(true);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should return false if the authentication cookie does not exist with a custom name', () => {
-    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = 'myCustomAuthCookie';
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue(
-      'otherCookie=value'
-    );
+    const customCookieName = 'myCustomAuthCookie';
+    // @ts-ignore - We're intentionally modifying a readonly property for testing
+    import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME = customCookieName;
+    mockCookie.get.mockReturnValue('otherCookie=value');
     expect(getIsAuthenticatedCookie()).toBe(false);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should handle empty cookie string', () => {
-    (Object.getOwnPropertyDescriptor(document, 'cookie')?.get as ReturnType<typeof vi.fn>).mockReturnValue('');
+    mockCookie.get.mockReturnValue('');
     expect(getIsAuthenticatedCookie()).toBe(false);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should handle multiple cookies correctly', () => {
-    // Set the cookie value directly since we're using the mock from setup.ts
-    document.cookie = `cookie1=value1; ${COOKIE_NAME}=true; cookie2=value2`;
-    
+    // Simulate the exact format that document.cookie would return
+    mockCookie.get.mockReturnValue(`cookie1=value1; ${COOKIE_NAME}=true; cookie2=value2`);
     expect(getIsAuthenticatedCookie()).toBe(true);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 
   it('should handle cookie name as part of another cookie value', () => {
-    document.cookie = `anotherCookie=${COOKIE_NAME}Value`;
-    
+    mockCookie.get.mockReturnValue(`anotherCookie=${COOKIE_NAME}Value`);
     expect(getIsAuthenticatedCookie()).toBe(false);
+    expect(mockCookie.get).toHaveBeenCalled();
   });
 });
