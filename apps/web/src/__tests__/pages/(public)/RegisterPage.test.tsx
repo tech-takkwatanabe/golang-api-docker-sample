@@ -9,9 +9,8 @@ import * as authUtils from '@/utils/getIsAuthenticatedCookie';
 // Mock the necessary hooks and utilities
 vi.mock('@/api/auth/auth');
 vi.mock('jotai', () => ({
-  atom: vi.fn((initialValue) => initialValue), // Mock atom to return its initial value
-  useSetAtom: vi.fn(),
-  useAtom: vi.fn(),
+  atom: vi.fn((init) => init),
+  useAtom: vi.fn() as any, // We'll override this in the test
 }));
 vi.mock('@/utils/getIsAuthenticatedCookie');
 
@@ -26,8 +25,9 @@ describe('RegisterPage', () => {
       status: 'success',
     } as any);
 
-    // Mock useAtom
-    vi.mocked(jotai.useAtom).mockReturnValue([false, vi.fn()]);
+    // Reset useAtom mock with type assertion
+    const setAtom = vi.fn();
+    vi.mocked(jotai.useAtom).mockImplementation(() => [false, setAtom] as any);
 
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
     vi.mocked(authUtils.default).mockReturnValue(false);
