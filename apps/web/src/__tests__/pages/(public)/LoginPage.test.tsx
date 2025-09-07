@@ -4,6 +4,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import LoginPage from '@/pages/(public)/LoginPage';
 import * as authHooks from '@/api/auth/auth';
 import * as authUtils from '@/utils/getIsAuthenticatedCookie';
+import type { DtoLoginResponse } from '@/api/models/dtoLoginResponse';
 
 // Mock the necessary hooks and utilities
 vi.mock('@/api/auth/auth');
@@ -20,10 +21,26 @@ describe('LoginPage', () => {
     vi.clearAllMocks();
 
     // Mock usePostLogin to return a successful status by default
-    vi.mocked(authHooks.usePostLogin).mockReturnValue({
+    const mockMutation = {
       mutate: vi.fn(),
-      status: 'success',
-    } as any);
+      mutateAsync: vi.fn().mockResolvedValue({ accessToken: 'test-token', refreshToken: 'test-refresh-token' }),
+      reset: vi.fn(),
+      status: 'success' as const,
+      isPending: false,
+      isSuccess: true,
+      isError: false,
+      data: { accessToken: 'test-token', refreshToken: 'test-refresh-token' } as DtoLoginResponse,
+      error: null,
+      isIdle: false,
+      failureCount: 0,
+      isPaused: false,
+      failureReason: null,
+      submittedAt: Date.now(),
+      variables: { data: { email: 'test@example.com', password: 'password' } },
+      context: undefined,
+    };
+    
+    vi.mocked(authHooks.usePostLogin).mockReturnValue(mockMutation as any);
 
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
     vi.mocked(authUtils.default).mockReturnValue(false);
