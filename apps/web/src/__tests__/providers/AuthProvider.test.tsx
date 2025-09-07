@@ -2,37 +2,42 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { useGetLoggedinUser } from '@/api/auth/auth';
-import { useAtom, useSetAtom } from 'jotai';
 import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 import { userAtom, isLoadingAtom } from '@/atoms/authAtom';
+
+// Mock modules
+vi.mock('@/api/auth/auth');
+vi.mock('jotai', () => ({
+  useAtom: vi.fn(),
+  useSetAtom: vi.fn(),
+  atom: vi.fn((init) => init),
+}));
+vi.mock('@/utils/getRefreshTokenExistsCookie');
+
+// Import after mocks are set up
+import * as jotai from 'jotai';
+
+// Create mock functions
+const mockUseGetLoggedinUser = vi.mocked(useGetLoggedinUser);
+const mockGetRefreshTokenExistsCookie = vi.mocked(getRefreshTokenExistsCookie);
+const mockUseAtom = vi.mocked(jotai.useAtom);
+const mockUseSetAtom = vi.mocked(jotai.useSetAtom);
 
 type UserData = {
   id: string;
   name: string;
 };
 
-// Mock the necessary modules
-vi.mock('@/api/auth/auth');
-vi.mock('jotai', () => ({
-  atom: vi.fn((init) => init),
-  useAtom: vi.fn() as any, // We'll override this in the test
-  useSetAtom: vi.fn() as any, // We'll override this in the test
-}));
-vi.mock('@/utils/getRefreshTokenExistsCookie');
-
-// Create mock functions
-const mockUseGetLoggedinUser = vi.mocked(useGetLoggedinUser);
-const mockGetRefreshTokenExistsCookie = vi.mocked(getRefreshTokenExistsCookie);
-
 describe('AuthProvider', () => {
   const MockChild = () => <div>Child Component</div>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Reset mocks before each test
     const setAtom = vi.fn();
-    vi.mocked(useAtom).mockImplementation(() => [false, setAtom] as any);
-    vi.mocked(useSetAtom).mockImplementation(() => setAtom);
+    
+    // Simple mock implementation that satisfies TypeScript
+    mockUseAtom.mockImplementation(() => [null, setAtom] as any);
+    mockUseSetAtom.mockImplementation(() => setAtom);
     mockGetRefreshTokenExistsCookie.mockReturnValue(false);
   });
 
@@ -77,7 +82,7 @@ describe('AuthProvider', () => {
     const mockSetUser = vi.fn();
     const mockSetLoading = vi.fn();
 
-    vi.mocked(useSetAtom).mockImplementation((atom) => {
+    mockUseSetAtom.mockImplementation((atom) => {
       if (atom === userAtom) return mockSetUser;
       if (atom === isLoadingAtom) return mockSetLoading;
       return vi.fn();
@@ -127,7 +132,7 @@ describe('AuthProvider', () => {
     const mockSetUser = vi.fn();
     const mockSetLoading = vi.fn();
 
-    vi.mocked(useSetAtom).mockImplementation((atom) => {
+    mockUseSetAtom.mockImplementation((atom) => {
       if (atom === userAtom) return mockSetUser;
       if (atom === isLoadingAtom) return mockSetLoading;
       return vi.fn();
