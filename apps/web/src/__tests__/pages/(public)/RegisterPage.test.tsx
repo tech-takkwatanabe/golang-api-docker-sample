@@ -3,34 +3,45 @@ import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import RegisterPage from '@/pages/(public)/RegisterPage';
 import * as authHooks from '@/api/auth/auth';
-import * as jotai from 'jotai';
 import * as authUtils from '@/utils/getIsAuthenticatedCookie';
 
 // Mock the necessary hooks and utilities
-vi.mock('@/api/auth/auth');
+vi.mock('@/api/auth/auth', () => ({
+  usePostRegister: vi.fn(),
+}));
+
 vi.mock('jotai', () => ({
   atom: vi.fn((init) => init),
-  useAtom: vi.fn() as any, // We'll override this in the test
+  useAtom: vi.fn(() => [false, vi.fn()]),
+  useSetAtom: vi.fn(),
 }));
-vi.mock('@/utils/getIsAuthenticatedCookie');
+
+vi.mock('@/utils/getIsAuthenticatedCookie', () => ({
+  default: vi.fn(),
+}));
 
 describe('RegisterPage', () => {
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks();
-
-    // Mock usePostRegister to return a successful status by default
-    vi.mocked(authHooks.usePostRegister).mockReturnValue({
-      mutate: vi.fn(),
-      status: 'success',
-    } as any);
-
-    // Reset useAtom mock with type assertion
-    const setAtom = vi.fn();
-    vi.mocked(jotai.useAtom).mockImplementation(() => [false, setAtom] as any);
-
+    
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
     vi.mocked(authUtils.default).mockReturnValue(false);
+    
+    // Mock the mutation with proper typing
+    const mockMutation = {
+      mutate: vi.fn(),
+      mutateAsync: vi.fn().mockResolvedValue(undefined),
+      reset: vi.fn(),
+      status: 'idle',
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+      data: undefined,
+      error: null,
+    } as unknown as ReturnType<typeof authHooks.usePostRegister>;
+    
+    vi.mocked(authHooks.usePostRegister).mockReturnValue(mockMutation);
   });
 
   it('renders RegisterPage component with correct elements', () => {
