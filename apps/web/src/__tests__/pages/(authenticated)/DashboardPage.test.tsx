@@ -5,6 +5,8 @@ import DashboardPage from '@/pages/(authenticated)/DashboardPage';
 import * as jotai from 'jotai';
 import * as authAtoms from '@/atoms/authAtom';
 import * as useLogoutHook from '@/hooks/useLogout';
+import type { DtoUserDTOResponse } from '@/api/models/dtoUserDTOResponse';
+import type { DtoUserDTO } from '@/api/models/dtoUserDTO';
 
 // Mock the necessary hooks and utilities
 vi.mock('jotai', () => ({
@@ -16,33 +18,37 @@ vi.mock('@/atoms/authAtom');
 vi.mock('@/hooks/useLogout');
 
 describe('DashboardPage', () => {
+  const mockSetUser = vi.fn();
+  const mockSetIsLoading = vi.fn();
+  const mockSetIsAuthenticated = vi.fn();
+  const mockLogout = vi.fn().mockResolvedValue(undefined);
+
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks();
 
     // Mock useAtom for userAtom, isLoadingAtom, isAuthenticatedAtom
-    vi.mocked(jotai.useAtom).mockImplementation((atom) => {
+    (jotai.useAtom as any).mockImplementation((atom: any) => {
       if (atom === authAtoms.userAtom) {
-        return [
-          {
-            data: {
-              id: '123',
-              name: 'Test User',
-              email: 'test@example.com',
-            },
-          },
-          vi.fn(),
-        ] as any;
+        const mockUser: DtoUserDTO = {
+          id: 123,
+          name: 'Test User',
+          email: 'test@example.com',
+          created_at: '2024-01-01T00:00:00Z',
+          updated_at: '2024-01-01T00:00:00Z',
+        };
+        const mockUserResponse: DtoUserDTOResponse = { data: mockUser };
+        return [mockUserResponse, mockSetUser];
       } else if (atom === authAtoms.isLoadingAtom) {
-        return [false, vi.fn()] as any;
+        return [false, mockSetIsLoading];
       } else if (atom === authAtoms.isAuthenticatedAtom) {
-        return [true, vi.fn()] as any;
+        return [true, mockSetIsAuthenticated];
       }
-      return [undefined, vi.fn()] as any;
+      return [undefined, vi.fn()];
     });
 
     // Mock useLogout
-    vi.mocked(useLogoutHook.useLogout).mockReturnValue(vi.fn() as any);
+    vi.mocked(useLogoutHook.useLogout).mockReturnValue(mockLogout);
   });
 
   it('renders DashboardPage component with user information when authenticated', () => {
