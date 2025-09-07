@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-type Mock = ReturnType<typeof vi.fn>;
 import LoginPage from '@/pages/(public)/LoginPage';
 import * as authHooks from '@/api/auth/auth';
 import * as authUtils from '@/utils/getIsAuthenticatedCookie';
 import type { DtoLoginResponse } from '@/api/models/dtoLoginResponse';
+
+type Mock = ReturnType<typeof vi.fn>;
 
 // Mock the necessary hooks and utilities
 vi.mock('@/api/auth/auth', () => ({

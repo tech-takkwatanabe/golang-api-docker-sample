@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-type Mock = ReturnType<typeof vi.fn>;
 import type { DtoUserDTO } from '@/api/models/dtoUserDTO';
 import DashboardPage from '@/pages/(authenticated)/DashboardPage';
 import { useLogout } from '@/hooks/useLogout';
@@ -11,6 +10,8 @@ import { WritableAtom } from 'jotai';
 
 // Types for our test atoms
 type TestAtom<T> = WritableAtom<T, [T], void> & { key: string };
+
+type Mock = ReturnType<typeof vi.fn>;
 
 declare module 'jotai' {
   function useAtom<T>(atom: TestAtom<T>): [T, (value: T) => void];
@@ -33,7 +34,7 @@ vi.mock('@/atoms/authAtom', () => ({
 // Mock useLogout
 const mockLogout = vi.fn().mockResolvedValue(undefined);
 vi.mock('@/hooks/useLogout', () => ({
-  useLogout: vi.fn(() => mockLogout)
+  useLogout: vi.fn(() => mockLogout),
 }));
 
 // Import Jotai after mocks are set up
@@ -58,7 +59,7 @@ describe('DashboardPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset mock implementations with proper typing
     (jotai.useAtom as Mock).mockImplementation((atom: { key: string }) => {
       if (atom.key === 'user') return [null, mockSetUser];
@@ -107,7 +108,7 @@ describe('DashboardPage', () => {
   test('calls logout when logout button is clicked', async () => {
     // Reset mocks
     vi.clearAllMocks();
-    
+
     // Setup mocks
     (jotai.useAtom as Mock).mockImplementation((atom: { key: string }) => {
       if (atom.key === 'user') return [mockUser, mockSetUser];
@@ -148,12 +149,12 @@ describe('DashboardPage', () => {
     // Check for static text
     expect(screen.getByText('ダッシュボード')).toBeInTheDocument();
     expect(screen.getByText('ユーザー情報')).toBeInTheDocument();
-    
+
     // Check for user data labels
     expect(screen.getByText('ID')).toBeInTheDocument();
     expect(screen.getByText('名前')).toBeInTheDocument();
     expect(screen.getByText('メールアドレス')).toBeInTheDocument();
-    
+
     // Check for logout button
     expect(screen.getByRole('button', { name: 'ログアウト' })).toBeInTheDocument();
   });

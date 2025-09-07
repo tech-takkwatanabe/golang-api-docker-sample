@@ -54,17 +54,6 @@ vi.mock('@/atoms/authAtom', () => ({
   subAtom: {},
 }));
 
-// Type for our mock axios error
-// Mock error types
-interface MockAxiosError extends Error {
-  isAxiosError: boolean;
-  response?: {
-    status: number;
-    data?: unknown;
-  };
-  config?: unknown;
-}
-
 // Type assertion helpers
 const asMock = <T>(fn: T): T & MockFn => fn as unknown as T & MockFn;
 
