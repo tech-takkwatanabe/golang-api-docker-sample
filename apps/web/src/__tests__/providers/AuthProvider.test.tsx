@@ -5,7 +5,6 @@ import { useGetLoggedinUser } from '@/api/auth/auth';
 import { useAtom, useSetAtom } from 'jotai';
 import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 import { userAtom, isLoadingAtom } from '@/atoms/authAtom';
-import { UseQueryResult } from '@tanstack/react-query';
 
 type UserData = {
   id: string;
@@ -15,36 +14,25 @@ type UserData = {
 // Mock the necessary modules
 vi.mock('@/api/auth/auth');
 vi.mock('jotai', () => ({
-  atom: vi.fn((initialValue) => initialValue),
-  useAtom: vi.fn(),
-  useSetAtom: vi.fn(),
+  atom: vi.fn((init) => init),
+  useAtom: vi.fn() as any, // We'll override this in the test
+  useSetAtom: vi.fn() as any, // We'll override this in the test
 }));
 vi.mock('@/utils/getRefreshTokenExistsCookie');
 
 // Create mock functions
 const mockUseGetLoggedinUser = vi.mocked(useGetLoggedinUser);
-const mockUseAtom = vi.mocked(useAtom);
-const mockUseSetAtom = vi.mocked(useSetAtom);
 const mockGetRefreshTokenExistsCookie = vi.mocked(getRefreshTokenExistsCookie);
-
-// Helper function to create a mock atom
-function createMockAtom(initialValue: boolean): [boolean, (value: boolean) => void] {
-  let value = initialValue;
-  return [
-    value,
-    (newValue: boolean) => {
-      value = newValue;
-    },
-  ];
-}
 
 describe('AuthProvider', () => {
   const MockChild = () => <div>Child Component</div>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseSetAtom.mockImplementation(() => vi.fn());
-    mockUseAtom.mockImplementation(() => [false, vi.fn()]);
+    // Reset mocks before each test
+    const setAtom = vi.fn();
+    vi.mocked(useAtom).mockImplementation(() => [false, setAtom] as any);
+    vi.mocked(useSetAtom).mockImplementation(() => setAtom);
     mockGetRefreshTokenExistsCookie.mockReturnValue(false);
   });
 
@@ -89,7 +77,7 @@ describe('AuthProvider', () => {
     const mockSetUser = vi.fn();
     const mockSetLoading = vi.fn();
 
-    mockUseSetAtom.mockImplementation((atom) => {
+    vi.mocked(useSetAtom).mockImplementation((atom) => {
       if (atom === userAtom) return mockSetUser;
       if (atom === isLoadingAtom) return mockSetLoading;
       return vi.fn();
@@ -139,17 +127,40 @@ describe('AuthProvider', () => {
     const mockSetUser = vi.fn();
     const mockSetLoading = vi.fn();
 
-    mockUseSetAtom.mockImplementation((atom) => {
+    vi.mocked(useSetAtom).mockImplementation((atom) => {
       if (atom === userAtom) return mockSetUser;
       if (atom === isLoadingAtom) return mockSetLoading;
       return vi.fn();
     });
 
-    mockUseGetLoggedinUser.mockReturnValue({
-      data: null,
-      isLoading: false,
+    const mockQuery = {
+      data: undefined,
+      error: new Error('Failed to fetch'),
       isError: true,
-    } as UseQueryResult<any>);
+      isLoading: false,
+      isSuccess: false,
+      status: 'error',
+      refetch: vi.fn(),
+      queryKey: ['user'],
+      isPending: false,
+      isFetching: false,
+      failureCount: 0,
+      failureReason: null,
+      errorUpdateCount: 0,
+      errorUpdatedAt: 0,
+      dataUpdatedAt: 0,
+      isFetched: true,
+      isFetchedAfterMount: true,
+      isInitialLoading: false,
+      isLoadingError: true,
+      isPlaceholderData: false,
+      isRefetchError: false,
+      isRefetching: false,
+      isStale: false,
+      fetchStatus: 'idle',
+    } as const;
+
+    mockUseGetLoggedinUser.mockReturnValue(mockQuery as unknown as ReturnType<typeof useGetLoggedinUser>);
 
     render(
       <AuthProvider>
