@@ -59,7 +59,6 @@ export default [
       '.prettierignore',
       'eslint.config.mts',
       '.gitignore',
-      'jest.setup.cjs',
       'pnpm-lock.yaml',
       'pnpm-workspace.yaml',
       '.env*',
