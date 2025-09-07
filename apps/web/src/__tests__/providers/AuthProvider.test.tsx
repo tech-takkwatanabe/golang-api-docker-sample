@@ -4,6 +4,8 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { useGetLoggedinUser } from '@/api/auth/auth';
 import getRefreshTokenExistsCookie from '@/utils/getRefreshTokenExistsCookie';
 import { userAtom, isLoadingAtom } from '@/atoms/authAtom';
+import type { DtoUserDTO } from '@/api/models/dtoUserDTO';
+import type { DtoErrorResponse } from '@/api/models/dtoErrorResponse';
 
 // Mock modules
 vi.mock('@/api/auth/auth');
@@ -23,10 +25,35 @@ const mockGetRefreshTokenExistsCookie = vi.mocked(getRefreshTokenExistsCookie);
 const mockUseAtom = vi.mocked(jotai.useAtom);
 const mockUseSetAtom = vi.mocked(jotai.useSetAtom);
 
-type UserData = {
-  id: string;
-  name: string;
+type UserData = DtoUserDTO;
+
+// Simplified mock query result type
+type MockQueryResult<TData, TError> = {
+  data: TData | undefined;
+  error: TError | null;
+  isError: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
+  refetch: () => Promise<unknown>;
+  status: string;
+  queryKey: string[];
+  [key: string]: unknown; // For other properties we might need
 };
+
+// Helper function to create a mock query result
+const createMockQueryResult = <TData, TError>(
+  overrides: Partial<MockQueryResult<TData, TError>>
+): MockQueryResult<TData, TError> => ({
+  data: undefined,
+  error: null,
+  isError: false,
+  isLoading: false,
+  isSuccess: false,
+  refetch: vi.fn().mockResolvedValue({}),
+  status: 'pending',
+  queryKey: [],
+  ...overrides,
+});
 
 describe('AuthProvider', () => {
   const MockChild = () => <div>Child Component</div>;
@@ -34,40 +61,34 @@ describe('AuthProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     const setAtom = vi.fn();
-    
-    // Simple mock implementation that satisfies TypeScript
-    mockUseAtom.mockImplementation(() => [null, setAtom] as any);
-    mockUseSetAtom.mockImplementation(() => setAtom);
+
+    // Mock implementation with proper types
+    (mockUseAtom as any).mockImplementation((atom: unknown) => {
+      if (atom === userAtom || atom === isLoadingAtom) {
+        return [null, setAtom];
+      }
+      return [null, vi.fn()];
+    });
+
+    (mockUseSetAtom as any).mockImplementation((atom: unknown) => {
+      if (atom === userAtom || atom === isLoadingAtom) {
+        return setAtom;
+      }
+      return vi.fn();
+    });
+
     mockGetRefreshTokenExistsCookie.mockReturnValue(false);
   });
 
   it('should render children when not loading', () => {
-    const mockResult = {
-      data: undefined,
-      dataUpdatedAt: 0,
-      error: null,
-      errorUpdateCount: 0,
-      errorUpdatedAt: 0,
-      failureCount: 0,
-      isError: false,
-      isFetched: false,
-      isFetchedAfterMount: false,
-      isFetching: false,
-      isPaused: false,
-      isLoading: false,
-      isLoadingError: false,
-      isPlaceholderData: false,
-      isRefetchError: false,
-      isRefetching: false,
-      isStale: false,
-      isSuccess: false,
-      refetch: vi.fn(),
+    const mockResult = createMockQueryResult<UserData, DtoErrorResponse>({
       status: 'pending',
-      fetchStatus: 'idle',
       queryKey: ['user'],
-    };
+      isLoading: false,
+    });
 
-    mockUseGetLoggedinUser.mockReturnValue(mockResult as any);
+    // Type assertion to bypass TypeScript error for the test
+    (mockUseGetLoggedinUser as any).mockReturnValue(mockResult);
 
     render(
       <AuthProvider>
@@ -83,38 +104,28 @@ describe('AuthProvider', () => {
     const mockSetLoading = vi.fn();
 
     mockUseSetAtom.mockImplementation((atom) => {
-      if (atom === userAtom) return mockSetUser;
-      if (atom === isLoadingAtom) return mockSetLoading;
+      if (atom === userAtom) return mockSetUser as unknown as () => void;
+      if (atom === isLoadingAtom) return mockSetLoading as unknown as () => void;
       return vi.fn();
     });
 
-    const userData = { id: '1', name: 'Test User' } as UserData;
-    const mockSuccessResult = {
-      data: userData,
-      dataUpdatedAt: Date.now(),
-      error: null,
-      errorUpdateCount: 0,
-      errorUpdatedAt: 0,
-      failureCount: 0,
-      isError: false,
-      isFetched: true,
-      isFetchedAfterMount: true,
-      isFetching: false,
-      isPaused: false,
-      isLoading: false,
-      isLoadingError: false,
-      isPlaceholderData: false,
-      isRefetchError: false,
-      isRefetching: false,
-      isStale: false,
-      isSuccess: true,
-      refetch: vi.fn(),
-      status: 'success',
-      fetchStatus: 'idle',
-      queryKey: ['user'],
+    const userData: UserData = {
+      id: 1,
+      name: 'Test User',
+      email: 'test@example.com',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
-    mockUseGetLoggedinUser.mockReturnValue(mockSuccessResult as any);
+    const mockSuccessResult = createMockQueryResult<UserData, DtoErrorResponse>({
+      data: userData,
+      isSuccess: true,
+      status: 'success',
+      queryKey: ['user'],
+    });
+
+    // Type assertion to bypass TypeScript error for the test
+    (mockUseGetLoggedinUser as any).mockReturnValue(mockSuccessResult);
 
     render(
       <AuthProvider>
@@ -133,39 +144,21 @@ describe('AuthProvider', () => {
     const mockSetLoading = vi.fn();
 
     mockUseSetAtom.mockImplementation((atom) => {
-      if (atom === userAtom) return mockSetUser;
-      if (atom === isLoadingAtom) return mockSetLoading;
+      if (atom === userAtom) return mockSetUser as unknown as () => void;
+      if (atom === isLoadingAtom) return mockSetLoading as unknown as () => void;
       return vi.fn();
     });
 
-    const mockQuery = {
-      data: undefined,
-      error: new Error('Failed to fetch'),
+    const mockQuery = createMockQueryResult<UserData, DtoErrorResponse>({
+      error: { message: 'Failed to fetch' } as DtoErrorResponse,
       isError: true,
-      isLoading: false,
       isSuccess: false,
       status: 'error',
-      refetch: vi.fn(),
       queryKey: ['user'],
-      isPending: false,
-      isFetching: false,
-      failureCount: 0,
-      failureReason: null,
-      errorUpdateCount: 0,
-      errorUpdatedAt: 0,
-      dataUpdatedAt: 0,
-      isFetched: true,
-      isFetchedAfterMount: true,
-      isInitialLoading: false,
-      isLoadingError: true,
-      isPlaceholderData: false,
-      isRefetchError: false,
-      isRefetching: false,
-      isStale: false,
-      fetchStatus: 'idle',
-    } as const;
+    });
 
-    mockUseGetLoggedinUser.mockReturnValue(mockQuery as unknown as ReturnType<typeof useGetLoggedinUser>);
+    // Type assertion to bypass TypeScript error for the test
+    (mockUseGetLoggedinUser as any).mockReturnValue(mockQuery);
 
     render(
       <AuthProvider>
