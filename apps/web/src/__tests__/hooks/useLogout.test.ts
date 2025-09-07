@@ -5,7 +5,6 @@ import { usePostLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useLogout } from '@/hooks/useLogout';
-import type { AxiosError } from 'axios';
 
 // Helper type for mocks
 type MockFn = {
