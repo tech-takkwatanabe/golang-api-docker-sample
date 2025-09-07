@@ -2,7 +2,8 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useNavigate } from 'react-router-dom';
 import { usePostLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
-import { useQueryClient } from '@tanstack/react-query';
+import type { DtoMessageResponse } from '@/api/models/dtoMessageResponse';
+import { useQueryClient, QueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useLogout } from '@/hooks/useLogout';
 import axios from 'axios';
@@ -17,9 +18,9 @@ vi.mock('axios', () => ({
 
 type MockedFunction = {
   mockReturnValue: (value: boolean) => void;
-  mockImplementation: (fn: any) => void;
-  mockResolvedValue: (value: any) => void;
-  mockRejectedValue: (value: any) => void;
+  mockImplementation: <T>(fn: T) => void;
+  mockResolvedValue: <T>(value: T) => void;
+  mockRejectedValue: (reason?: unknown) => void;
   mockClear: () => void;
   mockReset: () => void;
 };
@@ -68,14 +69,50 @@ describe('useLogout', () => {
     vi.clearAllMocks();
 
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-    vi.mocked(usePostLoggedinLogout).mockReturnValue({
+    const mockMutation = {
       mutateAsync: mockPostLogout,
-    } as any);
+      mutate: vi.fn(),
+      reset: vi.fn(),
+      status: 'idle' as const,
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+      data: undefined as DtoMessageResponse | undefined,
+      error: null,
+      isIdle: true,
+      failureCount: 0,
+      isPaused: false,
+      failureReason: null,
+      isStale: false,
+      submittedAt: 0,
+      variables: undefined,
+      context: undefined,
+    };
+    
+    vi.mocked(usePostLoggedinLogout).mockReturnValue(mockMutation as any);
     vi.mocked(postLoggedinRefresh).mockImplementation(mockPostLoggedinRefresh);
     vi.mocked(useQueryClient).mockReturnValue({
       invalidateQueries: vi.fn(),
       removeQueries: mockRemoveQueries,
-    } as any);
+      getQueryData: vi.fn(),
+      setQueryData: vi.fn(),
+      getQueryState: vi.fn(),
+      setDefaultOptions: vi.fn(),
+      setQueryDefaults: vi.fn(),
+      getQueryDefaults: vi.fn(),
+      getQueryCache: vi.fn(),
+      getMutationCache: vi.fn(),
+      isFetching: vi.fn(),
+      isMutating: vi.fn(),
+      getDefaultOptions: vi.fn(),
+      fetchQuery: vi.fn(),
+      fetchInfiniteQuery: vi.fn(),
+      prefetchQuery: vi.fn(),
+      prefetchInfiniteQuery: vi.fn(),
+      ensureQueryData: vi.fn(),
+      executeMutation: vi.fn(),
+      getQueryHooks: vi.fn(),
+    } as unknown as QueryClient);
     vi.mocked(useSetAtom).mockReturnValue(mockSetSub);
     (axios.isAxiosError as unknown as MockedFunction).mockReturnValue(false);
   });
