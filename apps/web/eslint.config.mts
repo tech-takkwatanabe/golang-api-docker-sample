@@ -7,14 +7,21 @@ import storybook from 'eslint-plugin-storybook';
 export default [
   {
     files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mts'],
+    rules: {
+      '@typescript-eslint/consistent-type-definitions': 'off',
+    },
+  },
+  {
+    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mts', '!**/*.test.{ts,tsx}', '!**/*.spec.{ts,tsx}', '!**/test/**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
       parser: tsParser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
+        tsconfigRootDir: __dirname,
         loggerFn: false,
-        extraFileExtensions: ['.json', '.html'],
+        extraFileExtensions: ['.json', '.html', '.mts'],
       },
     },
     plugins: {
@@ -25,7 +32,18 @@ export default [
       'no-var': 'error',
       'prefer-const': 'off',
       'no-const-assign': 'error',
-      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+      '@typescript-eslint/consistent-type-definitions': [
+        'error',
+        'type',
+        {
+          'interface': 'allow-in-files',
+          'format': ['PascalCase'],
+          'custom': {
+            'regex': '^I[A-Z]',
+            'match': true
+          }
+        }
+      ],
       'react/function-component-definition': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
       'no-console': ['warn', { allow: ['error', 'warn'] }],

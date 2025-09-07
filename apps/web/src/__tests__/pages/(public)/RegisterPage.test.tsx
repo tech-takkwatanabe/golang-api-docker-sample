@@ -26,7 +26,7 @@ describe('RegisterPage', () => {
     vi.clearAllMocks();
     
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
-    vi.mocked(authUtils.default).mockReturnValue(false);
+    (authUtils.default as ReturnType<typeof vi.fn>).mockReturnValue(false);
     
     // Mock the mutation with proper typing
     const mockMutation = {
@@ -39,9 +39,9 @@ describe('RegisterPage', () => {
       isError: false,
       data: undefined,
       error: null,
-    } as unknown as ReturnType<typeof authHooks.usePostRegister>;
+    } as const;
     
-    vi.mocked(authHooks.usePostRegister).mockReturnValue(mockMutation);
+    (authHooks.usePostRegister as ReturnType<typeof vi.fn>).mockReturnValue(mockMutation);
   });
 
   it('renders RegisterPage component with correct elements', () => {

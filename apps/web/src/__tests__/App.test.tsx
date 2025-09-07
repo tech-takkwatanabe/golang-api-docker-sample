@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { vi, describe, expect } from 'vitest';
-import App from '@/App';
+import { vi, describe, test, expect } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import App from '@/App';
 
 // Mock react-router-dom
 vi.mock('react-router-dom', () => ({
@@ -49,26 +49,31 @@ vi.mock('../pages/(authenticated)/DashboardPage', () => ({
   default: () => <div data-testid="dashboard-page">Dashboard Page</div>,
 }));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
+// Helper component to wrap App with providers
+const TestApp = () => (
+  <QueryClientProvider client={queryClient}>
+    <App />
+  </QueryClientProvider>
+);
 
 describe('App Component', () => {
   test('renders without crashing', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    );
+    render(<TestApp />);
     expect(screen.getByTestId('mock-browser-router')).toBeInTheDocument();
     expect(screen.getByTestId('mock-routes')).toBeInTheDocument();
     expect(screen.getByTestId('mock-toast-container')).toBeInTheDocument();
   });
 
   test('renders public routes correctly', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    );
+    render(<TestApp />);
     expect(screen.getByTestId('home-page')).toBeInTheDocument();
     expect(screen.getByTestId('login-page')).toBeInTheDocument();
     expect(screen.getByTestId('register-page')).toBeInTheDocument();
@@ -76,11 +81,7 @@ describe('App Component', () => {
   });
 
   test('renders protected routes correctly', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    );
+    render(<TestApp />);
     expect(screen.getByTestId('mock-auth-provider')).toBeInTheDocument();
     expect(screen.getByTestId('dashboard-page')).toBeInTheDocument();
     expect(screen.getByTestId('mock-outlet')).toBeInTheDocument();

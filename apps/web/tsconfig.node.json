@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "@testing-library/jest-dom"],
+    "noEmit": false,
+    "outDir": "./dist"
+  },
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
+  "exclude": ["**/*.d.ts"]
+}

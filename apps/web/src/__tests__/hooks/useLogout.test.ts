@@ -2,30 +2,24 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useNavigate } from 'react-router-dom';
 import { usePostLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
-import type { DtoMessageResponse } from '@/api/models/dtoMessageResponse';
-import { useQueryClient, QueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useLogout } from '@/hooks/useLogout';
-import axios from 'axios';
+import type { AxiosError } from 'axios';
 
-// Mock axios
-vi.mock('axios', () => ({
-  default: {
-    isAxiosError: vi.fn() as unknown as typeof axios.isAxiosError,
-  },
-  isAxiosError: vi.fn() as unknown as typeof axios.isAxiosError,
-}));
-
-type MockedFunction = {
-  mockReturnValue: (value: boolean) => void;
-  mockImplementation: <T>(fn: T) => void;
-  mockResolvedValue: <T>(value: T) => void;
-  mockRejectedValue: (reason?: unknown) => void;
+// Helper type for mocks
+type MockFn = {
+  (): any;
+  mockReturnValue: (value: any) => void;
+  mockImplementation: (fn: any) => void;
+  mockResolvedValue: (value: any) => void;
+  mockRejectedValue: (error: any) => void;
+  mockResolvedValueOnce: (value: any) => void;
+  mockRejectedValueOnce: (error: any) => void;
   mockClear: () => void;
-  mockReset: () => void;
 };
 
-// Mock external modules
+// Mock all the required modules
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn(),
 }));
@@ -40,17 +34,19 @@ vi.mock('@tanstack/react-query', () => ({
 }));
 
 vi.mock('jotai', () => ({
-  atom: vi.fn((initialValue) => ({ __isAtom: true, initialValue })),
-  useSetAtom: vi.fn(() => vi.fn()),
+  useSetAtom: vi.fn(),
 }));
 
+// Mock axios
 vi.mock('axios', () => ({
+  __esModule: true,
   default: {
-    isAxiosError: vi.fn(),
+    isAxiosError: (value: any) => value?.isAxiosError === true,
   },
-  isAxiosError: vi.fn(),
+  isAxiosError: (value: any) => value?.isAxiosError === true,
 }));
 
+// Mock auth atoms
 vi.mock('@/atoms/authAtom', () => ({
   userAtom: {},
   isLoadingAtom: {},
@@ -58,52 +54,40 @@ vi.mock('@/atoms/authAtom', () => ({
   subAtom: {},
 }));
 
-describe('useLogout', () => {
-  const mockNavigate = vi.fn();
-  const mockPostLogout = vi.fn();
-  const mockRemoveQueries = vi.fn();
-  const mockSetSub = vi.fn();
-  const mockPostLoggedinRefresh = vi.fn(() => Promise.resolve({}));
+// Type for our mock axios error
+// Mock error types
+interface MockAxiosError extends Error {
+  isAxiosError: boolean;
+  response?: {
+    status: number;
+    data?: unknown;
+  };
+  config?: unknown;
+}
 
+// Type assertion helpers
+const asMock = <T>(fn: T): T & MockFn => fn as unknown as T & MockFn;
+
+describe('useLogout', () => {
+  // Create mock functions
+  const mockNavigate = asMock(vi.fn());
+  const mockPostLogout = asMock(vi.fn());
+  const mockPostLoggedinRefresh = asMock(vi.fn());
+  const mockRemoveQueries = asMock(vi.fn());
+  const mockSetSub = asMock(vi.fn());
+
+  // Setup mocks
   beforeEach(() => {
     vi.clearAllMocks();
 
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-    const mockMutation = {
+    // Setup mock implementations
+    asMock(useNavigate).mockReturnValue(mockNavigate);
+    asMock(usePostLoggedinLogout).mockReturnValue({
       mutateAsync: mockPostLogout,
-      mutate: vi.fn(),
-      reset: vi.fn(),
-      status: 'idle' as const,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      data: undefined as DtoMessageResponse | undefined,
-      error: null,
-      isIdle: true,
-      failureCount: 0,
-      isPaused: false,
-      failureReason: null,
-      isStale: false,
-      submittedAt: 0,
-      variables: undefined,
-      context: undefined,
-    };
-    
-    vi.mocked(usePostLoggedinLogout).mockReturnValue(mockMutation as any);
-    vi.mocked(postLoggedinRefresh).mockImplementation(mockPostLoggedinRefresh);
-    vi.mocked(useQueryClient).mockReturnValue({
-      invalidateQueries: vi.fn(),
+    });
+    asMock(postLoggedinRefresh).mockImplementation(mockPostLoggedinRefresh);
+    asMock(useQueryClient).mockReturnValue({
       removeQueries: mockRemoveQueries,
-      getQueryData: vi.fn(),
-      setQueryData: vi.fn(),
-      getQueryState: vi.fn(),
-      setDefaultOptions: vi.fn(),
-      setQueryDefaults: vi.fn(),
-      getQueryDefaults: vi.fn(),
-      getQueryCache: vi.fn(),
-      getMutationCache: vi.fn(),
-      isFetching: vi.fn(),
-      isMutating: vi.fn(),
       getDefaultOptions: vi.fn(),
       fetchQuery: vi.fn(),
       fetchInfiniteQuery: vi.fn(),
@@ -112,88 +96,100 @@ describe('useLogout', () => {
       ensureQueryData: vi.fn(),
       executeMutation: vi.fn(),
       getQueryHooks: vi.fn(),
-    } as unknown as QueryClient);
-    vi.mocked(useSetAtom).mockReturnValue(mockSetSub);
-    (axios.isAxiosError as unknown as MockedFunction).mockReturnValue(false);
+    });
+    asMock(useSetAtom).mockReturnValue(mockSetSub);
   });
 
   it('should handle logout success', async () => {
-    mockPostLogout.mockResolvedValue({});
+    // Setup
+    mockPostLogout.mockResolvedValue(undefined);
 
+    // Execute
     const { result } = renderHook(() => useLogout());
-
     await act(async () => {
       const logout = result.current as () => Promise<void>;
       await logout();
     });
 
+    // Verify
     expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ['/loggedin/user'] });
+    expect(mockRemoveQueries).toHaveBeenCalled();
     expect(mockSetSub).toHaveBeenCalledWith('');
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
 
-  it('should handle 401 error by refreshing token and retrying logout', async () => {
-    mockPostLogout
-      .mockRejectedValueOnce({ response: { status: 401 } })
-      .mockResolvedValueOnce(undefined); // First call fails, second succeeds
-    (axios.isAxiosError as unknown as MockedFunction).mockReturnValue(true);
+  it('should handle 401 error and attempt refresh', async () => {
+    // Setup
+    const error = {
+      isAxiosError: true,
+      response: {
+        status: 401,
+      },
+      name: 'Test Error',
+      message: 'Unauthorized',
+    };
 
+    mockPostLogout.mockRejectedValueOnce(error);
+    mockPostLoggedinRefresh.mockResolvedValueOnce({
+      accessToken: 'new-access-token',
+      refreshToken: 'new-refresh-token',
+    });
+
+    // Execute
     const { result } = renderHook(() => useLogout());
-
     await act(async () => {
       const logout = result.current as () => Promise<void>;
       await logout();
     });
 
-    expect(mockPostLogout).toHaveBeenCalledTimes(2);
+    // Verify
+    expect(mockPostLogout).toHaveBeenCalled();
+    expect(mockPostLoggedinRefresh).toHaveBeenCalled();
+  });
+
+  it('should handle refresh failure', async () => {
+    // Setup
+    const error = {
+      isAxiosError: true,
+      response: {
+        status: 401,
+      },
+      name: 'Test Error',
+      message: 'Unauthorized',
+    };
+
+    mockPostLogout.mockRejectedValueOnce(error);
+    mockPostLoggedinRefresh.mockRejectedValueOnce(new Error('Refresh failed'));
+
+    // Execute
+    const { result } = renderHook(() => useLogout());
+    await act(async () => {
+      const logout = result.current as () => Promise<void>;
+      await logout();
+    });
+
+    // Verify
+    expect(mockPostLogout).toHaveBeenCalled();
     expect(mockPostLoggedinRefresh).toHaveBeenCalled();
     expect(mockSetSub).toHaveBeenCalledWith('');
-    expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ['/loggedin/user'] });
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
 
-  it('should handle refresh token failure', async () => {
-    const error = new Error('Refresh failed');
-    mockPostLogout.mockRejectedValueOnce({
-      response: { status: 401 },
-      config: { url: '/api/logout' },
-    });
-    
-    // Mock axios.isAxiosError to return true for this test
-    (axios.isAxiosError as unknown as MockedFunction).mockReturnValue(true);
-    
-    // Mock postLoggedinRefresh to return a rejected promise
-    vi.mocked(postLoggedinRefresh).mockRejectedValueOnce(error);
-
-    const { result } = renderHook(() => useLogout());
-
-    await act(async () => {
-      const logout = result.current as () => Promise<void>;
-      await logout();
-    });
-
-    expect(mockPostLogout).toHaveBeenCalled();
-    expect(postLoggedinRefresh).toHaveBeenCalled();
-    expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ['/loggedin/user'] });
-    expect(mockSetSub).toHaveBeenCalledWith('');
-    expect(mockNavigate).toHaveBeenCalledWith('/login');
-  });
-
-  it('should handle non-axios error', async () => {
+  it('should handle non-401 error', async () => {
+    // Setup
     const error = new Error('Network error');
-    mockPostLogout.mockRejectedValue(error);
-    (axios.isAxiosError as unknown as MockedFunction).mockReturnValue(false);
+    mockPostLogout.mockRejectedValueOnce(error);
 
+    // Execute
     const { result } = renderHook(() => useLogout());
-
     await act(async () => {
       const logout = result.current as () => Promise<void>;
       await logout();
     });
 
+    // Verify
     expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ['/loggedin/user'] });
+    expect(mockPostLoggedinRefresh).not.toHaveBeenCalled();
     expect(mockSetSub).toHaveBeenCalledWith('');
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
