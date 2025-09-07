@@ -141,7 +141,7 @@ sam deploy --guided \
 - Goで初めに参考にさせていただいた記事🙇 : https://qiita.com/fujifuji1414/items/b95d3f0d5f79d77360cb
 - バックエンドAPIはクリーンアーキテクチャ的に構築
 - `Swaggo`でAPI Docを生成し、それを元にフロントエンドで`Orval`でAPIクライアントを生成することで型を共有
-- フロントエンドは`Vite`ではなく、`CRA`で構築
+- ~~フロントエンドは`Vite`ではなく、`CRA`で構築~~ → `CRA`は非推奨になっているため、`Vite`に移行。テストも`Jest`から`Vitest`に移行
 - フロントエンドの雛形は`Claude`に作ってもらい、その後は`ChatGPT`と壁打ちしながら実装
 - 大半はVSCodeで作業（`Github Copilot`あり）
 - READMEは構築してから`Cursor`で全体を読み取って書いてもらったものを修正
