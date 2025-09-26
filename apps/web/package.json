@@ -8,7 +8,7 @@
     "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test:cov": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "lint": "tsc --noEmit && eslint './src/**/*.{js,jsx,ts,tsx}'",
     "fmt": "prettier --write './src/**/*.{js,jsx,ts,tsx,json,css,md}'",
