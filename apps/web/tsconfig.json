@@ -6,7 +6,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -17,6 +16,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["*"]
     },
@@ -37,7 +38,7 @@
     "config-overrides.js",
     "src/test/vitest-mocks.d.ts"
   ],
-  "exclude": ["node_modules", "dist", "coverage"],
+  "exclude": ["node_modules", "dist", "coverage", "src/api/**"],
   "ts-node": {
     "compilerOptions": {
       "module": "CommonJS"
