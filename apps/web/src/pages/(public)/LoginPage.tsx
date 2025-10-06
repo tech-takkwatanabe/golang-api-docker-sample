@@ -104,7 +104,7 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">ログイン</h2>
 
         {errorMessage && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-sm mb-4">
             {errorMessage}
           </div>
         )}
@@ -118,7 +118,7 @@ const LoginPage = () => {
               id="email"
               type="email"
               {...register('email')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               placeholder="your@email.com"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -132,7 +132,7 @@ const LoginPage = () => {
               id="password"
               type="password"
               {...register('password')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               placeholder="******"
             />
             {errors.password && (
