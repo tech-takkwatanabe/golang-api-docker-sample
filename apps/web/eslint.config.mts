@@ -5,14 +5,20 @@ import prettier from 'eslint-config-prettier';
 import storybook from 'eslint-plugin-storybook';
 
 export default [
+  // TypeScript files configuration
   {
-    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mts'],
-    rules: {
-      '@typescript-eslint/consistent-type-definitions': 'off',
-    },
-  },
-  {
-    files: ['**/*.{js,ts,jsx,tsx,mjs,cjs}', '!**/eslint.config.mts', '!**/*.test.{ts,tsx}', '!**/*.spec.{ts,tsx}', '!**/test/**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/public/**',
+      '**/lib/api/client/**',
+      '**/lib/auth/client/**',
+      '**/lib/admin-api/client/**',
+      '**/lib/cs-api/client/**'
+    ],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -20,8 +26,12 @@ export default [
       parserOptions: {
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname,
-        loggerFn: false,
-        extraFileExtensions: ['.json', '.html', '.mts'],
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+          modules: true
+        }
       },
     },
     plugins: {
@@ -32,20 +42,9 @@ export default [
       'no-var': 'error',
       'prefer-const': 'off',
       'no-const-assign': 'error',
-      '@typescript-eslint/consistent-type-definitions': [
-        'error',
-        'type',
-        {
-          'interface': 'allow-in-files',
-          'format': ['PascalCase'],
-          'custom': {
-            'regex': '^I[A-Z]',
-            'match': true
-          }
-        }
-      ],
-      'react/function-component-definition': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
+      'react/function-component-definition': 'off',
       'no-console': ['warn', { allow: ['error', 'warn'] }],
       'unicorn/filename-case': 'off',
     },
@@ -56,36 +55,47 @@ export default [
         },
       },
     },
-    ignores: [
-      'node_modules/',
-      'dist/',
-      'build/',
-      'coverage/',
-      'public/',
-      'lib/api/client/',
-      'lib/auth/client/',
-      'lib/admin-api/client/',
-      'lib/cs-api/client/',
-      '*.md',
-      'package.json',
-      'tsconfig.json',
-      'src/api/auth/*',
-      'src/api/models/*',
-      'public/manifest.json',
-      '.vscode/',
-      '.prettierrc.json',
-      '.prettierignore',
-      'eslint.config.mts',
-      '.gitignore',
-      'pnpm-lock.yaml',
-      'pnpm-workspace.yaml',
-      '.env*',
-    ],
   },
+  
+  // JavaScript files configuration
   {
-    name: 'prettier-config',
-    rules: prettier.rules,
+    files: ['**/*.{js,jsx,mjs,cjs}'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/coverage/**',
+      '**/public/**',
+      '**/lib/api/client/**',
+      '**/lib/auth/client/**',
+      '**/lib/admin-api/client/**',
+      '**/lib/cs-api/client/**'
+    ],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    plugins: {
+      unicorn,
+    },
+    rules: {
+      'no-var': 'error',
+      'prefer-const': 'off',
+      'no-const-assign': 'error',
+      'no-console': ['warn', { allow: ['error', 'warn'] }],
+      'unicorn/filename-case': 'off',
+    },
   },
+  
+  // Prettier configuration (must be last to override other configs)
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      ...prettier.rules,
+    },
+  },
+  
+  // Storybook specific rules
   {
     files: ['**/*.stories.@(js|jsx|ts|tsx)'],
     plugins: {
