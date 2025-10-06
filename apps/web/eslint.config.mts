@@ -7,7 +7,7 @@ import storybook from 'eslint-plugin-storybook';
 export default [
   // TypeScript files configuration
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}', '*.{ts,tsx}'],
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
