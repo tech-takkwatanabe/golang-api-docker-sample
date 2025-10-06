@@ -93,7 +93,7 @@ const RegisterPage = () => {
             <input
               id="name"
               {...register('name')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               placeholder="山田太郎"
             />
             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
@@ -107,7 +107,7 @@ const RegisterPage = () => {
               id="email"
               type="email"
               {...register('email')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               placeholder="your@email.com"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -121,7 +121,7 @@ const RegisterPage = () => {
               id="password"
               type="password"
               {...register('password')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               placeholder="******"
             />
             {errors.password && (
