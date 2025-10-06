@@ -9,7 +9,7 @@ const LoginPageMock = () => (
           <label className="block text-gray-700 text-sm font-bold mb-2">メールアドレス</label>
           <input
             type="email"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             placeholder="your@email.com"
           />
         </div>
@@ -17,14 +17,14 @@ const LoginPageMock = () => (
           <label className="block text-gray-700 text-sm font-bold mb-2">パスワード</label>
           <input
             type="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             placeholder="******"
           />
         </div>
         <div className="mb-6">
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
           >
             ログイン
           </button>
