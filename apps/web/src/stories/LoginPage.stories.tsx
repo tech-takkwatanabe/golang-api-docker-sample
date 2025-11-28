@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react';
 // LoginPageは複雑な依存関係があるため、シンプルなモックコンポーネントを作成
 const LoginPageMock = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
