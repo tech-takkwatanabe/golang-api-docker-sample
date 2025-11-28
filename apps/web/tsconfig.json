@@ -35,7 +35,6 @@
     "eslint.config.mts",
     "orval.config.ts",
     ".prettierrc.json",
-    "config-overrides.js",
     "src/test/vitest-mocks.d.ts"
   ],
   "exclude": ["node_modules", "dist", "coverage", "src/api/**"],
