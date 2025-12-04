@@ -1,4 +1,4 @@
-FROM golang:1.25.4-alpine3.22
+FROM golang:1.25-alpine
 
 ENV GO111MODULE=on
 ENV PATH="/go/bin:${PATH}"
