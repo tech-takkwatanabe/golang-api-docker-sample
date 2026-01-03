@@ -24,7 +24,7 @@ migrate:
 gotest:
 	docker compose exec go go test ./test
 
-deps-update:
+update-deps:
 	go list -m -u all
 	go get -u ./...
 	go mod tidy
