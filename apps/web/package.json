@@ -68,7 +68,7 @@
     "vite-tsconfig-paths": "^6.0.3",
     "vitest": "^4.0.16"
   },
-  "packageManager": "pnpm@10.26.1",
+  "packageManager": "pnpm@10.27.0",
   "pnpm": {
     "overrides": {
       "@asyncapi/specs": "6.10.0"
