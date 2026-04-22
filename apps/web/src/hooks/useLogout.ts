@@ -3,7 +3,7 @@ import { postLoggedinRefresh, usePostLoggedinLogout } from '@/api/auth/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { subAtom } from '@/atoms/authAtom';
 import { useSetAtom } from 'jotai';
-import axios from 'axios';
+import { isHttpError } from '@/api/mutator/custom-instance';
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export const useLogout = () => {
     try {
       await postLogout();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (isHttpError(error) && error.status === 401) {
         try {
           await postLoggedinRefresh();
           await postLogout();

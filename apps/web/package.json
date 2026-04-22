@@ -49,7 +49,6 @@
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
-    "axios": "^1.13.5",
     "esbuild": "^0.27.3",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
