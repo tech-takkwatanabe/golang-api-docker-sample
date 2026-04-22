@@ -7,7 +7,7 @@ import { usePostLogin } from '@/api/auth/auth';
 import type { DtoErrorResponse, DtoLoginResponse } from '@/api/models';
 import { emailSchema, loginPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
-import type { AxiosError } from 'axios';
+import type { HttpError } from '@/api/mutator/custom-instance';
 import getIsAuthenticatedCookie from '@/utils/getIsAuthenticatedCookie';
 import { subAtom } from '@/atoms/authAtom';
 import { useSetAtom } from 'jotai';
@@ -86,8 +86,8 @@ const LoginPage = () => {
           }
         },
         onError: (error) => {
-          const axiosError = error as AxiosError<DtoErrorResponse>;
-          const { response } = axiosError;
+          const httpError = error as HttpError<DtoErrorResponse>;
+          const { response } = httpError;
           const errorCode = response?.data?.error ?? 'unknown error';
           console.error('errorCode:', errorCode);
           const message = translateError(errorCode);

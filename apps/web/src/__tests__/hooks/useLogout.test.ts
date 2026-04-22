@@ -5,6 +5,7 @@ import { usePostLoggedinLogout, postLoggedinRefresh } from '@/api/auth/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSetAtom } from 'jotai';
 import { useLogout } from '@/hooks/useLogout';
+import { HttpError } from '@/api/mutator/custom-instance';
 
 // Helper type for mocks
 type MockFn = {
@@ -34,15 +35,6 @@ vi.mock('@tanstack/react-query', () => ({
 
 vi.mock('jotai', () => ({
   useSetAtom: vi.fn(),
-}));
-
-// Mock axios
-vi.mock('axios', () => ({
-  __esModule: true,
-  default: {
-    isAxiosError: (value: any) => value?.isAxiosError === true,
-  },
-  isAxiosError: (value: any) => value?.isAxiosError === true,
 }));
 
 // Mock auth atoms
@@ -108,14 +100,7 @@ describe('useLogout', () => {
 
   it('should handle 401 error and attempt refresh', async () => {
     // Setup
-    const error = {
-      isAxiosError: true,
-      response: {
-        status: 401,
-      },
-      name: 'Test Error',
-      message: 'Unauthorized',
-    };
+    const error = new HttpError(401, { error: 'unauthorized' }, { url: '/loggedin/logout' });
 
     mockPostLogout.mockRejectedValueOnce(error);
     mockPostLoggedinRefresh.mockResolvedValueOnce({
@@ -131,20 +116,13 @@ describe('useLogout', () => {
     });
 
     // Verify
-    expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockPostLoggedinRefresh).toHaveBeenCalled();
+    expect(mockPostLogout).toHaveBeenCalledTimes(2);
+    expect(mockPostLoggedinRefresh).toHaveBeenCalledTimes(1);
   });
 
   it('should handle refresh failure', async () => {
     // Setup
-    const error = {
-      isAxiosError: true,
-      response: {
-        status: 401,
-      },
-      name: 'Test Error',
-      message: 'Unauthorized',
-    };
+    const error = new HttpError(401, { error: 'unauthorized' }, { url: '/loggedin/logout' });
 
     mockPostLogout.mockRejectedValueOnce(error);
     mockPostLoggedinRefresh.mockRejectedValueOnce(new Error('Refresh failed'));
@@ -157,8 +135,8 @@ describe('useLogout', () => {
     });
 
     // Verify
-    expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockPostLoggedinRefresh).toHaveBeenCalled();
+    expect(mockPostLogout).toHaveBeenCalledTimes(1);
+    expect(mockPostLoggedinRefresh).toHaveBeenCalledTimes(1);
     expect(mockSetSub).toHaveBeenCalledWith('');
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });

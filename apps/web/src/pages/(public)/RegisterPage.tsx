@@ -6,7 +6,7 @@ import { usePostRegister } from '@/api/auth/auth';
 import type { DtoErrorResponse } from '@/api/models';
 import { nameSchema, emailSchema, registPasswordSchema } from '@/schemas/auth';
 import { toast } from 'react-toastify';
-import type { AxiosError } from 'axios';
+import type { HttpError } from '@/api/mutator/custom-instance';
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { isAuthenticatedAtom } from '@/atoms/authAtom';
@@ -71,8 +71,8 @@ const RegisterPage = () => {
           });
         },
         onError: (error) => {
-          const axiosError = error as AxiosError<DtoErrorResponse>;
-          const errorCode = axiosError.response?.data?.error ?? 'unknown error';
+          const httpError = error as HttpError<DtoErrorResponse>;
+          const errorCode = httpError.response?.data?.error ?? 'unknown error';
           const message = translateError(errorCode);
           toast.error(message);
         },
