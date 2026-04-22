@@ -84,44 +84,15 @@
 
 ## Getting Started
 
-ルートの `Makefile` から両方をまとめて操作できます。
-
-```bash
-make install   # 初回セットアップ（pnpm install + docker compose build）
-make dev       # フロント + API を同時起動
-```
-
-### コマンド一覧
-
-| コマンド | 内容 |
-|---|---|
-| `make dev` | フロント + API を同時起動 |
-| `make build` | 両方ビルド |
-| `make lint` | 両方lint |
-| `make fmt` | 両方フォーマット |
-| `make test` | 両方テスト |
-| `make web/dev` | フロントのみ起動 |
-| `make api/dev` | APIのみ起動 |
-| `make install` | 初回セットアップ |
-| `make clean` | ビルド成果物を削除 |
-| `make help` | 全コマンド一覧を表示 |
-
-> `api/*` 系のコマンドは `docker compose` 経由で実行されます。`api/lint`・`api/fmt`・`api/test` は `make api/dev` でコンテナが起動している必要があります。
-
-### 個別のセットアップ手順
-
-<details>
-<summary>バックエンドAPI (Go)</summary>
+### バックエンドAPI (Go)
 
 ```bash
 cd apps/api
 cp .env.example .env
 make init
 ```
-</details>
 
-<details>
-<summary>フロントエンドWebアプリケーション (React)</summary>
+### フロントエンドWebアプリケーション (React)
 
 ```bash
 cd apps/web
@@ -129,7 +100,6 @@ cp .env.example .env.local
 pnpm install
 pnpm dev
 ```
-</details>
 
 ### RefreshToken用テーブル作成 (DynamoDB)
 
