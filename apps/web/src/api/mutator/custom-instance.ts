@@ -36,8 +36,13 @@ export const isHttpError = <T = unknown>(error: unknown): error is HttpError<T> 
   return error instanceof HttpError;
 };
 
+type PendingRequest = {
+  retry: () => void;
+  reject: (reason?: unknown) => void;
+};
+
 let isRefreshing = false;
-let pendingRequests: (() => void)[] = [];
+let pendingRequests: PendingRequest[] = [];
 
 const buildUrl = (config: RequestConfig): string => {
   const base = (config.baseURL ?? API_URL).replace(/\/+$/, '');
@@ -169,8 +174,11 @@ export async function customInstance<T>(
 
       if (isRefreshing) {
         return new Promise<T>((resolve, reject) => {
-          pendingRequests.push(() => {
-            doFetch<T>(merged).then(resolve, reject);
+          pendingRequests.push({
+            retry: () => {
+              doFetch<T>(merged).then(resolve, reject);
+            },
+            reject,
           });
         });
       }
@@ -182,12 +190,14 @@ export async function customInstance<T>(
         isRefreshing = false;
         const queued = pendingRequests;
         pendingRequests = [];
-        queued.forEach((cb) => cb());
+        queued.forEach(({ retry }) => retry());
 
         return await doFetch<T>(merged);
       } catch (refreshError) {
         isRefreshing = false;
+        const queued = pendingRequests;
         pendingRequests = [];
+        queued.forEach(({ reject }) => reject(refreshError));
         alert('セッションの有効期限が切れました。もう一度ログインしてください。');
         try {
           await postLoggedinLogout();

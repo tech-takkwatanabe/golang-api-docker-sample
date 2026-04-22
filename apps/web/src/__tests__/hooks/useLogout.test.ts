@@ -116,8 +116,8 @@ describe('useLogout', () => {
     });
 
     // Verify
-    expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockPostLoggedinRefresh).toHaveBeenCalled();
+    expect(mockPostLogout).toHaveBeenCalledTimes(2);
+    expect(mockPostLoggedinRefresh).toHaveBeenCalledTimes(1);
   });
 
   it('should handle refresh failure', async () => {
@@ -135,8 +135,8 @@ describe('useLogout', () => {
     });
 
     // Verify
-    expect(mockPostLogout).toHaveBeenCalled();
-    expect(mockPostLoggedinRefresh).toHaveBeenCalled();
+    expect(mockPostLogout).toHaveBeenCalledTimes(1);
+    expect(mockPostLoggedinRefresh).toHaveBeenCalledTimes(1);
     expect(mockSetSub).toHaveBeenCalledWith('');
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });

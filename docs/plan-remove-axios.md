@@ -108,8 +108,8 @@ export async function customInstance<T>(
   - `.response?.data?.error` の参照はそのまま動く（シェイプを保っているため）
 - **`__tests__/hooks/useLogout.test.ts`**
   - `vi.mock('axios', ...)` を削除
-  - `@/api/mutator/custom-instance` をモックし、`isHttpError` が `value?.name === 'HttpError'` 等で判定されるように差し替え
-  - テスト中の `error` オブジェクトを `{ name: 'HttpError', status: 401, response: { status: 401, data: {} } }` 形に更新
+  - `HttpError` を `@/api/mutator/custom-instance` から import
+  - テスト中の `error` は `new HttpError(401, { error: 'unauthorized' }, { url: '/loggedin/logout' })` で生成
 
 ### 4. 依存削除
 
