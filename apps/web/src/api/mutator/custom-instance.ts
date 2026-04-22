@@ -131,6 +131,17 @@ const doFetch = async <T>(config: RequestConfig): Promise<T> => {
   return parseResponse<T>(response, config.responseType);
 };
 
+/**
+ * Send an HTTP request built from the provided config and optional overrides, handling 401-driven session refresh and queuing/retrying concurrent requests during refresh.
+ *
+ * The `config` and `extraOptions` are shallow-merged; `extraOptions` values take precedence. Headers are merged with `extraOptions.headers` overriding `config.headers`. The resolved `baseURL` is `extraOptions.baseURL ?? config.baseURL ?? API_URL`.
+ *
+ * If a request fails with a 401 and the request has not been retried and is not a refresh/logout/login path, this function will attempt a single session refresh. While a refresh is in flight, concurrent requests will be queued and replayed after a successful refresh. On refresh failure the function alerts the user, attempts logout, navigates to `/login`, and rejects with the refresh error.
+ *
+ * @param config - The primary request configuration
+ * @param extraOptions - Optional overrides merged into `config`; values here take precedence
+ * @returns The parsed response value of type `T`
+ */
 export async function customInstance<T>(
   config: RequestConfig,
   extraOptions?: Partial<RequestConfig>
