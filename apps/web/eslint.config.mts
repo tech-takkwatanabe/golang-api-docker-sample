@@ -24,7 +24,6 @@ export default [
       sourceType: 'module',
       parser: tsParser,
       parserOptions: {
-        warnOnUnsupportedTypeScriptVersion: false,
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname,
         ecmaVersion: 'latest',
