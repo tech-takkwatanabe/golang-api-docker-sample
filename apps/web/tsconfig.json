@@ -15,11 +15,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./src/*"]
     },
     "typeRoots": ["./node_modules/@types"],
     "types": ["vite/client", "node", "@testing-library/jest-dom", "jest"],
