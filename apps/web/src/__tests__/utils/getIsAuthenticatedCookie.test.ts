@@ -22,28 +22,24 @@ describe('getIsAuthenticatedCookie', () => {
         // Get the key-value pair before any semicolon (ignoring attributes like path, domain, etc.)
         const [keyValue] = value.split(';');
         const [key, ...rest] = keyValue.split('=');
-        
+
         if (!key) return; // Skip if no key
-        
+
         // Split the existing cookies and clean them up
-        const cookieEntries = cookieJar 
-          ? cookieJar.split('; ').filter(Boolean)
-          : [];
-        
+        const cookieEntries = cookieJar ? cookieJar.split('; ').filter(Boolean) : [];
+
         // Find if this cookie already exists
-        const existingIndex = cookieEntries.findIndex(entry => 
-          entry.startsWith(`${key}=`)
-        );
-        
+        const existingIndex = cookieEntries.findIndex((entry) => entry.startsWith(`${key}=`));
+
         const newValue = `${key}=${rest.join('=')}`;
-        
+
         // Update or add the cookie
         if (existingIndex >= 0) {
           cookieEntries[existingIndex] = newValue;
         } else {
           cookieEntries.push(newValue);
         }
-        
+
         // Join with '; ' to match browser behavior
         cookieJar = cookieEntries.join('; ');
       },
@@ -57,7 +53,7 @@ describe('getIsAuthenticatedCookie', () => {
     // Reset environment variables
     Object.defineProperty(import.meta, 'env', {
       value: { ...originalEnv },
-      writable: true
+      writable: true,
     });
   });
 
@@ -88,32 +84,32 @@ describe('getIsAuthenticatedCookie', () => {
 
   it('should return true if the authentication cookie exists with a custom name', () => {
     const customCookieName = 'myCustomAuthCookie';
-    
+
     // Set the environment variable before the test runs
     process.env.VITE_AUTH_CHECK_COOKIE_NAME = customCookieName;
-    
+
     // Set the cookie
     document.cookie = `${customCookieName}=true`;
     document.cookie = 'otherCookie=value';
-    
+
     // The function should now look for the custom cookie name
     const result = getIsAuthenticatedCookie();
-    
+
     expect(result).toBe(true);
-    
+
     // Clean up
     delete process.env.VITE_AUTH_CHECK_COOKIE_NAME;
   });
 
   it('should return false if the authentication cookie does not exist with a custom name', () => {
     const customCookieName = 'myCustomAuthCookie';
-    
+
     // Set the environment variable before the test runs
     process.env.VITE_AUTH_CHECK_COOKIE_NAME = customCookieName;
-    
+
     document.cookie = 'otherCookie=value';
     expect(getIsAuthenticatedCookie()).toBe(false);
-    
+
     // Clean up
     delete process.env.VITE_AUTH_CHECK_COOKIE_NAME;
   });
@@ -126,18 +122,18 @@ describe('getIsAuthenticatedCookie', () => {
   it('should handle multiple cookies correctly', () => {
     // Set the cookie name to the default for this test
     process.env.VITE_AUTH_CHECK_COOKIE_NAME = COOKIE_NAME;
-    
+
     // Set multiple cookies
     document.cookie = 'cookie1=value1';
     document.cookie = `${COOKIE_NAME}=true`;
     document.cookie = 'cookie2=value2';
-    
+
     // The actual test - should find the auth cookie
     const result = getIsAuthenticatedCookie();
-    
+
     // Verify the cookie jar has the expected cookies
     const cookies = cookieJar.split('; ');
-    
+
     expect(result).toBe(true);
     expect(cookies).toContain('cookie1=value1');
     expect(cookies).toContain(`${COOKIE_NAME}=true`);

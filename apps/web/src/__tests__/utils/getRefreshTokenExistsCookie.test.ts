@@ -83,7 +83,7 @@ describe('getRefreshTokenExistsCookie', () => {
   });
 
   it('should handle cookie with special characters', () => {
-    const specialValue = "!@#$%^&*()_+{}|:\\\"<>?[];\\',./`~";
+    const specialValue = '!@#$%^&*()_+{}|:\\"<>?[];\\\',./`~';
     document.cookie = `${DEFAULT_COOKIE_NAME}=${encodeURIComponent(specialValue)}`;
     expect(getRefreshTokenExistsCookie()).toBe(true);
   });

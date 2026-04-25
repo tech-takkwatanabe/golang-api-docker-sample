@@ -36,7 +36,7 @@ describe('AuthProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     setAtomMock = vi.fn();
-    
+
     // Setup default mocks
     mockUseAtom.mockImplementation(() => [null, setAtomMock]);
     mockUseSetAtom.mockImplementation(() => setAtomMock);

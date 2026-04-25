@@ -78,13 +78,14 @@ const buildBody = (
     return { body: data as BodyInit, headers };
   }
   const hasContentType = Object.keys(headers).some((h) => h.toLowerCase() === 'content-type');
-  const nextHeaders = hasContentType
-    ? headers
-    : { ...headers, 'Content-Type': 'application/json' };
+  const nextHeaders = hasContentType ? headers : { ...headers, 'Content-Type': 'application/json' };
   return { body: JSON.stringify(data), headers: nextHeaders };
 };
 
-const parseResponse = async <T>(response: Response, responseType?: RequestConfig['responseType']): Promise<T> => {
+const parseResponse = async <T>(
+  response: Response,
+  responseType?: RequestConfig['responseType']
+): Promise<T> => {
   if (response.status === 204 || response.headers.get('Content-Length') === '0') {
     return undefined as T;
   }
@@ -118,7 +119,7 @@ const parseErrorBody = async (response: Response): Promise<unknown> => {
 const doFetch = async <T>(config: RequestConfig): Promise<T> => {
   const url = buildUrl(config);
   const method = (config.method ?? 'GET').toUpperCase();
-  const { body, headers } = buildBody(config.data, { ...(config.headers ?? {}) });
+  const { body, headers } = buildBody(config.data, { ...config.headers });
 
   const response = await fetch(url, {
     method,
@@ -154,7 +155,7 @@ export async function customInstance<T>(
   const merged: CustomRequestConfig = {
     ...config,
     ...extraOptions,
-    headers: { ...(config.headers ?? {}), ...(extraOptions?.headers ?? {}) },
+    headers: { ...config.headers, ...extraOptions?.headers },
     baseURL: extraOptions?.baseURL ?? config.baseURL ?? API_URL,
   };
 

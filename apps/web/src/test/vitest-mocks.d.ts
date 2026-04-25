@@ -3,7 +3,8 @@
 // Extend the global Jest namespace with Vitest types
 declare global {
   // Extend the Mocked type to include mock methods
-  interface MockedFunction<T extends (...args: any) => any> extends jest.MockInstance<ReturnType<T>, Parameters<T>> {
+  interface MockedFunction<T extends (...args: any) => any>
+    extends jest.MockInstance<ReturnType<T>, Parameters<T>> {
     mockReturnValue: (value: ReturnType<T>) => MockedFunction<T>;
     mockImplementation: (fn: (...args: Parameters<T>) => ReturnType<T>) => MockedFunction<T>;
     mockRejectedValue: (value: any) => MockedFunction<T>;
@@ -30,7 +31,8 @@ declare global {
 
   // Extend the vi namespace
   namespace Vi {
-    interface MockedFunction<T extends (...args: any) => any> extends globalThis.MockedFunction<T> {}
+    interface MockedFunction<T extends (...args: any) => any>
+      extends globalThis.MockedFunction<T> {}
     interface MockInstance<A extends any[] = any, R = any> extends globalThis.MockInstance<A, R> {}
   }
 }
