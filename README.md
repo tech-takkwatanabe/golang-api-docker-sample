@@ -130,8 +130,10 @@ sam deploy --guided \
 - Zod
 - jotai
 - TanStack Query
-- ESLint（FlatConfig対応）
-- Prettier
+- ~~ESLint（FlatConfig対応）~~
+- ~~Prettier~~
+- OXLint
+- Biome
 
 ### PaaS
 - AWS DynamoDB
