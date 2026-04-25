@@ -119,7 +119,7 @@ const parseErrorBody = async (response: Response): Promise<unknown> => {
 const doFetch = async <T>(config: RequestConfig): Promise<T> => {
   const url = buildUrl(config);
   const method = (config.method ?? 'GET').toUpperCase();
-  const { body, headers } = buildBody(config.data, { ...(config.headers ?? {}) });
+  const { body, headers } = buildBody(config.data, { ...config.headers });
 
   const response = await fetch(url, {
     method,
@@ -155,7 +155,7 @@ export async function customInstance<T>(
   const merged: CustomRequestConfig = {
     ...config,
     ...extraOptions,
-    headers: { ...(config.headers ?? {}), ...(extraOptions?.headers ?? {}) },
+    headers: { ...config.headers, ...extraOptions?.headers },
     baseURL: extraOptions?.baseURL ?? config.baseURL ?? API_URL,
   };
 
