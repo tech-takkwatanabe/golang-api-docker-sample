@@ -7,13 +7,13 @@ import { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers';
 declare module 'vitest' {
   type Assertion<T = any> = jest.Matchers<void, T> &
     TestingLibraryMatchers<typeof expect.stringContaining, T>;
-  
+
   type AsymmetricMatchersContaining = jest.Matchers<void, any>;
-    
+
   type ExpectStatic = jest.Expect & {
     <T>(actual: T): Assertion<T>;
   };
-  
+
   type ViStatic = {
     fn: typeof jest.fn;
     mock: typeof jest.mock;
@@ -24,7 +24,7 @@ declare module 'vitest' {
     mock: (path: string, factory?: () => unknown) => void;
     mocked: <T>(item: T, deep?: boolean) => jest.Mocked<T>;
   };
-  
+
   // Global test variables
   const vi: ViStatic;
   const describe: (title: string, fn: () => void) => void;

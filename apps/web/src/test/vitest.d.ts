@@ -16,11 +16,12 @@ declare global {
       mockImplementationOnce: (fn: (...args: any[]) => any) => any;
     };
   };
-  
+
   const describe: typeof import('vitest')['describe'];
   const it: typeof import('vitest')['it'];
   const test: typeof import('vitest')['test'];
-  const expect: typeof import('vitest')['expect'] & typeof import('@testing-library/jest-dom/matchers');
+  const expect: typeof import('vitest')['expect'] &
+    typeof import('@testing-library/jest-dom/matchers');
   const beforeEach: typeof import('vitest')['beforeEach'];
   const afterEach: typeof import('vitest')['afterEach'];
   const beforeAll: typeof import('vitest')['beforeAll'];
@@ -28,7 +29,8 @@ declare global {
   const jest: typeof import('vitest')['vi'];
 
   // Mock types
-  interface MockedFunction<T extends (...args: any) => any> extends jest.MockInstance<ReturnType<T>, Parameters<T>> {
+  interface MockedFunction<T extends (...args: any) => any>
+    extends jest.MockInstance<ReturnType<T>, Parameters<T>> {
     mockReturnValue: (value: ReturnType<T>) => MockedFunction<T>;
     mockImplementation: (fn: (...args: Parameters<T>) => ReturnType<T>) => MockedFunction<T>;
     mockRejectedValue: (value: any) => MockedFunction<T>;
@@ -54,10 +56,8 @@ declare global {
 }
 
 declare module 'vitest' {
-  interface JestAssertion<T = any>
-    extends jest.Matchers<void, T>,
-      jest.JestMatchers<T> {}
-      
+  interface JestAssertion<T = any> extends jest.Matchers<void, T>, jest.JestMatchers<T> {}
+
   interface CustomMatchers<R = unknown> {
     toBeInTheDocument(): R;
     toBeVisible(): R;

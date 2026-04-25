@@ -3,8 +3,9 @@
  * @returns {boolean} クッキーに基づいた認証状態。
  */
 const getRefreshTokenExistsCookie = (): boolean => {
-  const cookieName = import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
-  
+  const cookieName =
+    import.meta.env.VITE_REFRESH_TOKEN_EXIST_CHECK_COOKIE_NAME || 'refreshTokenByGoBackendExists';
+
   // Split cookies by semicolon and space to handle browser behavior
   const cookies = document.cookie
     .split(/;\s*/) // Split by semicolon followed by optional whitespace

@@ -50,14 +50,14 @@ Object.defineProperty(document, 'cookie', {
   },
   set(value: string) {
     if (!value) return false;
-    
+
     const [keyValue] = value.split(';');
     const [key, ...values] = keyValue.split('=');
-    
+
     if (key && values.length > 0) {
       cookieJar[key.trim()] = values.join('=');
     }
-    
+
     return true;
   },
   configurable: true,

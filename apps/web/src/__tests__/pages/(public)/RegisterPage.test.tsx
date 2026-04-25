@@ -24,10 +24,10 @@ describe('RegisterPage', () => {
   beforeEach(() => {
     // Reset mocks before each test
     vi.clearAllMocks();
-    
+
     // Mock getIsAuthenticatedCookie to return false by default (not authenticated)
     (authUtils.default as ReturnType<typeof vi.fn>).mockReturnValue(false);
-    
+
     // Mock the mutation with proper typing
     const mockMutation = {
       mutate: vi.fn(),
@@ -40,7 +40,7 @@ describe('RegisterPage', () => {
       data: undefined,
       error: null,
     } as const;
-    
+
     (authHooks.usePostRegister as ReturnType<typeof vi.fn>).mockReturnValue(mockMutation);
   });
 

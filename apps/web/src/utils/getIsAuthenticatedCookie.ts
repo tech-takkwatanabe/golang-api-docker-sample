@@ -4,7 +4,7 @@
  */
 const getIsAuthenticatedCookie = (): boolean => {
   const cookieName = import.meta.env.VITE_AUTH_CHECK_COOKIE_NAME || 'isAuthenticatedByGoBackend';
-  
+
   // Split cookies by semicolon and space to handle browser behavior
   const cookies = document.cookie
     .split(/;\s*/) // Split by semicolon followed by optional whitespace

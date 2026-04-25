@@ -31,9 +31,7 @@
     "tailwind.config.js",
     "tailwind.config.d.ts",
     "postcss.config.mjs",
-    "eslint.config.mts",
     "orval.config.ts",
-    ".prettierrc.json",
     "src/test/vitest-mocks.d.ts"
   ],
   "exclude": ["node_modules", "dist", "coverage", "src/api/**"],

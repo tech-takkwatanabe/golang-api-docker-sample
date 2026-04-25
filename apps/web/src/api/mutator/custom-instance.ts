@@ -78,13 +78,14 @@ const buildBody = (
     return { body: data as BodyInit, headers };
   }
   const hasContentType = Object.keys(headers).some((h) => h.toLowerCase() === 'content-type');
-  const nextHeaders = hasContentType
-    ? headers
-    : { ...headers, 'Content-Type': 'application/json' };
+  const nextHeaders = hasContentType ? headers : { ...headers, 'Content-Type': 'application/json' };
   return { body: JSON.stringify(data), headers: nextHeaders };
 };
 
-const parseResponse = async <T>(response: Response, responseType?: RequestConfig['responseType']): Promise<T> => {
+const parseResponse = async <T>(
+  response: Response,
+  responseType?: RequestConfig['responseType']
+): Promise<T> => {
   if (response.status === 204 || response.headers.get('Content-Length') === '0') {
     return undefined as T;
   }
