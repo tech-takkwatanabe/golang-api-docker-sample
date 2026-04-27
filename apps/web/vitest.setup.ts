@@ -1,10 +1,7 @@
-import { expect, vi, beforeAll, afterAll } from 'vitest';
+import { vi, beforeAll, afterAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
-import * as matchers from '@testing-library/jest-dom/matchers';
+import '@testing-library/jest-dom/vitest';
 import { afterEach as afterEachHook } from 'vitest';
-
-// Extend Vitest's expect with jest-dom matchers
-expect.extend(matchers);
 
 // Mock window.matchMedia for tests
 Object.defineProperty(window, 'matchMedia', {
