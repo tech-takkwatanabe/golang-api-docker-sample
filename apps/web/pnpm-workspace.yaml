@@ -1,5 +1,12 @@
+overrides:
+  "@asyncapi/specs": 6.10.0
+peerDependencyRules:
+  allowedVersions:
+    typescript: "6"
 onlyBuiltDependencies:
   - core-js
   - core-js-pure
   - esbuild
   - unrs-resolver
+allowBuilds:
+  esbuild: set this to true or false

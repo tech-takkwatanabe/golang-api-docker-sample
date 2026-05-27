@@ -24,8 +24,8 @@
     "@tanstack/react-query": "^5.100.5",
     "jiti": "^2.6.1",
     "jotai": "^2.19.1",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-hook-form": "^7.71.1",
     "react-router-dom": "^7.13.0",
     "react-toastify": "^11.1.0",
@@ -58,20 +58,9 @@
     "typescript": "^6.0.3",
     "vite": "^8.0.10",
     "vite-plugin-svgr": "^5.2.0",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.5"
   },
-  "packageManager": "pnpm@10.33.2",
-  "pnpm": {
-    "overrides": {
-      "@asyncapi/specs": "6.10.0"
-    },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "typescript": "6"
-      }
-    }
-  },
+  "packageManager": "pnpm@11.4.0",
   "browserslist": {
     "production": [
       ">0.2%",
